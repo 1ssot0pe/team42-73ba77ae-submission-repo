@@ -1,0 +1,11 @@
+.cache/
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store
+.env
+.venv/
+venv/
+reports/
+eval/results/runs/
+data/signoffs.jsonl
