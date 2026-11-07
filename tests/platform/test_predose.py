@@ -102,3 +102,65 @@ def test_parser_gemini_answer_is_validated():
     p = ProtocolParser().run(text, ctx)
     assert p["comparator"] == "low_dose_same_drug" and p["evidence"]["comparator"] == real_quote
     assert any("Gemini changed comparator" in e["text"] for e in ctx.rec["events"])
+
+
+# ---------------------------------------------------------------- Phase 2: co-designer
+from unblind.platform.master.orchestrator import Master  # noqa: E402
+
+
+def master():
+    m = Master("TEST-" + uuid.uuid4().hex[:6])
+    m.setup()
+    assert m.module_status["predose"] == "real"
+    return m
+
+
+def fix_approval(m, fid):
+    return next(a for a in m.ctx.approvals.pending("predose") if a["action"] == {"type": "apply_fix", "fix": fid})
+
+
+def check(m, cid):
+    return next(c for c in m.rec["design_review"]["checklist"] if c["id"] == cid)
+
+
+def test_checklist_psilocybin_is_missing_the_blinding_items():
+    m = master()
+    for cid in ("blinding_questionnaire", "expectancy_measure", "central_raters"):
+        assert check(m, cid)["present"] is False
+        assert check(m, cid)["note"]
+    dr = m.rec["design_review"]
+    assert dr["risk"]["band"] == "high" and dr["baseline_checklist_ok"] == 0
+    assert "SYNTHETIC" in dr["risk"]["calibration"]
+    assert set(dr["proposed_fixes"]) == {"central_raters", "blinding_questionnaire", "expectancy_measure",
+                                         "alternative_control", "stratify_prior_use"}
+    assert len(m.ctx.approvals.pending("predose")) == 5     # one approval per proposed fix
+    assert m.rec["protocol_versions"][0]["version"] == 1
+
+
+def test_fix_central_raters_creates_version_2_and_rechecks():
+    m = master()
+    m.decide(fix_approval(m, "central_raters")["id"], "Danny", "approved")
+    assert len(m.rec["protocol_versions"]) == 2
+    assert m.rec["protocol_versions"][1]["why"].startswith("fix approved by Danny")
+    assert check(m, "central_raters")["present"] is True
+    assert m.rec["protocol"]["design_flags"]["raters_attend_sessions"] is False
+    assert any(x["kind"] == "protocol_amended" and x["from"] == "predose" for x in m.rec["messages"])
+    pending = [a["action"]["fix"] for a in m.ctx.approvals.pending("predose")]
+    assert sorted(pending) == sorted(set(pending)), "re-check must not duplicate pending approvals"
+    assert "central_raters" not in pending
+
+
+def test_fix_alternative_control_lowers_u_and_baseline_is_kept():
+    m = master()
+    u0 = m.rec["design_review"]["risk"]["u"]
+    m.decide(fix_approval(m, "alternative_control")["id"], "Danny", "approved")
+    dr = m.rec["design_review"]
+    assert dr["risk"]["u"] < u0
+    assert dr["baseline_risk"]["u"] == u0
+
+
+def test_fix_rejected_changes_nothing():
+    m = master()
+    m.decide(fix_approval(m, "central_raters")["id"], "Danny", "rejected", "not now")
+    assert len(m.rec["protocol_versions"]) == 1
+    assert check(m, "central_raters")["present"] is False

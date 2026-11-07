@@ -225,3 +225,150 @@ class ProtocolParser:
                               "decision", M)
                 p[field] = val
                 p["evidence"][field] = quote
+
+
+# ---------------------------------------------------------------------------
+# Phase 2: protocol co-designer (risk, FDA July 2026 checklist, fixes, versions)
+# ---------------------------------------------------------------------------
+CHECKLIST = [
+    ("blinding_questionnaire", "Blinding questionnaire (participants and raters guess allocation)", lambda p: p.get("has_blinding_questionnaire")),
+    ("expectancy_measure", "Expectancy measured before randomisation and at end of treatment", lambda p: p.get("has_expectancy_measure")),
+    ("central_raters", "Central blinded raters who do not attend dosing sessions",
+     lambda p: p.get("rater_model") == "central_remote" and not p.get("design_flags", {}).get("raters_attend_sessions")),
+    ("alternative_control", "Alternative or active control considered (not only inert placebo)", lambda p: p.get("comparator") != "inert_placebo"),
+    ("durability", "12-week double-blind efficacy then about 12-month follow-up with retreatment criteria", lambda p: p.get("design_flags", {}).get("followup_12m")),
+    ("monitors", "Two session monitors and a physician able to attend within 15 minutes",
+     lambda p: p.get("design_flags", {}).get("two_monitors") and p.get("design_flags", {}).get("physician_15min")),
+    ("factorial", "Factorial design considered to separate therapy from drug effect", lambda p: p.get("design_flags", {}).get("factorial")),
+    ("abuse_potential", "Abuse-potential assessment planned", lambda p: p.get("design_flags", {}).get("abuse_potential")),
+]
+CHECK_PATTERNS = {"blinding_questionnaire": r"guess|blinding", "expectancy_measure": r"expectan", "central_raters": r"rater|assessor",
+                  "alternative_control": r"placebo|comparator|control", "durability": r"follow[- ]up|month",
+                  "monitors": r"monitor|facilitator|physician", "factorial": r"factorial", "abuse_potential": r"abuse"}
+
+FIXES = {  # fix id -> (title, structured change, sentence appended to the protocol text)
+    "central_raters": ("Move outcome raters to central, remote, blinded assessment",
+        {"rater_model": "central_remote", "design_flags.raters_attend_sessions": False},
+        "Outcome ratings will be performed by central blinded raters by videoconference; raters will not attend dosing sessions."),
+    "blinding_questionnaire": ("Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters", {"has_blinding_questionnaire": True},
+        "Participants and raters will guess allocation (drug, control, don't know) with confidence after dosing and at weeks 1, 3 and 6."),
+    "expectancy_measure": ("Measure expectancy before randomisation and at end of treatment", {"has_expectancy_measure": True},
+        "Participant expectancy (0 to 10) will be recorded before randomisation and at the end of treatment."),
+    "alternative_control": ("Use a low dose of the same drug as comparator", {"comparator": "low_dose_same_drug"},
+        "The comparator arm will receive a low dose of the study drug (1 mg)."),
+    "stratify_prior_use": ("Stratify randomisation by prior psychedelic use", {"prior_use_policy": "stratify"},
+        "Randomisation will be stratified by site and prior psychedelic use (naive or experienced)."),
+}
+FIXABLE_CHECKS = ("central_raters", "blinding_questionnaire", "expectancy_measure", "alternative_control")
+
+
+def new_version(rec: TrialRecord, why: str, changes: List[str]) -> dict:
+    text = rec["protocol"].get("text", "")
+    v = {"version": len(rec["protocol_versions"]) + 1, "day": rec["day"], "digest": digest(text),
+         "why": why, "changes": list(changes), "text": text}
+    rec["protocol_versions"].append(v)
+    return v
+
+
+def _set(p: dict, key: str, value: Any) -> None:
+    """Apply one structured change; supports dotted keys such as design_flags.raters_attend_sessions."""
+    if "." in key:
+        head, tail = key.split(".", 1)
+        p.setdefault(head, {})
+        _set(p[head], tail, value)
+    else:
+        p[key] = value
+
+
+class ProtocolCoDesigner:
+    name = "protocol co-designer"
+
+    def __init__(self):
+        rows, self.cal_label = ubmodel.load_calibration()          # SYNTHETIC until real trials are approved
+        self.dm = ubmodel.design_model(rows)
+        from ...synthetic import fill_imputed
+        rows = fill_imputed([dict(r) for r in rows], self.dm)
+        self.fit = ubmodel.fit_metareg(rows) or ubmodel.fit_metareg(rows, use_imputed=True)
+
+    def _design(self, p):
+        pe = {"stratify": 0.4, "ignore": 0.5, "exclude": 0.0}.get(p.get("prior_use_policy", "ignore"), 0.5)
+        return {"comparator_type": p.get("comparator", "inert_placebo"), "prior_exposure": pe,
+                "central": int(p.get("rater_model") == "central_remote")}
+
+    def risk(self, p):
+        d = self._design(p)
+        u, usd = self.dm.predict(d["comparator_type"], d["prior_exposure"])
+        b = self.fit.coef.get("u", 0.0) if self.fit else 0.0
+        c = self.fit.coef.get("central", 0.0) if self.fit else 0.0
+        bias = b * u - c * (1 - d["central"])
+        band = "high" if u >= 0.6 else "medium" if u >= 0.35 else "low"
+        return {"u": round(u, 3), "u_sd": round(usd, 3), "expected_bias_g": round(bias, 3), "band": band,
+                "calibration": self.cal_label, "design_model": self.dm.source}
+
+    def checklist(self, p) -> List[dict]:
+        out = []
+        text = p.get("text", "")
+        for cid, item, test in CHECKLIST:
+            present = bool(test(p))
+            ev = _find(text, CHECK_PATTERNS[cid]) or ""
+            out.append({"id": cid, "item": item, "present": present, "evidence": ev[:300],
+                        "note": "" if present else "Missing or not stated in the protocol"})
+        return out
+
+    def draft_section(self, p):
+        rater = ("central blinded raters by videoconference who do not attend dosing sessions" if p.get("rater_model") == "central_remote"
+                 else "raters (currently on site; we recommend central blinded raters)")
+        return "\n".join([
+            "## Blinding and expectancy",
+            "Allocation is concealed by stratified permuted-block randomisation (site x prior psychedelic use) held in a sealed vault.",
+            f"Primary outcome ({p['primary_endpoint']['scale']}, week {p['primary_endpoint']['week']}) is scored by {rater}.",
+            "Blinding integrity: participants and raters complete the UNBLIND-BLIND-1 guess item (drug, control, don't know) with confidence "
+            "(0 to 100) after dosing and at weeks 1, 3 and 6. Blinding indices (Bang) are monitored per site and per rater during the trial, "
+            "and a drift alert triggers a documented human decision.",
+            "Expectancy: participants rate expected improvement (0 to 10) before randomisation, after dosing and at end of treatment.",
+            "Analysis: the primary effect is reported alongside an expectancy-adjusted range with stated assumptions.",
+        ])
+
+    def review(self, rec: TrialRecord, ctx: Ctx, reason: str = "design review") -> dict:
+        p = rec["protocol"]
+        risk = self.risk(p)
+        checklist = self.checklist(p)
+        model_fixes = ubmodel.counterfactuals(self.fit, self.dm, self._design(p)) if self.fit else []
+        missing = {c["id"] for c in checklist if not c["present"]}
+        proposed = [f for f in FIXABLE_CHECKS if f in missing]
+        if p.get("prior_use_policy") != "stratify":
+            proposed.append("stratify_prior_use")
+        ok = sum(c["present"] for c in checklist)
+
+        prev = rec.get("design_review") or {}
+        dr = {"risk": risk, "checklist": checklist, "model_fixes": model_fixes, "proposed_fixes": proposed,
+              "blinding_section_md": self.draft_section(p),
+              "baseline_risk": prev.get("baseline_risk", risk),
+              "baseline_checklist_ok": prev.get("baseline_checklist_ok", ok)}
+        rec["design_review"] = dr
+        rec.event(self.name, f"{reason}: u={risk['u']} ({risk['band']}), expected bias {risk['expected_bias_g']} g, "
+                             f"FDA checklist {ok}/{len(CHECKLIST)}, {len(proposed)} fixes proposed", "decision", M)
+
+        pending = {a["action"].get("fix") for a in ctx.approvals.pending(M) if a["action"].get("type") == "apply_fix"}
+        for fid in proposed:
+            if fid in pending:
+                continue
+            title, _change, sentence = FIXES[fid]
+            ctx.approvals.request(self.name, M, f"Protocol fix: {title}",
+                                  "The co-designer found this missing against the FDA July 2026 guidance or the blinding "
+                                  "risk model. Approving adds the sentence below, saves a new protocol version and re-checks.",
+                                  {"type": "apply_fix", "fix": fid}, evidence={"sentence_to_add": sentence})
+        return dr
+
+    def apply_fix(self, rec: TrialRecord, ctx: Ctx, fid: str, approver: str) -> dict:
+        title, change, sentence = FIXES[fid]
+        p = rec["protocol"]
+        for k, v in change.items():
+            _set(p, k, v)
+        p["text"] = (p.get("text", "").rstrip() + "\n" + sentence + "\n")
+        v = new_version(rec, f"fix approved by {approver}: {title}", [sentence])
+        rec.event(self.name, f"applied fix '{fid}' as protocol version {v['version']}", "decision", M)
+        dr = self.review(rec, ctx, reason=f"re-check after version {v['version']}")
+        ctx.bus.post(M, "master", "protocol_amended", {"fix": fid, "version": v["version"], "risk": dr["risk"]},
+                     f"Protocol version {v['version']}: {title}")
+        return dr
