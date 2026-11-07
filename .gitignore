@@ -9,3 +9,4 @@ venv/
 reports/
 eval/results/runs/
 data/signoffs.jsonl
+data/trials/

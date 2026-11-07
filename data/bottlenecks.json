@@ -1,0 +1,65 @@
+{
+  "_note": "Seed entries from sources already verified in this project. The research agent extends this file; every number needs a source URL and quote. 'how_we_tackle' says what the platform changes and how it is measured.",
+  "bottlenecks": [
+    {
+      "id": "blinding_unmeasured",
+      "module": "dosing",
+      "title": "Most psychedelic trials never measure whether blinding held",
+      "number": "29.5% (33 of 112) randomised psychedelic trials assessed blinding integrity",
+      "source": "Systematic review of blinding integrity in psychedelic RCTs, JAMA Psychiatry 2026 (doi 10.1001/jamapsychiatry.2026.0255), abstract",
+      "url": "https://lifeboat.com/blog/2026/04/blinding-integrity-in-psychedelic-randomized-clinical-trials-a-systematic-review",
+      "how_we_tackle": "Every enrolled participant and rater gets the same scheduled guess check-in by default, so measurement coverage goes from about 30% of trials to 100% of participants in trials on the platform.",
+      "metric": "share of scheduled blinding check-ins completed"
+    },
+    {
+      "id": "blinding_failure",
+      "module": "dosing",
+      "title": "When blinding is measured, it usually fails",
+      "number": "Psilocybin, LSD and ayahuasca studies frequently reported blinding failure above 90% among participants and raters; inert-placebo MDMA trials exceeded 85%",
+      "source": "Same 2026 systematic review, abstract",
+      "url": "https://lifeboat.com/blog/2026/04/blinding-integrity-in-psychedelic-randomized-clinical-trials-a-systematic-review",
+      "how_we_tackle": "Design agent predicts unblinding before the trial and ranks fixes; blinding monitor detects drift per site and per rater within days instead of at the end of the trial.",
+      "metric": "days from drift onset to alert"
+    },
+    {
+      "id": "fda_unblinding",
+      "module": "predose",
+      "title": "The FDA names functional unblinding as the central threat to validity",
+      "number": "Final guidance July 2026 asks for blinding questionnaires, expectancy measures before randomisation and at end of treatment, central blinded raters, and alternative controls",
+      "source": "FDA guidance 'Psychedelic Drugs: Considerations for Clinical Investigations' (July 2026), as reported by Applied Clinical Trials",
+      "url": "https://www.appliedclinicaltrialsonline.com/view/fda-finalizes-guidance-clinical-trial-design-psychedelic-drug-development",
+      "how_we_tackle": "The protocol co-designer checks the draft against each guidance item and drafts the missing blinding section; the close-out agent produces the evidence in one standard report.",
+      "metric": "guidance checklist items satisfied"
+    },
+    {
+      "id": "monitoring_burden",
+      "module": "dosing",
+      "title": "Every dosing session needs two trained monitors and a physician on call",
+      "number": "Two monitors per session (lead with graduate training and licensure; assistant with 1 year experience) and a physician able to reach the site within 15 minutes",
+      "source": "FDA final guidance July 2026, as reported by Applied Clinical Trials",
+      "url": "https://www.appliedclinicaltrialsonline.com/view/fda-finalizes-guidance-clinical-trial-design-psychedelic-drug-development",
+      "how_we_tackle": "Monitors speak or type a debrief; the debrief agent structures it into adverse events and unblinding cues, so documentation does not compete with patient care.",
+      "metric": "debriefs structured automatically"
+    },
+    {
+      "id": "small_effects",
+      "module": "postdose",
+      "title": "Late-stage effects are small enough that bias matters",
+      "number": "COMP005: -3.6 MADRS points vs placebo (95% CI -5.7 to -1.5). COMP006: -3.8 points vs 1 mg psilocybin (95% CI -5.8 to -1.8)",
+      "source": "Compass Pathways press releases, 23 June 2025 and 17 February 2026",
+      "url": "https://ir.compasspathways.com/News--Events-/news/news-details/2026/Compass-Pathways-Successfully-Achieves-Primary-Endpoint-in-Second-Phase-3-Trial-Evaluating-COMP360-Psilocybin-for-Treatment-Resistant-Depression/default.aspx",
+      "how_we_tackle": "The close-out report gives an expectancy-adjusted range next to the reported effect, using the trial's own blinding data plus the cross-trial calibration.",
+      "metric": "reported vs adjusted effect, with interval"
+    },
+    {
+      "id": "nonstandard_data",
+      "module": "postdose",
+      "title": "Blinding data that is collected is not comparable",
+      "number": "Of 18 real trials our research agent examined, only 4 reported clean per-arm participant guess data; timing ranged from the dosing day to day 365, and respondents varied (participants, therapists, raters)",
+      "source": "UNBLIND candidate gold set, data/gold_candidates.csv (unverified, needs human check)",
+      "url": "",
+      "how_we_tackle": "One standard instrument set (UNBLIND-BLIND-1) at fixed timepoints for every trial, exported in one harmonised schema.",
+      "metric": "share of trials exporting in the standard schema"
+    }
+  ]
+}
