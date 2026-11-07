@@ -235,6 +235,8 @@ def prior_exposure(text: str, eligibility: str = "") -> Optional[Cand]:
         excl = re.split(r"exclusion criteria", eligibility, flags=re.I)
         if len(excl) > 1:
             for m, s in find(excl[1], r"(?:prior|previous|lifetime|any)\s+(?:use of\s+)?" + PSY_WORDS):
+                if re.search(r"(last|past|within)\s+(\d+|one|two|three|five|ten)\s*(years?|months?)", s, re.I):
+                    continue   # time-limited exclusion does not make the sample naive
                 return Cand(0.0, s, "derived: eligibility excluded prior use, sample treated as naive (approximation if the exclusion is time-limited)")
     return None
 

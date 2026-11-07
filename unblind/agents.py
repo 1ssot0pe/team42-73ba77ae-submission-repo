@@ -456,7 +456,7 @@ class BlindingHunter:
                 who = "guess_acc_raters" if c.note == "raters" else "guess_acc_participants"
                 if isinstance(v, tuple):  # Bang index
                     acc = (v[1] + 1) / 2
-                    f = Fact(who, round(acc, 3), "derived", c.quote, src.id, self.name, f"from Bang index {v[1]}")
+                    f = audit_fact(Fact(who, round(acc, 3), "derived", c.quote, src.id, self.name, f"from Bang index {v[1]}"), self.L)
                     self.L.put(f)
                     found = True
                     continue

@@ -25,7 +25,7 @@ COMPARATORS = ["inert_placebo", "active_placebo", "low_dose_same_drug", "other_a
 U_MEAN = {"inert_placebo": 0.75, "active_placebo": 0.45, "low_dose_same_drug": 0.40, "other_active": 0.35}
 
 
-def make_trials(k: int = 30, true_g: float = 0.35, b_true: float = 0.6, c_true: float = -0.10,
+def make_trials(k: int = 30, true_g: float = 0.35, b_true: float = 0.6, r_onsite: float = 0.10,
                 scenario: str = "expectancy", observed_frac: float = 0.35, seed: int = 0) -> List[Dict]:
     rng = np.random.default_rng(seed)
     rows = []
@@ -43,9 +43,9 @@ def make_trials(k: int = 30, true_g: float = 0.35, b_true: float = 0.6, c_true: 
             u += 0.9 * (g_i - true_g) + 0.5 * g_i        # improvement makes people guess "drug"
         u = float(np.clip(u, 0, 1))
         se = float(np.sqrt(4 / n + g_i ** 2 / (2 * n)))
-        g_obs = g_i + b_true * u * (scenario != "reverse_causation") + c_true * central + rng.normal(0, se)
-        if scenario == "reverse_causation":
-            g_obs += 0.0                                 # no expectancy bias at all; u is pure consequence
+        # truth = effect with zero unblinding AND central blinded raters; on-site raters inflate by r_onsite.
+        # Under reverse_causation there is no expectancy bias at all: u is purely a consequence of benefit.
+        g_obs = g_i + b_true * u * (scenario != "reverse_causation") + r_onsite * (1 - central) + rng.normal(0, se)
         observed = rng.random() < observed_frac
         rows.append({
             "trial_id": f"SYN-{seed}-{i:03d}", "provenance": "SYNTHETIC", "drug": "synthetic-psychedelic",

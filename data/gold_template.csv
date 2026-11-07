@@ -1,0 +1,3 @@
+nct,field,gold_value,quote,source_url,verified_by
+NCT99999901,effect_est,-6.2,"The primary endpoint, the between-group difference in MADRS change from baseline at week 6 in the intention-to-treat population, was -6.2 (95% CI -9.4 to -3.0).","https://www.ebi.ac.uk/europepmc/webservices/rest/PMC9999901/fullTextXML (FIXTURE, invented)","EXAMPLE (invented fixture trial; delete this row, put your initials here for real rows)"
+NCT99999901,guess_acc_participants,0.78,"At the end of the study, 78% of participants correctly guessed their treatment allocation.","https://www.ebi.ac.uk/europepmc/webservices/rest/PMC9999901/supplementaryFiles (FIXTURE, invented)","EXAMPLE (invented fixture trial; delete this row, put your initials here for real rows)"

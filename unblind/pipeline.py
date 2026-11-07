@@ -99,19 +99,26 @@ def _derive_effect(L: Ledger, endpoint: dict) -> None:
         n1, n2 = ns
         sd = se_md / math.sqrt(1 / n1 + 1 / n2)
         d = e["est"] / sd
-        if lib:
+        q = (L.facts["effect"].quote or "").lower()
+        benefit_positive = lib and e["est"] > 0 and bool(re.search(
+            r"greater (reduction|decrease|improvement)|favou?r(ing|ed) (the )?(psilocybin|mdma|lsd|drug|active)|improvement of", q))
+        if lib and not benefit_positive:
             d = -d
         J = 1 - 3 / (4 * (n1 + n2) - 9)
         g = J * d
         se_g = math.sqrt((n1 + n2) / (n1 * n2) + g ** 2 / (2 * (n1 + n2)))
         note = (f"MD {e['est']} (CI {e['lo']} to {e['hi']}) -> SD {sd:.2f} via arm sizes {n1}/{n2}"
-                f"{' (imputed)' if ns_status == 'imputed' else ''}; sign flipped because lower {endpoint.get('scale')} is better" if lib else "")
+                f"{' (imputed)' if ns_status == 'imputed' else ''}")
+        if lib:
+            note += f"; sign flipped because lower {endpoint.get('scale')} is better"
+        if benefit_positive:
+            note += "; source reports benefit as a positive difference, so no flip"
         status = "derived" if ns_status == "observed" else "imputed"
     else:
-        g = abs(e["est"])
+        g = e["est"]
         n1, n2 = ns if ns else (30, 30)
         se_g = math.sqrt((n1 + n2) / (n1 * n2) + g ** 2 / (2 * (n1 + n2)))
-        note = "reported standardised effect; sign assumed to favour the drug"
+        note = "reported standardised effect, used as reported (assumes positive = favours the drug; check the quote)"
         status = "derived" if ns else "imputed"
     L.put(Fact("g", round(g, 3), status, "", "", "statistician", note))
     L.put(Fact("se_g", round(se_g, 3), status, "", "", "statistician", "SE of Hedges' g"))
@@ -208,6 +215,9 @@ def run(raw: str, on_event: Optional[Callable] = None, calibration: str = "auto"
                                   "design", "registry lists outcomes assessor as masked"), L))
     BlindingHunter(L).run(paper, study)
 
+    if (L.status("blinding_assessment_planned") == "observed" and L.get("guess_acc_participants") is None
+            and L.get("guess_acc_raters") is None):
+        warnings.append("A blinding assessment was planned but no result was found: possible selective reporting.")
     inj = scan_injection(L)
     if inj:
         warnings.append(f"Possible prompt-injection text found in {', '.join(inj)}; it was treated as data and every claim was quote-checked.")
@@ -245,7 +255,10 @@ def run(raw: str, on_event: Optional[Callable] = None, calibration: str = "auto"
     design = {"comparator_type": L.get("comparator_type") or "inert_placebo",
               "prior_exposure": L.get("prior_exposure"), "central": int(central)}
     u_act = L.get("u") if L.status("u") == "derived" else None
-    cfs = model.counterfactuals(fit, dm, design, u_act) if fit else []
+    resolved_any = bool(study or r.pasted or r.paper_hit)
+    cfs = model.counterfactuals(fit, dm, design, u_act) if (fit and resolved_any) else []
+    if cfs and L.get("comparator_type") is None:
+        warnings.append("Comparator not found; design advice assumes an inert placebo.")
     if cfs:
         top = cfs[0]
         verdict = (f"reduces expected bias by {top['bias_reduction']:+.3f} g" if top["bias_reduction"] > 0

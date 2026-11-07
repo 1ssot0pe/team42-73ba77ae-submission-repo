@@ -1,3 +1,4 @@
+.cache/
 __pycache__/
 *.pyc
 .pytest_cache/
@@ -5,3 +6,6 @@ __pycache__/
 .env
 .venv/
 venv/
+reports/
+eval/results/runs/
+data/signoffs.jsonl

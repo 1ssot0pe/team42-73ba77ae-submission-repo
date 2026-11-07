@@ -40,7 +40,8 @@ def test_full_path_picks_registered_endpoint_and_finds_supplement():
 def test_registry_only_imputes_and_flags_selective_reporting():
     rep = pipeline.run("NCT99999902")
     assert F(rep, "comparator_type")["value"] == "inert_placebo"
-    assert F(rep, "prior_exposure")["value"] == 0.0
+    assert F(rep, "prior_exposure").get("value") is None   # "in the last 5 years" exclusion is NOT naive
+    assert any("selective reporting" in w for w in rep.warnings)
     assert F(rep, "u")["status"] == "imputed"
     assert F(rep, "blinding_assessment_planned")["value"] is True
     assert any("selective reporting" in t["action"] for t in rep.trace)

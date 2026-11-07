@@ -7,7 +7,8 @@ u  unblinding index in [0, 1]: excess correct guessing above chance,
    u = max(0, 2 * accuracy - 1)   (0 = coin flip, 1 = everyone knew)
 central  1 if outcome raters were central/remote and blinded
 
-a  the effect a trial with zero unblinding and on-site raters would show
+a + c  the effect a trial with zero unblinding and central blinded raters
+       would show (the reference design that corrections are made to)
 b  bias per unit of unblinding (expected to be positive)
 
 Primary fit uses ONLY trials whose blinding was observed. Trials whose u was
@@ -53,12 +54,24 @@ class Fit:
         t = _tcrit(self.df, level)
         return self.coef[name] - t * self.se[name], self.coef[name] + t * self.se[name]
 
+    def reference(self, level: float = 0.95):
+        """Effect at the reference design: zero unblinding, central blinded raters (a + c)."""
+        idx = [self.names.index("intercept")] + ([self.names.index("central")] if "central" in self.names else [])
+        est = sum(self.coef[self.names[i]] for i in idx)
+        var = float(sum(self.cov[i, j] for i in idx for j in idx))
+        t = _tcrit(self.df, level)
+        sd = math.sqrt(max(var, 0.0))
+        return est, est - t * sd, est + t * sd
+
     def summary(self) -> Dict[str, object]:
         out = {"label": self.label, "k": self.k, "tau2": round(self.tau2, 4),
                "u_observed_range": [round(x, 2) for x in self.u_range]}
         for n in self.names:
             lo, hi = self.ci(n)
             out[n] = {"est": round(self.coef[n], 3), "ci95": [round(lo, 3), round(hi, 3)]}
+        e, lo, hi = self.reference()
+        out["reference_effect"] = {"est": round(e, 3), "ci95": [round(lo, 3), round(hi, 3)],
+                                   "meaning": "zero unblinding, central blinded raters"}
         return out
 
 
@@ -68,11 +81,8 @@ def _tcrit(df: int, level: float = 0.95) -> float:
              12: 2.18, 15: 2.13, 20: 2.09, 25: 2.06, 30: 2.04, 40: 2.02, 60: 2.00, 120: 1.98}
     if df <= 0:
         return float("inf")
-    keys = sorted(table)
-    for k in keys:
-        if df <= k:
-            return table[k]
-    return 1.96
+    keys = [k for k in sorted(table) if k <= df]   # round df DOWN: conservative
+    return table[keys[-1]] if df < 120 else 1.96
 
 
 def fit_metareg(rows: Sequence[dict], covariates=("u", "central"), label: str = "",
@@ -87,7 +97,7 @@ def fit_metareg(rows: Sequence[dict], covariates=("u", "central"), label: str = 
     X = np.array([[1.0] + [float(r.get(c) or 0) for c in covs] for r in data])
     y = np.array([float(r["g"]) for r in data])
     v = np.array([float(r["se_g"]) ** 2 for r in data])
-    vu = np.array([float(r.get("u_sd") or 0) ** 2 if r.get("u_status") != "observed" else 0.0 for r in data])
+    vu = np.array([float(r.get("u_sd") or (0.05 if r.get("u_status") == "observed" else 0.2)) ** 2 for r in data])
 
     b_u = 0.0
     tau2 = 0.0
@@ -153,7 +163,7 @@ class DesignModel:
         return min(1.0, max(0.0, u)), sd
 
 
-def design_model(rows: Sequence[dict], min_obs: int = 8) -> DesignModel:
+def design_model(rows: Sequence[dict], min_obs: int = 10) -> DesignModel:
     priors = load_priors()
     obs = [r for r in rows if r.get("u_status") == "observed" and r.get("comparator_type")]
     if len(obs) >= min_obs:
@@ -162,6 +172,9 @@ def design_model(rows: Sequence[dict], min_obs: int = 8) -> DesignModel:
         y = np.array([float(r["u"]) for r in obs])
         lam = 0.5 * np.eye(X.shape[1]); lam[0, 0] = 0
         beta = np.linalg.solve(X.T @ X + lam, X.T @ y)
+        if beta[4] < 0:   # more prior exposure cannot plausibly make guessing harder
+            beta[4] = priors["prior_exposure_effect"]
+            dm.source += "; prior-exposure slope came out negative, replaced by the assumption-table value"
         dm.beta = beta
         dm.resid_sd = float(np.sqrt(np.mean((y - X @ beta) ** 2))) + 0.05
         return dm
@@ -174,10 +187,12 @@ def design_model(rows: Sequence[dict], min_obs: int = 8) -> DesignModel:
 def correct(fit: Fit, g: float, se_g: float, u: float, u_sd: float, central: bool) -> Dict[str, float]:
     b = fit.coef.get("u", 0.0)
     c = fit.coef.get("central", 0.0)
-    # bias relative to a zero-unblinding, on-site-rater reference
-    bias = b * u
+    # bias relative to the best design: zero unblinding AND central blinded raters
+    on_site = 0.0 if central else 1.0
+    bias = b * u - c * on_site
     var_b = fit.se.get("u", 0.0) ** 2
-    var = se_g ** 2 + (u ** 2) * var_b + (b ** 2) * (u_sd ** 2)
+    var_c = fit.se.get("central", 0.0) ** 2
+    var = se_g ** 2 + (u ** 2) * var_b + (b ** 2) * (u_sd ** 2) + on_site * var_c
     corrected = g - bias
     sd = math.sqrt(var)
     lo, hi = corrected - 1.96 * sd, corrected + 1.96 * sd
@@ -209,7 +224,7 @@ def counterfactuals(fit: Fit, dm: DesignModel, design: dict, u_actual: Optional[
     def bias_of(d):
         u, usd = dm.predict(d.get("comparator_type"), d.get("prior_exposure"))
         u = min(1.0, max(0.0, u + shift))
-        return b * u + c * float(d.get("central") or 0), usd
+        return b * u - c * (1.0 - float(d.get("central") or 0)), usd
 
     base, base_sd = bias_of(design)
     out = []
