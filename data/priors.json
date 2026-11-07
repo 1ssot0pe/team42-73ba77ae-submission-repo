@@ -1,0 +1,19 @@
+{
+  "_status": "TEAM ASSUMPTIONS, NOT DATA. Used only when fewer than 8 trials with observed blinding are in the calibration corpus. Every number here is shown in the UI when it is used. Replace by fitting on the real corpus.",
+  "_rationale": "Excess correct guessing u = 2*accuracy - 1. The 2026 systematic review of 112 psychedelic RCTs reports that psilocybin, LSD and ayahuasca studies frequently reported blinding failure above 90% and inert-placebo MDMA trials above 85%; that motivates a high u for inert placebo. Lower values for active/low-dose comparators are guesses with deliberately wide SDs.",
+  "unblinding_by_comparator": {
+    "inert_placebo":      {"u": 0.75, "sd": 0.15},
+    "active_placebo":     {"u": 0.50, "sd": 0.25},
+    "low_dose_same_drug": {"u": 0.45, "sd": 0.25},
+    "other_active":       {"u": 0.40, "sd": 0.25},
+    "waitlist_or_none":   {"u": 1.00, "sd": 0.05}
+  },
+  "prior_exposure_effect": 0.2,
+  "feasibility": {
+    "Switch comparator to a low dose of the same drug": 0.8,
+    "Switch comparator to an active placebo (e.g. niacin)": 0.7,
+    "Move outcome raters central and remote, blinded": 0.9,
+    "Enrol psychedelic-naive participants": 0.6
+  },
+  "_feasibility_note": "Feasibility weights are subjective (0-1) and editable. Ranking = expected bias reduction x feasibility."
+}
