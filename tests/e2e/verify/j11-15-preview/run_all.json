@@ -1,0 +1,243 @@
+{
+  "base_url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app",
+  "env": "preview-j11-15",
+  "at": "2026-11-08 13:38:23",
+  "results": [
+    {
+      "id": "J11",
+      "title": "Refresh mid-trial on each page; second tab; deep links",
+      "env": "preview-j11-15",
+      "base_url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app",
+      "passed": false,
+      "error": null,
+      "duration_s": 59.7,
+      "timings": {
+        "create_trial": 0.83,
+        "decide:confirm shortlist": 0.68,
+        "reload:/": 2.97,
+        "reload:/predose": 3.74,
+        "reload:/portal": 2.42,
+        "reload:/dosing": 3.51,
+        "reload:/postdose": 3.49
+      },
+      "failures": [
+        {
+          "t": 15.54,
+          "msg": "[reload /] day changed 'D+6 / 90' -> 'D+13 / 90'",
+          "shot": "docs/testing/screenshots/preview-J11-1.png",
+          "url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app/"
+        },
+        {
+          "t": 21.45,
+          "msg": "[reload /predose] day changed 'D+6 / 90' -> 'D+13 / 90'",
+          "shot": "docs/testing/screenshots/preview-J11-2.png",
+          "url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app/predose"
+        },
+        {
+          "t": 25.89,
+          "msg": "[reload /portal] day changed 'D+6 / 90' -> 'D+13 / 90'",
+          "shot": "docs/testing/screenshots/preview-J11-3.png",
+          "url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app/portal"
+        },
+        {
+          "t": 31.2,
+          "msg": "[reload /dosing] day changed 'D+6 / 90' -> 'D+13 / 90'",
+          "shot": "docs/testing/screenshots/preview-J11-4.png",
+          "url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app/dosing"
+        },
+        {
+          "t": 36.42,
+          "msg": "[reload /postdose] day changed 'D+6 / 90' -> 'D+13 / 90'",
+          "shot": "docs/testing/screenshots/preview-J11-5.png",
+          "url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app/postdose"
+        },
+        {
+          "t": 52.21,
+          "msg": "[deep link /predose fresh] no 'No trial yet' empty state",
+          "shot": "docs/testing/screenshots/preview-J11-6.png",
+          "url": "https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Fparallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app%252Fpredose%26nonce%3D92969abe67425939520005ae8648e734575b3b31ee466d1a75909743b3db4e70"
+        },
+        {
+          "t": 54.23,
+          "msg": "[deep link /portal fresh] no 'No trial yet' empty state",
+          "shot": "docs/testing/screenshots/preview-J11-7.png",
+          "url": "https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Fparallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app%252Fportal%26nonce%3D92969abe67425939520005ae8648e734575b3b31ee466d1a75909743b3db4e70"
+        },
+        {
+          "t": 56.28,
+          "msg": "[deep link /dosing fresh] no 'No trial yet' empty state",
+          "shot": "docs/testing/screenshots/preview-J11-8.png",
+          "url": "https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Fparallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app%252Fdosing%26nonce%3D92969abe67425939520005ae8648e734575b3b31ee466d1a75909743b3db4e70"
+        },
+        {
+          "t": 57.96,
+          "msg": "[deep link /postdose fresh] no 'No trial yet' empty state",
+          "shot": "docs/testing/screenshots/preview-J11-9.png",
+          "url": "https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Fparallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app%252Fpostdose%26nonce%3D92969abe67425939520005ae8648e734575b3b31ee466d1a75909743b3db4e70"
+        },
+        {
+          "t": 59.7,
+          "msg": "[unknown path] not redirected to / (at https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Fparallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app%252Fno-such-page%26nonce%3D92969abe67425939520005ae8648e734575b3b31ee466d1a75909743b3db4e70)",
+          "shot": "docs/testing/screenshots/preview-J11-10.png",
+          "url": "https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Fparallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app%252Fno-such-page%26nonce%3D92969abe67425939520005ae8648e734575b3b31ee466d1a75909743b3db4e70"
+        }
+      ],
+      "notes": [
+        "trial T-133505-863e at D+6 / 90"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 126,
+      "toasts": [],
+      "shots": [
+        "docs/testing/screenshots/preview-J11-1.png ([reload /] day changed 'D+6 / 90' -> 'D+)",
+        "docs/testing/screenshots/preview-J11-2.png ([reload /predose] day changed 'D+6 / 90')",
+        "docs/testing/screenshots/preview-J11-3.png ([reload /portal] day changed 'D+6 / 90' )",
+        "docs/testing/screenshots/preview-J11-4.png ([reload /dosing] day changed 'D+6 / 90' )",
+        "docs/testing/screenshots/preview-J11-5.png ([reload /postdose] day changed 'D+6 / 90)",
+        "docs/testing/screenshots/preview-J11-6.png ([deep link /predose fresh] no 'No trial )",
+        "docs/testing/screenshots/preview-J11-7.png ([deep link /portal fresh] no 'No trial y)",
+        "docs/testing/screenshots/preview-J11-8.png ([deep link /dosing fresh] no 'No trial y)",
+        "docs/testing/screenshots/preview-J11-9.png ([deep link /postdose fresh] no 'No trial)",
+        "docs/testing/screenshots/preview-J11-10.png ([unknown path] not redirected to / (at h)"
+      ]
+    },
+    {
+      "id": "J13",
+      "title": "Play for 2 minutes under polling load; step 30 days at once",
+      "env": "preview-j11-15",
+      "base_url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app",
+      "passed": false,
+      "error": null,
+      "duration_s": 125.5,
+      "timings": {
+        "create_trial": 0.81,
+        "play_2min_step_calls": 92,
+        "step_p50_ms": 381,
+        "step_max_ms": 1519,
+        "api_step_30_s": 0.27,
+        "api_step_31_s": 0.07
+      },
+      "failures": [
+        {
+          "t": 122.75,
+          "msg": "play stopped early at day -1: toasts ['TRIAL T-133703-94B6 CREATED', 'TRIAL CLOSED \u00b7 REPORT SIGNED BY DEMO REVIEWER (AUTO-APPROVE ON)', 'TRIAL T-133803-FDD7 CREATED']",
+          "shot": "docs/testing/screenshots/preview-J13-1.png",
+          "url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app/"
+        },
+        {
+          "t": 123.16,
+          "msg": "step 30 days failed: HTTP 401 {\"access\":\"vercel curl <deployment-url>\",\"mcp\":\"With an authorized Vercel MCP connection (https:\\/\\/mcp.vercel.com), call web_fetch_vercel_url with url set to the full deployment URL.\",\"protection\":{\"",
+          "shot": "docs/testing/screenshots/preview-J13-2.png",
+          "url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app/"
+        },
+        {
+          "t": 123.35,
+          "msg": "step 31 days failed: HTTP 401 {\"access\":\"vercel curl <deployment-url>\",\"mcp\":\"With an authorized Vercel MCP connection (https:\\/\\/mcp.vercel.com), call web_fetch_vercel_url with url set to the full deployment URL.\",\"protection\":{\"",
+          "shot": "docs/testing/screenshots/preview-J13-3.png",
+          "url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app/"
+        }
+      ],
+      "notes": [
+        "2 minutes: 3 trials, 182 simulated days, 92 step calls, step latency ms p50=381 max=1519",
+        "step 30 days: HTTP 401 in 0.27s, day now None",
+        "step 31 days: HTTP 401 in 0.07s, day now None"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 605,
+      "toasts": [],
+      "shots": [
+        "docs/testing/screenshots/preview-J13-1.png (play stopped early at day -1: toasts ['T)",
+        "docs/testing/screenshots/preview-J13-2.png (step 30 days failed: HTTP 401 {\"access\":)",
+        "docs/testing/screenshots/preview-J13-3.png (step 31 days failed: HTTP 401 {\"access\":)"
+      ]
+    },
+    {
+      "id": "J14",
+      "title": "Gemini off (local) / on (production): dock pill matches /api/health",
+      "env": "preview-j11-15",
+      "base_url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app",
+      "passed": false,
+      "error": null,
+      "duration_s": 6.6,
+      "timings": {
+        "create_trial": 0.82
+      },
+      "failures": [
+        {
+          "t": 0.7,
+          "msg": "/api/health HTTP 401",
+          "shot": "docs/testing/screenshots/preview-J14-1.png",
+          "url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app/"
+        },
+        {
+          "t": 3.83,
+          "msg": "dock says 'GEMINI ON' but /api/health gemini=False",
+          "shot": "docs/testing/screenshots/preview-J14-2.png",
+          "url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app/"
+        }
+      ],
+      "notes": [
+        "health gemini=False",
+        "dock pill: 'GEMINI ON'"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 17,
+      "toasts": [
+        "SCREENED \u00b7 PORTAL-0001 \u00b7 ELIGIBLE"
+      ],
+      "shots": [
+        "docs/testing/screenshots/preview-J14-1.png (/api/health HTTP 401)",
+        "docs/testing/screenshots/preview-J14-2.png (dock says 'GEMINI ON' but /api/health ge)"
+      ]
+    },
+    {
+      "id": "J15",
+      "title": "Every nav link, including Evidence engine",
+      "env": "preview-j11-15",
+      "base_url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app",
+      "passed": false,
+      "error": null,
+      "duration_s": 9.0,
+      "timings": {
+        "create_trial": 0.83
+      },
+      "failures": [
+        {
+          "t": 8.91,
+          "msg": "Evidence engine link points at http://localhost:8501, which only works on the developer's machine",
+          "shot": "docs/testing/screenshots/preview-J15-1.png",
+          "url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app/dosing"
+        },
+        {
+          "t": 8.98,
+          "msg": "Evidence engine tab did not load (url chrome-error://chromewebdata/, title '')",
+          "shot": "docs/testing/screenshots/preview-J15-2.png",
+          "url": "chrome-error://chromewebdata/"
+        }
+      ],
+      "notes": [
+        "Evidence engine href: http://localhost:8501",
+        "Evidence engine tab url after click: chrome-error://chromewebdata/"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 32,
+      "toasts": [],
+      "shots": [
+        "docs/testing/screenshots/preview-J15-1.png (Evidence engine link points at http://lo)",
+        "docs/testing/screenshots/preview-J15-2.png (Evidence engine tab did not load (url ch)"
+      ]
+    }
+  ]
+}

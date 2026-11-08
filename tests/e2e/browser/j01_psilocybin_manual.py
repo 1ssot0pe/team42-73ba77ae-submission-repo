@@ -1,3 +1,4 @@
+import time
 """J1: psilocybin example with manual approvals, from creation to a signed FDA blinding report."""
 from harness import JourneyAbort, copy_checks, create_trial, day_number, decide, ensure_running, fresh, heading_text, \
     now_line, play, slips
@@ -23,7 +24,10 @@ def run(j):
     err = decide(j, "confirm shortlist")
     j.check(err is None, f"approve clinician shortlist: {err}")
     ensure_running(j, "after the shortlist")
-    p.wait_for_timeout(800)
+    # the header follows the next state refresh: ~0.1 s locally, up to ~1 s on Vercel
+    t0 = time.time()
+    while "Waiting" in now_line(p) and time.time() - t0 < 8:
+        p.wait_for_timeout(250)
     j.check("Waiting" not in now_line(p), f"still blocked after the shortlist: {now_line(p)!r}")
 
     with j.timed("play_to_drift"):
@@ -47,6 +51,9 @@ def run(j):
     ensure_running(j, "while playing to close")
     h = heading_text(p)
     j.check("90" in h and day_number(p) == 90, f"play did not reach day 90 (heading {h!r}, play ended: {r})")
+    t0 = time.time()
+    while slips(p, "Sign off the FDA blinding report").count() == 0 and time.time() - t0 < 8:
+        p.wait_for_timeout(250)
     j.check(slips(p, "Sign off the FDA blinding report").count() == 1, "no FDA report sign-off slip at close")
     err = decide(j, "Sign off the FDA blinding report")
     j.check(err is None, f"sign the FDA report: {err}")

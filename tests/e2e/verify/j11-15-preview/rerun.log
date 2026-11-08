@@ -1,0 +1,93 @@
+== J11-fixed Refresh mid-trial on each page; second tab; deep links [preview-j11-15]
+    note J11-fixed: trial T-133840-d26c at D+13 / 90
+   -> PASS in 53.8s, 0 failures, 0 console errors, 0 network failures
+{
+ "passed": true,
+ "failures": [],
+ "notes": [
+  "trial T-133840-d26c at D+13 / 90"
+ ],
+ "console_errors": [],
+ "network_failures": []
+}
+== J12 Dark mode and 390 px width on every page [preview-j11-15]
+    FAIL J12: [/ 390 dark] stray 'UNBLIND' in UI text: ['Waiting for a human: Protocol fix: Move outcome raters to central, remote, blinded assessment; Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters; Protocol fix: Measure expectancy before randomisation and at end of treatment; Protocol fix: Use a low dose of the same drug as comparator; Protocol fix: Stratify randomisation by prior psychedelic use; Clinician: confirm shortlist of 49 eligible applicants and review 56 flagged', 'BLINDING ROWS EXPORTED IN UNBLIND-BLIND-1', 'Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters', 'asked a human to approve: Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters']
+    FAIL J12: [/ 390 dark] 1 low-contrast text items on glass: 'Play' 3.95:1 in .mc-dock.glass--float
+    FAIL J12: [/predose 390 dark] stray 'UNBLIND' in UI text: ['Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters', "Blinding integrity: participants and raters complete the UNBLIND-BLIND-1 guess item (drug, control, don't know) with confidence (0 to 100) after dosing and at weeks 1, 3 and 6. Blinding indices (Bang) are monitored per site and per rater during the trial, and a drift alert triggers a documented human decision.", 'The measurement planner builds the UNBLIND-BLIND-1 schedule once a clinician approves the shortlist.', 'asked a human to approve: Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters']
+    FAIL J12: [/dosing 390 dark] stray 'UNBLIND' in UI text: ['Day -1 of 90, phase recruitment. Blocked: Waiting for a human: Protocol fix: Move outcome raters to central, remote, blinded assessment; Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters; Protocol fix: Measure expectancy before randomisation and at end of treatment; Protocol fix: Use a low dose of the same drug as comparator; Protocol fix: Stratify randomisation by prior psychedelic use; Clinician: confirm shortlist of 49 eligible applicants and review 56 flagged']
+    FAIL J12: [/postdose 390 dark] stray 'UNBLIND' in UI text: ['Day -1 of 90, phase recruitment. Blocked: Waiting for a human: Protocol fix: Move outcome raters to central, remote, blinded assessment; Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters; Protocol fix: Measure expectancy before randomisation and at end of treatment; Protocol fix: Use a low dose of the same drug as comparator; Protocol fix: Stratify randomisation by prior psychedelic use; Clinician: confirm shortlist of 49 eligible applicants and review 56 flagged', 'One standard instrument set (UNBLIND-BLIND-1) at fixed timepoints for every trial, exported in one harmonised schema.', 'BLINDING ROWS EXPORTED IN UNBLIND-BLIND-1', 'Blinding rows exported in UNBLIND-BLIND-1']
+   -> FAIL in 27.9s, 5 failures, 0 console errors, 0 network failures
+{
+ "passed": false,
+ "failures": [
+  {
+   "t": 8.45,
+   "msg": "[/ 390 dark] stray 'UNBLIND' in UI text: ['Waiting for a human: Protocol fix: Move outcome raters to central, remote, blinded assessment; Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters; Protocol fix: Measure expectancy before randomisation and at end of treatment; Protocol fix: Use a low dose of the same drug as comparator; Protocol fix: Stratify randomisation by prior psychedelic use; Clinician: confirm shortlist of 49 eligible applicants and review 56 flagged', 'BLINDING ROWS EXPORTED IN UNBLIND-BLIND-1', 'Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters', 'asked a human to approve: Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters']",
+   "shot": "",
+   "url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app/"
+  },
+  {
+   "t": 8.8,
+   "msg": "[/ 390 dark] 1 low-contrast text items on glass: 'Play' 3.95:1 in .mc-dock.glass--float",
+   "shot": "docs/testing/screenshots/preview-J12-1.png",
+   "url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app/"
+  },
+  {
+   "t": 13.19,
+   "msg": "[/predose 390 dark] stray 'UNBLIND' in UI text: ['Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters', \"Blinding integrity: participants and raters complete the UNBLIND-BLIND-1 guess item (drug, control, don't know) with confidence (0 to 100) after dosing and at weeks 1, 3 and 6. Blinding indices (Bang) are monitored per site and per rater during the trial, and a drift alert triggers a documented human decision.\", 'The measurement planner builds the UNBLIND-BLIND-1 schedule once a clinician approves the shortlist.', 'asked a human to approve: Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters']",
+   "shot": "",
+   "url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app/predose"
+  },
+  {
+   "t": 20.23,
+   "msg": "[/dosing 390 dark] stray 'UNBLIND' in UI text: ['Day -1 of 90, phase recruitment. Blocked: Waiting for a human: Protocol fix: Move outcome raters to central, remote, blinded assessment; Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters; Protocol fix: Measure expectancy before randomisation and at end of treatment; Protocol fix: Use a low dose of the same drug as comparator; Protocol fix: Stratify randomisation by prior psychedelic use; Clinician: confirm shortlist of 49 eligible applicants and review 56 flagged']",
+   "shot": "",
+   "url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app/dosing"
+  },
+  {
+   "t": 23.98,
+   "msg": "[/postdose 390 dark] stray 'UNBLIND' in UI text: ['Day -1 of 90, phase recruitment. Blocked: Waiting for a human: Protocol fix: Move outcome raters to central, remote, blinded assessment; Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters; Protocol fix: Measure expectancy before randomisation and at end of treatment; Protocol fix: Use a low dose of the same drug as comparator; Protocol fix: Stratify randomisation by prior psychedelic use; Clinician: confirm shortlist of 49 eligible applicants and review 56 flagged', 'One standard instrument set (UNBLIND-BLIND-1) at fixed timepoints for every trial, exported in one harmonised schema.', 'BLINDING ROWS EXPORTED IN UNBLIND-BLIND-1', 'Blinding rows exported in UNBLIND-BLIND-1']",
+   "shot": "",
+   "url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app/postdose"
+  }
+ ],
+ "notes": [],
+ "console_errors": [],
+ "network_failures": []
+}
+== J13-play Preview: Play 2 min (no backend kill), 30-day API steps, 404 count [preview-j11-15]
+    note J13-play: play: 3 trials, 214 days, step calls 107, stalls 0, lost 0; API statuses {200: 686}
+    note J13-play: API step 30 days: HTTP 200 in 1.70s, day now 61
+    note J13-play: API step 30 days: HTTP 200 in 0.55s, day now 90
+    note J13-play: API step 31 days: HTTP 200 in 0.40s, day now 90
+   -> PASS in 127.2s, 0 failures, 2 console errors, 2 network failures
+{
+  "passed": true,
+  "timings": {
+    "create_trial": 0.82,
+    "play_trials": 3,
+    "play_days": 214,
+    "step_calls": 107,
+    "step_p50_ms": 348,
+    "step_p90_ms": 553,
+    "step_p95_ms": 591,
+    "step_max_ms": 863,
+    "stalls": 0,
+    "api_status_counts": {
+      "200": 686
+    },
+    "trial_404s": 0,
+    "api_step_s": [
+      1.7,
+      0.55,
+      0.4
+    ]
+  },
+  "failures": [],
+  "notes": [
+    "play: 3 trials, 214 days, step calls 107, stalls 0, lost 0; API statuses {200: 686}",
+    "API step 30 days: HTTP 200 in 1.70s, day now 61",
+    "API step 30 days: HTTP 200 in 0.55s, day now 90",
+    "API step 31 days: HTTP 200 in 0.40s, day now 90"
+  ]
+}

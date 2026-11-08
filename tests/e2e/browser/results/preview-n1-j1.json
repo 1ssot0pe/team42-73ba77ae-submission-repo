@@ -1,0 +1,58 @@
+{
+  "base_url": "https://parallax-423oj7mbm-dannybudiada-7381s-projects.vercel.app",
+  "env": "preview-n1-j1",
+  "at": "2026-11-08 13:54:35",
+  "results": [
+    {
+      "id": "J1",
+      "title": "Psilocybin, manual approvals: 2 fixes, shortlist, drift action, amendment, FDA report",
+      "env": "preview-n1-j1",
+      "base_url": "https://parallax-423oj7mbm-dannybudiada-7381s-projects.vercel.app",
+      "passed": false,
+      "error": null,
+      "duration_s": 119.9,
+      "timings": {
+        "create_trial": 0.83,
+        "decide:^Protocol fix.*guess questionn": 0.99,
+        "decide:^Protocol fix.*expectancy": 0.73,
+        "decide:confirm shortlist": 1.43,
+        "play_to_drift": 66.68,
+        "decide:raters to remote": 1.69,
+        "play_to_amendment": 4.0,
+        "decide:permanent": 1.18,
+        "play_to_close": 34.53,
+        "decide:Sign off the FDA blinding repo": 0.68
+      },
+      "failures": [
+        {
+          "t": 119.82,
+          "msg": "[mission control at close] stray 'UNBLIND' in UI text: ['BLINDING ROWS EXPORTED IN UNBLIND-BLIND-1', 'Release the UNBLIND-BLIND-1 harmonised export', 'Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters', 'Prepared the UNBLIND-BLIND-1 export (357 rows) and asked a human to approve its release.']",
+          "shot": "",
+          "url": "https://parallax-423oj7mbm-dannybudiada-7381s-projects.vercel.app/"
+        }
+      ],
+      "notes": [
+        "trial T-135237-eb8f",
+        "drift action slip at day 47"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 330,
+      "toasts": [
+        "TRIAL T-135237-EB8F CREATED",
+        "APPROVED \u00b7 PROTOCOL FIX: ADD THE UNBLIND-BLIND-1 GUESS QUESTIONNAIRE FOR PARTICIPANTS AND RATERS",
+        "APPROVED \u00b7 PROTOCOL FIX: MEASURE EXPECTANCY BEFORE RANDOMISATION AND AT END OF TREATMENT",
+        "APPROVED \u00b7 CLINICIAN: CONFIRM SHORTLIST OF 49 ELIGIBLE APPLICANTS AND REVIEW 56 FLAGGED",
+        "APPROVED \u00b7 MOVE SITE B RATERS TO REMOTE (CENTRAL) ASSESSMENT",
+        "APPROVED \u00b7 MAKE REMOTE CENTRAL RATERS PERMANENT AT EVERY SITE (AFTER DRIFT AT SITE B (MANCHESTER))",
+        "TRIAL CLOSED \u00b7 FDA BLINDING REPORT WAITING",
+        "APPROVED \u00b7 SIGN OFF THE FDA BLINDING REPORT"
+      ],
+      "shots": [
+        "docs/testing/screenshots/preview-n1-J1-1.png (closed and signed)"
+      ]
+    }
+  ]
+}
