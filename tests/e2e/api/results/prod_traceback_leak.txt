@@ -1,0 +1,12 @@
+trial T-125057-4920
+apply -> {'ok': False, 'error': 'module action failed; see timeline'}
+predose raised OverflowError: cannot convert float infinity to integer
+data: Traceback (most recent call last):
+  File "/var/task/unblind/platform/master/orchestrator.py", line 81, in _safe
+    return fn(*a)
+           ^^^^^^
+  File "/var/task/unblind/platform/predose/module.py", line 330, in handle
+    a[k] = int(float(a[k]))
+           ^^^^^^^^^^^^^^^^
+OverflowError: cannot convert float infinity to integer
+

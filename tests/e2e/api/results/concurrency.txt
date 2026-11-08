@@ -1,0 +1,3 @@
+parallel results: {('decide', 404): 1, ('decide', 200): 5, ('decide-dup', 404): 6, ('step', 200): 16, ('record', 200): 16, ('trials', 200): 16}
+each original approval decided once: False events for 'approved:' 5
+RSS before 78 MB; after creating 40 trials 119 MB; after running them to day 90 158 MB => ~2.0 MB per closed trial; trials held 42; GET /api/trials 19651 bytes in 1.8 ms

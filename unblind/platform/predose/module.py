@@ -328,7 +328,7 @@ class Module(BaseModule):
                     if isinstance(a[k], bool):
                         raise ValueError
                     a[k] = int(float(a[k]))
-                except (TypeError, ValueError):
+                except (TypeError, ValueError, OverflowError):     # OverflowError: "1e400" is float inf
                     return {"ok": False, "error": f"'{k}' must be a whole number"}
             n = sum(1 for x in rec["applicants"] if x.get("source") == "portal") + 1
             a["id"] = f"PORTAL-{n:04d}"       # ids are always assigned here; any client id is ignored

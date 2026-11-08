@@ -1,0 +1,3 @@
+view nosuch 200 {"error":"unknown module nosuch"}
+dosing/nosuch 200 {"result":{"ok":false,"error":"dosing has no action 'nosuch'"},"state":{"trial_i
+events total 13 limit=0 -> 13

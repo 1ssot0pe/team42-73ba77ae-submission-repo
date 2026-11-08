@@ -1,0 +1,20 @@
+{
+ "base": "https://parallax-two-tau.vercel.app",
+ "at": "2026-11-08 12:46:47",
+ "cold": {
+  "ms": 313,
+  "status": 200,
+  "headers": {
+   "Age": "0",
+   "Cache-Control": "public, max-age=0, must-revalidate",
+   "Server": "Vercel",
+   "X-Vercel-Cache": "MISS",
+   "X-Vercel-Id": "lhr1::iad1::lsdfw-1794142007894-f8e1cf0cae2f"
+  },
+  "instance_trials": 3,
+  "gemini": true,
+  "at": "12:46:47"
+ },
+ "latency": [],
+ "status_counts": {}
+}

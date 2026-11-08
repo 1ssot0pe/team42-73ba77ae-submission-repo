@@ -1,0 +1,118 @@
+{
+ "B_direct": {
+  "n": 5,
+  "failed": 5,
+  "by_backend": {
+   "direct": {
+    "404": 5
+   }
+  },
+  "log": [
+   {
+    "method": "GET",
+    "path": "/api/trials/T-124433-79dd/state",
+    "status": 404,
+    "ms": 6.0,
+    "bytes": 70,
+    "backend": null,
+    "vercel_id": null
+   },
+   {
+    "method": "GET",
+    "path": "/api/trials/T-124433-79dd/approvals",
+    "status": 404,
+    "ms": 2.2,
+    "bytes": 70,
+    "backend": null,
+    "vercel_id": null
+   },
+   {
+    "method": "GET",
+    "path": "/api/trials/T-124433-79dd/events",
+    "status": 404,
+    "ms": 3.0,
+    "bytes": 70,
+    "backend": null,
+    "vercel_id": null
+   },
+   {
+    "method": "GET",
+    "path": "/api/trials/T-124433-79dd/record?sections=enrolled",
+    "status": 404,
+    "ms": 2.0,
+    "bytes": 70,
+    "backend": null,
+    "vercel_id": null
+   },
+   {
+    "method": "POST",
+    "path": "/api/trials/T-124433-79dd/step",
+    "status": 404,
+    "ms": 1.7,
+    "bytes": 70,
+    "backend": null,
+    "vercel_id": null
+   }
+  ]
+ },
+ "proxy": {
+  "n": 5,
+  "failed": 5,
+  "by_backend": {
+   "127.0.0.1:8001": {
+    "502": 3
+   },
+   "127.0.0.1:8002": {
+    "404": 2
+   }
+  },
+  "log": [
+   {
+    "method": "GET",
+    "path": "/api/trials/T-124433-79dd/state",
+    "status": 502,
+    "ms": 2.1,
+    "bytes": 58,
+    "backend": "127.0.0.1:8001",
+    "vercel_id": null
+   },
+   {
+    "method": "GET",
+    "path": "/api/trials/T-124433-79dd/approvals",
+    "status": 404,
+    "ms": 2.6,
+    "bytes": 70,
+    "backend": "127.0.0.1:8002",
+    "vercel_id": null
+   },
+   {
+    "method": "GET",
+    "path": "/api/trials/T-124433-79dd/events",
+    "status": 502,
+    "ms": 1.2,
+    "bytes": 58,
+    "backend": "127.0.0.1:8001",
+    "vercel_id": null
+   },
+   {
+    "method": "GET",
+    "path": "/api/trials/T-124433-79dd/record?sections=enrolled",
+    "status": 404,
+    "ms": 2.2,
+    "bytes": 70,
+    "backend": "127.0.0.1:8002",
+    "vercel_id": null
+   },
+   {
+    "method": "POST",
+    "path": "/api/trials/T-124433-79dd/step",
+    "status": 502,
+    "ms": 1.0,
+    "bytes": 58,
+    "backend": "127.0.0.1:8001",
+    "vercel_id": null
+   }
+  ]
+ },
+ "trial": "T-124433-79dd"
+}

@@ -1,0 +1,205 @@
+PASS health -> 200
+PASS bottlenecks -> 200
+PASS protocols -> 200
+PASS protocols/{name} valid -> 200
+PASS protocols traversal nope.md -> 404
+PASS protocols traversal ..%2F..%2Fbackend%2Fmain.py -> 404
+PASS protocols traversal %2E%2E%2F%2E%2E%2FREADME.md -> 404
+PASS protocols traversal ..%2Fbottlenecks.json -> 404
+PASS protocols traversal %2Fetc%2Fpasswd -> 404
+PASS protocols traversal ..%5C..%5CREADME.md -> 404
+PASS protocols traversal %2E -> 404
+PASS protocols traversal %2E%2E -> 404
+PASS protocols traversal ....%2F%2F....%2F%2FREADME.md -> 404
+PASS create bad json -> 422
+PASS create n_applicants=5 -> 422
+PASS create n_applicants=5000 -> 422
+PASS create seed='abc' -> 422
+PASS create example unknown -> 404
+PASS create example traversal -> 404
+PASS create with no protocol at all -> 200
+PASS create garbage protocol -> 200
+PASS unknown trial GET state -> 404
+PASS unknown trial POST step -> 404
+PASS unknown trial POST auto_approve -> 404
+PASS unknown trial GET record -> 404
+PASS unknown trial GET events -> 404
+PASS unknown trial GET approvals -> 404
+PASS unknown trial POST approvals/abc -> 404
+PASS unknown trial GET kpis -> 404
+PASS unknown trial GET messages -> 404
+PASS unknown trial GET modules/dosing/view -> 404
+PASS unknown trial POST modules/dosing/actions/checkin -> 404
+PASS create psilocybin -> 200
+PASS list trials -> 200
+PASS state -> 200
+PASS step while blocked -> 200
+PASS step days='abc' -> 422
+PASS step no body -> 422
+PASS approvals pending -> 200
+PASS approvals all -> 200
+PASS approvals status=bogus -> 200
+PASS decide bad decision -> 400
+PASS decide decision 'Approved' (case) -> 400
+PASS decide empty reviewer -> 400
+PASS decide whitespace reviewer -> 400
+PASS decide missing reviewer field -> 422
+PASS decide reviewer=null -> 422
+PASS decide unknown aid -> 404
+PASS decide ok -> 200
+PASS decide already decided -> 404
+PASS view predose day -1 -> 200
+PASS view dosing day -1 -> 200
+PASS view postdose day -1 -> 200
+FAIL view unknown module -> 4xx  :: 200 {"error":"unknown module nosuch"}
+FAIL action unknown module -> 4xx  :: 200 {"result":{"ok":false,"error":"unknown module nosuch"},"state":{"trial_id":"T-124338-bd5f","synthetic":true,"day":-1,"phase":"recruitment","close_day"
+FAIL action predose/nosuch -> 4xx  :: 200 {"result":{"ok":false,"error":"predose has no action 'nosuch'"},"state":{"trial_id":"T-124338-bd5f","synthetic":true,"day":-1,"phase":"recruitment","c
+FAIL action dosing/nosuch -> 4xx  :: 200 {"result":{"ok":false,"error":"dosing has no action 'nosuch'"},"state":{"trial_id":"T-124338-bd5f","synthetic":true,"day":-1,"phase":"recruitment","cl
+FAIL action postdose/nosuch -> 4xx  :: 200 {"result":{"ok":false,"error":"postdose has no action 'nosuch'"},"state":{"trial_id":"T-124338-bd5f","synthetic":true,"day":-1,"phase":"recruitment","
+PASS action body payload not a dict -> 422
+PASS action no body -> 422
+PASS predose recheck before enrolment (applies) -> 200
+PASS predose recheck empty -> 200
+PASS predose apply valid -> 200
+PASS predose apply age='abc' -> 200
+PASS predose apply age='1e400' (overflow) -> 200
+FAIL predose apply age=1e400 gives a field error, not a generic failure  :: {"result":{"ok":false,"error":"module action failed; see timeline"},"state":{"trial_id":"T-124338-bd5f","synthetic":true,"day":-1,"phase":"recruitment","close_day":90,"primary_lock_day":null,"module_s
+PASS predose apply applicant=list -> 200
+PASS dosing checkin before enrolment -> 200
+PASS postdose draft_report before lock -> 200
+PASS postdose sign_off no reviewer -> 200
+PASS postdose ask_question empty -> 200
+PASS events default -> 200
+FAIL events limit=0 returns no rows  :: limit=0 returned 27 of 27 rows
+FAIL events limit=-1 is rejected or empty  :: limit=-1 returned 26 of 27 rows
+PASS events limit=abc -> 422
+PASS events since=5 -> 200
+PASS events module=predose -> 200
+PASS record all -> 200
+PASS record sections=protocol,kpis -> 200
+PASS record sections=bogus,events -> 200
+PASS kpis -> 200
+PASS messages -> 200
+PASS auto_approve on=abc -> 422
+PASS auto_approve on=false -> 200
+PASS enrolled after approving setup
+PASS step 1 -> 200
+PASS predose recheck after enrolment (approval) -> 200
+PASS dosing checkin valid -> 200
+PASS dosing checkin free text -> 200
+PASS dosing checkin incomplete -> 200
+PASS dosing checkin confidence='abc' -> 200
+PASS dosing checkin guess='banana' -> 200
+PASS step days=0 clamps (advanced 1)
+PASS step days=-5 clamps (advanced 1)
+PASS step days=1000 clamps (advanced 30)
+PASS postdose ask_question -> 200
+PASS postdose request_export -> 200
+PASS postdose draft_report after lock? -> 200
+PASS trial closed at day 90
+PASS step after close -> 200
+PASS postdose sign_off after close (nothing pending) -> 200
+FAIL n_applicants=2000 at day 90: GET record under 1 MB  :: record_all 2125690 bytes
+PASS privacy: no '_' keys or participant arm at any depth
+PASS no response over 1 MB
+
+95 passed, 9 failed
+sizes (bytes): {
+ "0": {
+  "state": 462,
+  "record_all": 544978,
+  "events_default": 10709,
+  "events_all": 10709,
+  "approvals_all": 11337,
+  "kpis": 3037,
+  "messages": 13030,
+  "view_predose": 2473,
+  "view_dosing": 6047,
+  "view_postdose": 2742
+ },
+ "45": {
+  "state": 467,
+  "record_all": 772347,
+  "events_default": 78952,
+  "events_all": 78952,
+  "approvals_all": 17646,
+  "kpis": 3047,
+  "messages": 20406,
+  "view_predose": 2473,
+  "view_dosing": 28147,
+  "view_postdose": 4396
+ },
+ "90": {
+  "state": 488,
+  "record_all": 862640,
+  "events_default": 87596,
+  "events_all": 99372,
+  "approvals_all": 21249,
+  "kpis": 3412,
+  "messages": 29337,
+  "view_predose": 2473,
+  "view_dosing": 39872,
+  "view_postdose": 19067
+ },
+ "90_n2000": {
+  "state": 530,
+  "record_all": 2125690,
+  "events_default": 87536,
+  "events_all": 103409,
+  "approvals_all": 25414,
+  "kpis": 3418,
+  "messages": 37466,
+  "view_predose": 2480,
+  "view_dosing": 41024,
+  "view_postdose": 19668
+ }
+}
+GET /api/bottlenecks                          n=11  p50=     0.7 ms  max=     1.6 ms
+GET /api/health                               n=11  p50=     0.6 ms  max=     4.7 ms
+GET /api/protocols                            n=11  p50=     0.7 ms  max=     1.8 ms
+GET /api/protocols/{name}                     n=21  p50=     0.7 ms  max=     1.7 ms
+GET /api/trials                               n=11  p50=     0.8 ms  max=     1.3 ms
+GET /api/trials/{tid}/approvals               n=22  p50=     0.9 ms  max=     1.4 ms
+GET /api/trials/{tid}/events                  n=16  p50=     1.3 ms  max=     3.7 ms
+GET /api/trials/{tid}/kpis                    n=6   p50=     1.0 ms  max=     1.1 ms
+GET /api/trials/{tid}/messages                n=6   p50=     1.3 ms  max=     1.5 ms
+GET /api/trials/{tid}/modules/dosing/view     n=6   p50=     2.7 ms  max=     3.1 ms
+GET /api/trials/{tid}/modules/nosuch/view     n=1   p50=     0.6 ms  max=     0.6 ms
+GET /api/trials/{tid}/modules/postdose/view   n=6   p50=     1.1 ms  max=     1.2 ms
+GET /api/trials/{tid}/modules/predose/view    n=6   p50=     0.8 ms  max=     0.9 ms
+GET /api/trials/{tid}/record                  n=9   p50=    15.5 ms  max=    65.8 ms
+GET /api/trials/{tid}/state                   n=20  p50=     1.0 ms  max=     1.1 ms
+GET approvals                                 n=10  p50=     1.3 ms  max=     1.4 ms
+GET events                                    n=10  p50=     3.4 ms  max=     3.7 ms
+GET kpis                                      n=10  p50=     0.9 ms  max=     1.1 ms
+GET messages                                  n=10  p50=     1.4 ms  max=     1.5 ms
+GET record                                    n=10  p50=    25.3 ms  max=    37.0 ms
+GET state                                     n=10  p50=     0.6 ms  max=     0.9 ms
+GET view dosing                               n=10  p50=     3.0 ms  max=     3.4 ms
+GET view postdose                             n=10  p50=     1.2 ms  max=     1.4 ms
+GET view predose                              n=10  p50=     0.7 ms  max=     0.9 ms
+POST /api/trials                              n=9   p50=     0.8 ms  max=    17.6 ms
+POST /api/trials/{tid}/approvals/{aid}        n=26  p50=     6.3 ms  max=    14.2 ms
+POST /api/trials/{tid}/auto_approve           n=2   p50=     3.4 ms  max=     6.2 ms
+POST /api/trials/{tid}/modules/dosing/actions/checkin n=8   p50=     8.3 ms  max=     8.4 ms
+POST /api/trials/{tid}/modules/dosing/actions/nosuch n=1   p50=     5.9 ms  max=     5.9 ms
+POST /api/trials/{tid}/modules/nosuch/actions/x n=1   p50=     0.7 ms  max=     0.7 ms
+POST /api/trials/{tid}/modules/postdose/actions/ask_question n=2   p50=     9.4 ms  max=    12.6 ms
+POST /api/trials/{tid}/modules/postdose/actions/draft_report n=2   p50=     9.4 ms  max=    12.6 ms
+POST /api/trials/{tid}/modules/postdose/actions/nosuch n=1   p50=     5.9 ms  max=     5.9 ms
+POST /api/trials/{tid}/modules/postdose/actions/request_export n=1   p50=    13.4 ms  max=    13.4 ms
+POST /api/trials/{tid}/modules/postdose/actions/sign_off n=2   p50=     9.6 ms  max=    13.3 ms
+POST /api/trials/{tid}/modules/predose/actions/apply n=4   p50=     6.1 ms  max=     6.6 ms
+POST /api/trials/{tid}/modules/predose/actions/nosuch n=1   p50=     5.9 ms  max=     5.9 ms
+POST /api/trials/{tid}/modules/predose/actions/recheck n=3   p50=     7.0 ms  max=     8.1 ms
+POST /api/trials/{tid}/step                   n=4   p50=     0.7 ms  max=    13.6 ms
+POST step days=-5                             n=1   p50=    21.3 ms  max=    21.3 ms
+POST step days=0                              n=1   p50=    21.0 ms  max=    21.0 ms
+POST step days=1                              n=5   p50=    15.9 ms  max=    57.8 ms
+POST step days=1000                           n=1   p50=   352.2 ms  max=   352.2 ms
+POST step days=30                             n=5   p50=   694.6 ms  max=   819.9 ms
+POST step days=7                              n=3   p50=    72.7 ms  max=    81.0 ms
+POST trials (create)                          n=3   p50=    17.5 ms  max=    17.9 ms
+POST trials (n=2000)                          n=1   p50=    62.8 ms  max=    62.8 ms
+unknown trial                                 n=11  p50=     0.7 ms  max=     0.9 ms
+arm-like key paths: []

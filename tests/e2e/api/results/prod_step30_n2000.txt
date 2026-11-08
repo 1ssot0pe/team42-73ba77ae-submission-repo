@@ -1,0 +1,19 @@
+create n=2000 825.8 ms
+  miss 404 188.2 ms
+  miss 404 353.1 ms
+  miss 404 109.1 ms
+  miss 404 152.4 ms
+  miss 404 164.9 ms
+  miss 404 174.4 ms
+  miss 404 190.3 ms
+  miss 404 348.1 ms
+  miss 404 118.1 ms
+  miss 404 121.5 ms
+  miss 404 159.4 ms
+  miss 404 149.5 ms
+  miss 404 174.7 ms
+step30 5388.4 ms day 29 dosing
+step30 2758.9 ms day 59 dosing
+step30 2997.3 ms day 89 follow-up
+step30 320.5 ms day 90 closed
+record n=2000 day90 2125690 bytes 703.5 ms gzip

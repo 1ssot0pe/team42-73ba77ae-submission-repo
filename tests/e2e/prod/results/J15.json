@@ -1,0 +1,150 @@
+{
+ "journey": "J15",
+ "url": "https://parallax-two-tau.vercel.app",
+ "elapsed_s": 2.6,
+ "viewport": {
+  "width": 1440,
+  "height": 1000
+ },
+ "color_scheme": "light",
+ "api_calls": 7,
+ "trial_calls": 0,
+ "trial_404": [],
+ "trial_404_rate": null,
+ "console_errors": [],
+ "page_errors": [],
+ "failed": [],
+ "checks": [
+  {
+   "check": "nav Pre-dosing -> /predose",
+   "ok": true,
+   "detail": "https://parallax-two-tau.vercel.app/predose"
+  },
+  {
+   "check": "nav Volunteer portal -> /portal",
+   "ok": true,
+   "detail": "https://parallax-two-tau.vercel.app/portal"
+  },
+  {
+   "check": "nav Dosing -> /dosing",
+   "ok": true,
+   "detail": "https://parallax-two-tau.vercel.app/dosing"
+  },
+  {
+   "check": "nav Post-dosing -> /postdose",
+   "ok": true,
+   "detail": "https://parallax-two-tau.vercel.app/postdose"
+  },
+  {
+   "check": "nav Mission control -> /",
+   "ok": true,
+   "detail": "https://parallax-two-tau.vercel.app/"
+  },
+  {
+   "check": "Evidence engine link is reachable from production",
+   "ok": false,
+   "detail": "href=http://localhost:8501"
+  },
+  {
+   "check": "wordmark goes home",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "unknown route redirects to /",
+   "ok": true,
+   "detail": "https://parallax-two-tau.vercel.app/"
+  }
+ ],
+ "timings": {},
+ "screenshots": [
+  "docs/testing/screenshots/prod-J15-1.png FAIL Evidence engine link is reachable from production",
+  "docs/testing/screenshots/prod-J15-2.png evidence engine tab"
+ ],
+ "notes": [
+  "1.32s PASS nav Pre-dosing -> /predose https://parallax-two-tau.vercel.app/predose",
+  "1.39s PASS nav Volunteer portal -> /portal https://parallax-two-tau.vercel.app/portal",
+  "1.43s PASS nav Dosing -> /dosing https://parallax-two-tau.vercel.app/dosing",
+  "1.48s PASS nav Post-dosing -> /postdose https://parallax-two-tau.vercel.app/postdose",
+  "1.53s PASS nav Mission control -> / https://parallax-two-tau.vercel.app/",
+  "1.53s FAIL Evidence engine link is reachable from production href=http://localhost:8501",
+  "1.71s evidence engine tab url: chrome-error://chromewebdata/",
+  "1.82s PASS wordmark goes home ",
+  "2.6s PASS unknown route redirects to / https://parallax-two-tau.vercel.app/"
+ ],
+ "api_latency": {
+  "GET /api/bottlenecks": {
+   "n": 1,
+   "p50": 119,
+   "max": 119
+  },
+  "GET /api/protocols": {
+   "n": 3,
+   "p50": 110,
+   "max": 207
+  },
+  "GET /api/protocols/example_psilocybin_trd.md": {
+   "n": 3,
+   "p50": 110,
+   "max": 118
+  }
+ },
+ "api": [
+  {
+   "t": 0.64,
+   "method": "GET",
+   "path": "/api/protocols",
+   "status": 200,
+   "ms": 207,
+   "vercel_id": "lhr1::iad1::f9v6t-1794141961918-e547eadcf5e7"
+  },
+  {
+   "t": 0.76,
+   "method": "GET",
+   "path": "/api/protocols/example_psilocybin_trd.md",
+   "status": 200,
+   "ms": 118,
+   "vercel_id": "lhr1::iad1::lznx5-1794141962127-c11c914d5b98"
+  },
+  {
+   "t": 1.57,
+   "method": "GET",
+   "path": "/api/bottlenecks",
+   "status": 200,
+   "ms": 119,
+   "vercel_id": "lhr1::iad1::mgzm9-1794141962948-1403b014f1f2"
+  },
+  {
+   "t": 1.66,
+   "method": "GET",
+   "path": "/api/protocols",
+   "status": 200,
+   "ms": 110,
+   "vercel_id": "lhr1::iad1::wtjmr-1794141963038-00c67b0da1c6"
+  },
+  {
+   "t": 1.77,
+   "method": "GET",
+   "path": "/api/protocols/example_psilocybin_trd.md",
+   "status": 200,
+   "ms": 110,
+   "vercel_id": "lhr1::iad1::wtjmr-1794141963149-6e1c24f642af"
+  },
+  {
+   "t": 1.98,
+   "method": "GET",
+   "path": "/api/protocols",
+   "status": 200,
+   "ms": 109,
+   "vercel_id": "lhr1::iad1::jzm46-1794141963365-7d35e92add3f"
+  },
+  {
+   "t": 2.09,
+   "method": "GET",
+   "path": "/api/protocols/example_psilocybin_trd.md",
+   "status": 200,
+   "ms": 110,
+   "vercel_id": "lhr1::iad1::jzm46-1794141963475-1ab7dbc7d624"
+  }
+ ]
+}

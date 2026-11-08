@@ -1,0 +1,391 @@
+{
+ "n": 27,
+ "failed": 13,
+ "by_backend": {
+  "127.0.0.1:8002": {
+   "200": 14
+  },
+  "127.0.0.1:8001": {
+   "404": 13
+  }
+ },
+ "log": [
+  {
+   "method": "POST",
+   "path": "/api/trials",
+   "status": 200,
+   "ms": 42.4,
+   "bytes": 924,
+   "backend": "127.0.0.1:8002",
+   "vercel_id": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/trials/T-124429-af43/state",
+   "status": 404,
+   "ms": 1.8,
+   "bytes": 70,
+   "backend": "127.0.0.1:8001",
+   "vercel_id": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/trials/T-124429-af43/state",
+   "status": 200,
+   "ms": 1.2,
+   "bytes": 924,
+   "backend": "127.0.0.1:8002",
+   "vercel_id": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/trials/T-124429-af43/approvals",
+   "status": 404,
+   "ms": 1.1,
+   "bytes": 70,
+   "backend": "127.0.0.1:8001",
+   "vercel_id": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/trials/T-124429-af43/approvals",
+   "status": 200,
+   "ms": 1.3,
+   "bytes": 10541,
+   "backend": "127.0.0.1:8002",
+   "vercel_id": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/trials/T-124429-af43/approvals/1832ac79",
+   "status": 404,
+   "ms": 1.1,
+   "bytes": 70,
+   "backend": "127.0.0.1:8001",
+   "vercel_id": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/trials/T-124429-af43/approvals/91d2a264",
+   "status": 200,
+   "ms": 6.4,
+   "bytes": 1587,
+   "backend": "127.0.0.1:8002",
+   "vercel_id": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/trials/T-124429-af43/approvals/4497f430",
+   "status": 404,
+   "ms": 1.2,
+   "bytes": 70,
+   "backend": "127.0.0.1:8001",
+   "vercel_id": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/trials/T-124429-af43/approvals/1589d671",
+   "status": 200,
+   "ms": 6.2,
+   "bytes": 1438,
+   "backend": "127.0.0.1:8002",
+   "vercel_id": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/trials/T-124429-af43/approvals/497751e7",
+   "status": 404,
+   "ms": 1.1,
+   "bytes": 70,
+   "backend": "127.0.0.1:8001",
+   "vercel_id": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/trials/T-124429-af43/approvals/273bc98b",
+   "status": 200,
+   "ms": 8.5,
+   "bytes": 7643,
+   "backend": "127.0.0.1:8002",
+   "vercel_id": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/trials/T-124429-af43/step",
+   "status": 404,
+   "ms": 1.0,
+   "bytes": 70,
+   "backend": "127.0.0.1:8001",
+   "vercel_id": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/trials/T-124429-af43/step",
+   "status": 200,
+   "ms": 14.7,
+   "bytes": 513,
+   "backend": "127.0.0.1:8002",
+   "vercel_id": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/trials/T-124429-af43/step",
+   "status": 404,
+   "ms": 1.2,
+   "bytes": 70,
+   "backend": "127.0.0.1:8001",
+   "vercel_id": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/trials/T-124429-af43/step",
+   "status": 200,
+   "ms": 15.0,
+   "bytes": 513,
+   "backend": "127.0.0.1:8002",
+   "vercel_id": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/trials/T-124429-af43/modules/predose/view",
+   "status": 404,
+   "ms": 1.1,
+   "bytes": 70,
+   "backend": "127.0.0.1:8001",
+   "vercel_id": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/trials/T-124429-af43/modules/dosing/view",
+   "status": 200,
+   "ms": 1.5,
+   "bytes": 6583,
+   "backend": "127.0.0.1:8002",
+   "vercel_id": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/trials/T-124429-af43/modules/dosing/actions/checkin",
+   "status": 404,
+   "ms": 1.0,
+   "bytes": 70,
+   "backend": "127.0.0.1:8001",
+   "vercel_id": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/trials/T-124429-af43/modules/predose/actions/apply",
+   "status": 200,
+   "ms": 7.8,
+   "bytes": 857,
+   "backend": "127.0.0.1:8002",
+   "vercel_id": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/trials/T-124429-af43/modules/postdose/actions/ask_question",
+   "status": 404,
+   "ms": 1.1,
+   "bytes": 70,
+   "backend": "127.0.0.1:8001",
+   "vercel_id": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/trials/T-124429-af43/record",
+   "status": 200,
+   "ms": 14.8,
+   "bytes": 543183,
+   "backend": "127.0.0.1:8002",
+   "vercel_id": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/trials/T-124429-af43/events",
+   "status": 404,
+   "ms": 1.1,
+   "bytes": 70,
+   "backend": "127.0.0.1:8001",
+   "vercel_id": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/trials/T-124429-af43/kpis",
+   "status": 200,
+   "ms": 1.2,
+   "bytes": 3036,
+   "backend": "127.0.0.1:8002",
+   "vercel_id": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/trials/T-124429-af43/messages",
+   "status": 404,
+   "ms": 0.9,
+   "bytes": 70,
+   "backend": "127.0.0.1:8001",
+   "vercel_id": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/trials/T-124429-af43/auto_approve?on=true",
+   "status": 200,
+   "ms": 7.8,
+   "bytes": 461,
+   "backend": "127.0.0.1:8002",
+   "vercel_id": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/trials/T-124429-af43/step",
+   "status": 404,
+   "ms": 1.0,
+   "bytes": 70,
+   "backend": "127.0.0.1:8001",
+   "vercel_id": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/trials/T-124429-af43/state",
+   "status": 200,
+   "ms": 1.0,
+   "bytes": 461,
+   "backend": "127.0.0.1:8002",
+   "vercel_id": null
+  }
+ ],
+ "trial": "T-124429-af43",
+ "created_on": "127.0.0.1:8002",
+ "steps": [
+  {
+   "step": "state",
+   "status": 404,
+   "backend": "127.0.0.1:8001"
+  },
+  {
+   "step": "state (again)",
+   "status": 200,
+   "backend": "127.0.0.1:8002"
+  },
+  {
+   "step": "approvals",
+   "status": 404,
+   "backend": "127.0.0.1:8001"
+  },
+  {
+   "step": "approvals (again)",
+   "status": 200,
+   "backend": "127.0.0.1:8002"
+  },
+  {
+   "step": "approve 1832ac79",
+   "status": 404,
+   "backend": "127.0.0.1:8001"
+  },
+  {
+   "step": "approve 91d2a264",
+   "status": 200,
+   "backend": "127.0.0.1:8002"
+  },
+  {
+   "step": "approve 4497f430",
+   "status": 404,
+   "backend": "127.0.0.1:8001"
+  },
+  {
+   "step": "approve 1589d671",
+   "status": 200,
+   "backend": "127.0.0.1:8002"
+  },
+  {
+   "step": "approve 497751e7",
+   "status": 404,
+   "backend": "127.0.0.1:8001"
+  },
+  {
+   "step": "approve 273bc98b",
+   "status": 200,
+   "backend": "127.0.0.1:8002"
+  },
+  {
+   "step": "step 1 (#1)",
+   "status": 404,
+   "backend": "127.0.0.1:8001"
+  },
+  {
+   "step": "step 1 (#2)",
+   "status": 200,
+   "backend": "127.0.0.1:8002"
+  },
+  {
+   "step": "step 1 (#3)",
+   "status": 404,
+   "backend": "127.0.0.1:8001"
+  },
+  {
+   "step": "step 1 (#4)",
+   "status": 200,
+   "backend": "127.0.0.1:8002"
+  },
+  {
+   "step": "view predose",
+   "status": 404,
+   "backend": "127.0.0.1:8001"
+  },
+  {
+   "step": "view dosing",
+   "status": 200,
+   "backend": "127.0.0.1:8002"
+  },
+  {
+   "step": "action dosing/checkin",
+   "status": 404,
+   "backend": "127.0.0.1:8001"
+  },
+  {
+   "step": "action predose/apply",
+   "status": 200,
+   "backend": "127.0.0.1:8002"
+  },
+  {
+   "step": "action postdose/ask_question",
+   "status": 404,
+   "backend": "127.0.0.1:8001"
+  },
+  {
+   "step": "record",
+   "status": 200,
+   "backend": "127.0.0.1:8002"
+  },
+  {
+   "step": "events",
+   "status": 404,
+   "backend": "127.0.0.1:8001"
+  },
+  {
+   "step": "kpis",
+   "status": 200,
+   "backend": "127.0.0.1:8002"
+  },
+  {
+   "step": "messages",
+   "status": 404,
+   "backend": "127.0.0.1:8001"
+  },
+  {
+   "step": "auto_approve on",
+   "status": 200,
+   "backend": "127.0.0.1:8002"
+  },
+  {
+   "step": "step 30",
+   "status": 404,
+   "backend": "127.0.0.1:8001"
+  },
+  {
+   "step": "state (final)",
+   "status": 200,
+   "backend": "127.0.0.1:8002"
+  }
+ ]
+}

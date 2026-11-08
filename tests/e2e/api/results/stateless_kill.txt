@@ -1,0 +1,29 @@
+created T-124433-79dd on http://127.0.0.1:8001; stepped to day 4
+killed pid(s) [48694] on port 8001
+  B direct  GET state                      404 via B direct '{"detail":"no trial T-124433-79dd in this server session; create one"}'
+  B direct  GET approvals                  404 via B direct '{"detail":"no trial T-124433-79dd in this server session; create one"}'
+  B direct  GET events                     404 via B direct '{"detail":"no trial T-124433-79dd in this server session; create one"}'
+  B direct  GET record?sections=enrolled   404 via B direct '{"detail":"no trial T-124433-79dd in this server session; create one"}'
+  B direct  POST step                    404 via B direct '{"detail":"no trial T-124433-79dd in this server session; create one"}'
+  proxy     GET state                      502 via 127.0.0.1:8001 'backend 127.0.0.1:8001 down: [Errno 61] Connection refused'
+  proxy     GET approvals                  404 via 127.0.0.1:8002 '{"detail":"no trial T-124433-79dd in this server session; create one"}'
+  proxy     GET events                     502 via 127.0.0.1:8001 'backend 127.0.0.1:8001 down: [Errno 61] Connection refused'
+  proxy     GET record?sections=enrolled   404 via 127.0.0.1:8002 '{"detail":"no trial T-124433-79dd in this server session; create one"}'
+  proxy     POST step                    502 via 127.0.0.1:8001 'backend 127.0.0.1:8001 down: [Errno 61] Connection refused'
+
+[B direct after A died] 5 requests, 5 failed
+  direct: {404: 5}
+  FAIL GET /api/trials/T-124433-79dd/state -> 404 via None
+  FAIL GET /api/trials/T-124433-79dd/approvals -> 404 via None
+  FAIL GET /api/trials/T-124433-79dd/events -> 404 via None
+  FAIL GET /api/trials/T-124433-79dd/record?sections=enrolled -> 404 via None
+  FAIL POST /api/trials/T-124433-79dd/step -> 404 via None
+
+[proxy after A died] 5 requests, 5 failed
+  127.0.0.1:8001: {502: 3}
+  127.0.0.1:8002: {404: 2}
+  FAIL GET /api/trials/T-124433-79dd/state -> 502 via 127.0.0.1:8001
+  FAIL GET /api/trials/T-124433-79dd/approvals -> 404 via 127.0.0.1:8002
+  FAIL GET /api/trials/T-124433-79dd/events -> 502 via 127.0.0.1:8001
+  FAIL GET /api/trials/T-124433-79dd/record?sections=enrolled -> 404 via 127.0.0.1:8002
+  FAIL POST /api/trials/T-124433-79dd/step -> 502 via 127.0.0.1:8001
