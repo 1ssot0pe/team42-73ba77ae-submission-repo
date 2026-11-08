@@ -6,8 +6,10 @@
  *   signature line (required, remembered) plus an optional comment, then Approve (filled) and Reject (outline).
  *   Calls api.decide, then trial.refresh(), and shows a toast. A decided approval renders as a SignedStamp row.
  * SignedStamp props: approval (decided). "SIGNED · APPROVED · DANNY · D+3", "REJECTED", or "AUTO-APPROVED (DEMO)".
+ *   An "expired" approval (a pre-dosing fix still pending when dosing started) is not signed by anyone: it renders
+ *   as a flat neutral "EXPIRED AT ENROLMENT" tag, never as approved or pending.
  * ApprovalInbox props: module (optional filter, e.g. "predose"); title (default "Approval inbox");
- *   showSigned (default true; recent signed slips under the pending ones); signedLimit (default 6);
+ *   showSigned (default true; recent signed slips under the pending ones, then expired fixes); signedLimit (default 6);
  *   moduleTabs (default true when no module is given: filter pills by module).
  *   Refetches whenever trial.tick changes. Heading shows "N waiting for a human".
  */
@@ -23,9 +25,13 @@ import { useToast } from "./Toast";
 import { useReviewer } from "./useReviewer";
 
 const AUTO_REVIEWER = /auto-approve/i;
+/** Expired fixes are signed by "nobody (dosing started before sign-off)": never show that as a signature. */
+const NOBODY_REVIEWER = /^nobody\b/i;
+const isExpired = (a: Approval) => a.status === "expired" || NOBODY_REVIEWER.test(a.reviewer ?? "");
 
 /* ------------------------------------------------------------------ stamp */
 export function SignedStamp({ approval: a, land = false }: { approval: Approval; land?: boolean }) {
+  if (isExpired(a)) return <ExpiredStamp approval={a} />;
   const auto = AUTO_REVIEWER.test(a.reviewer ?? "");
   const day = formatDay(a.decided_day ?? a.day);
   let text: string;
@@ -44,6 +50,19 @@ export function SignedStamp({ approval: a, land = false }: { approval: Approval;
     <div className="signed">
       <span className="signed__title">{a.title}</span>
       <span className={`stamp stamp--${tone}${land ? " stamp--land" : ""}`} title={a.comment || undefined}>{text}</span>
+    </div>
+  );
+}
+
+/** A fix nobody signed before dosing started. Neutral: not approved, not rejected, not waiting. */
+export function ExpiredStamp({ approval: a }: { approval: Approval }) {
+  const day = a.decided_day !== null && a.decided_day !== undefined ? formatDay(a.decided_day) : null;
+  return (
+    <div className="signed signed--expired">
+      <span className="signed__title">{a.title}</span>
+      <span className="stamp stamp--expired" title="Dosing started before anyone signed this fix, so it was not applied.">
+        {dotJoin("Expired at enrolment", day)}
+      </span>
     </div>
   );
 }
@@ -152,11 +171,12 @@ export function ApprovalInbox({ module, title = "Approval inbox", showSigned = t
   }, [trialId, tick]);
 
   const filterMod = module ?? (tab === "all" ? undefined : tab);
-  const { pending, signed } = useMemo(() => {
+  const { pending, signed, expired } = useMemo(() => {
     const xs = (rows ?? []).filter((a) => !filterMod || a.module === filterMod);
     return {
       pending: xs.filter((a) => a.status === "pending"),
-      signed: xs.filter((a) => a.status !== "pending").reverse().slice(0, signedLimit),
+      signed: xs.filter((a) => a.status !== "pending" && !isExpired(a)).reverse().slice(0, signedLimit),
+      expired: xs.filter((a) => a.status !== "pending" && isExpired(a)).reverse(),
     };
   }, [rows, filterMod, signedLimit]);
 
@@ -192,6 +212,15 @@ export function ApprovalInbox({ module, title = "Approval inbox", showSigned = t
             <div className="inbox__signed">
               <div className="eyebrow">Recently signed</div>
               {signed.map((a) => <SignedStamp key={a.id} approval={a} />)}
+            </div>
+          ) : null}
+          {showSigned && expired.length > 0 ? (
+            <div className="inbox__signed inbox__expired">
+              <div className="eyebrow">Expired at enrolment</div>
+              <p className="t-caption c-ash">
+                Dosing started before {expired.length === 1 ? "this fix was" : "these fixes were"} signed, so {expired.length === 1 ? "it was" : "they were"} not applied. Edit the protocol to propose an amendment instead.
+              </p>
+              {expired.map((a) => <ExpiredStamp key={a.id} approval={a} />)}
             </div>
           ) : null}
         </>

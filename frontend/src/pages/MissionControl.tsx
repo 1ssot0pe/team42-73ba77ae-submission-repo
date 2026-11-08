@@ -11,6 +11,8 @@ import { AgentNetwork } from "../components/mission/AgentNetwork";
 import { ControlDock } from "../components/mission/ControlDock";
 import { MissionReadouts } from "../components/mission/MissionReadouts";
 import { PhaseTrack } from "../components/mission/PhaseTrack";
+import { ReportSeal } from "../components/mission/ReportStatus";
+import { isSigned, reportSentence } from "../components/mission/reportText";
 import { StartTrial } from "../components/mission/StartTrial";
 import { AgentLog, ApprovalInbox, Button, LoadingHairline, SpecimenBand, useToast } from "../components/shared";
 import { useTrial } from "../trial";
@@ -72,15 +74,21 @@ function Running({ state }: { state: TrialState }) {
 
   const n = state.pending_approvals;
   const deadEnd = Boolean(state.blocked) && n === 0;
+  const closed = state.phase === "closed";
+  // Once closed, the report sign-off status (when the backend sends it) beats the latest master event.
+  const closedLine = closed ? reportSentence(state) : null;
+  const report = state.report_status;
   const now = state.blocked
     ? deadEnd
       ? "Nothing to sign. Start a new trial or edit the protocol eligibility."
       : `Waiting for a human: ${n} ${n === 1 ? "decision" : "decisions"} to sign.`
-    : summary
-      ? sentence(summary.text)
-      : state.phase === "closed"
-        ? "The trial is closed. The FDA blinding report is waiting for sign-off."
-        : "The agents are at work. Press Play or step a day to move the clock.";
+    : closedLine
+      ? closedLine
+      : summary
+        ? sentence(summary.text)
+        : closed
+          ? "The trial is closed. The FDA blinding report is waiting for sign-off."
+          : "The agents are at work. Press Play or step a day to move the clock.";
 
   return (
     <>
@@ -93,6 +101,7 @@ function Running({ state }: { state: TrialState }) {
           {state.blocked ? <span className="mc-head__flag">Waiting</span> : null}
           {now}
         </p>
+        {isSigned(report) ? <div className="row"><ReportSeal report={report} className="mc-head__seal" /></div> : null}
         {deadEnd ? (
           <div className="row"><Button variant="filled" onClick={() => setTrialId(null)}>New trial</Button></div>
         ) : null}

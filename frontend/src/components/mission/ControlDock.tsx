@@ -2,7 +2,7 @@
  * ControlDock (design.md 8.4, L3 floating glass pill at the bottom centre).
  * Left: Next day, +1 week, Play / Pause (2 days every 350 ms; stops when blocked, closed, on error, on a new
  * trial or on unmount: the useRef loop from plan.md 6.2), then the Auto-approve (demo) switch.
- * Right: trial id, Gemini on/off, module real/stub status and New trial. Wraps to rows on phones.
+ * Right: FDA report status (signed seal or the server's label, from state.report_status when present), trial id, Gemini on/off, module real/stub status and New trial. Wraps to rows on phones.
  * Publishes its height as --dock-h on <html> so the page and toasts keep clear of it.
  * Props: state (TrialState).
  */
@@ -11,6 +11,8 @@ import { api, errorText } from "../../api";
 import { useTrial } from "../../trial";
 import type { StepResult, TrialState } from "../../types";
 import { Button, PlayGlyph, StatusPill, moduleLabel, useToast } from "../shared";
+import { ReportStatusChip } from "./ReportStatus";
+import { isSigned, signedText } from "./reportText";
 import { useElementSize } from "./useElementSize";
 
 const PLAY_DAYS = 2;
@@ -74,7 +76,10 @@ export function ControlDock({ state }: { state: TrialState }) {
       if (!r || !r.advanced || r.state.phase === "closed" || r.state.blocked) {
         playing.current = false;
         if (alive.current) setIsPlaying(false);
-        if (r?.state.phase === "closed") toast("Trial closed · FDA blinding report waiting", "good");
+        if (r?.state.phase === "closed") {
+          const rs = r.state.report_status;
+          toast(isSigned(rs) ? `Trial closed · ${signedText(rs)}` : "Trial closed · FDA blinding report waiting", "good");
+        }
         break;
       }
       await new Promise((res) => setTimeout(res, PLAY_MS));
@@ -132,6 +137,10 @@ export function ControlDock({ state }: { state: TrialState }) {
         </label>
         <span className="mc-dock__divider mc-dock__divider--meta" aria-hidden="true" />
         <div className="mc-dock__meta">
+          {/* "collecting" is the normal state for most of the trial: only worth a chip once the trial is closed */}
+          {state.report_status?.status === "collecting" && !closed ? null : (
+            <ReportStatusChip report={state.report_status} className="mc-dock__report" />
+          )}
           <span className="mc-dock__id" title="Trial ID">{state.trial_id}</span>
           <StatusPill tone={state.gemini ? "good" : "neutral"} title="Gemini enhancement; every agent also has a rule-based path">
             Gemini {state.gemini ? "on" : "off"}

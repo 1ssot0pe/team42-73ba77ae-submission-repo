@@ -21,7 +21,7 @@ export { ToastProvider, useToast } from "./Toast";
 export type { ToastTone } from "./Toast";
 export { EmptyState, LoadingHairline, SpecimenIcon } from "./EmptyState";
 export type { EmptyStateProps } from "./EmptyState";
-export { ApprovalSlip, ApprovalInbox, SignedStamp } from "./Approvals";
+export { ApprovalSlip, ApprovalInbox, ExpiredStamp, SignedStamp } from "./Approvals";
 export type { ApprovalSlipProps, ApprovalInboxProps } from "./Approvals";
 export { AgentLog } from "./AgentLog";
 export type { AgentLogProps } from "./AgentLog";

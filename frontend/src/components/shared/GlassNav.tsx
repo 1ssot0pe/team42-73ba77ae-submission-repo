@@ -135,7 +135,7 @@ export function GlassNav({ evidenceUrl = "http://localhost:8501" }: GlassNavProp
               <span className="nav__chip" title="Trial ID">{state.trial_id}</span>
               <span className="nav__day" title="Simulated trial day">{formatDay(state.day)} / {state.close_day}</span>
               {state.pending_approvals > 0 ? (
-                <NavLink to="/" title="Decisions waiting for a human">
+                <NavLink to="/" className="nav__sign" title="Decisions waiting for a human">
                   <StatusPill tone="watch">{state.pending_approvals} to sign</StatusPill>
                 </NavLink>
               ) : null}
