@@ -158,6 +158,19 @@ def test_one_503_on_step_retries_and_advances(page: Page):
     assert stored_id(page) == tid
 
 
+
+def test_four_502s_on_step_still_advance(page: Page):
+    """NEW-1: during a backend outage one step can hit 502 several times in a row. 502/503 mean the
+    function never ran, so the client keeps retrying (up to 5 attempts) instead of stopping Play."""
+    tid = create_trial()
+    open_trial(page, tid)
+    expect(page.locator(".mc-dock__id")).to_have_text(tid, timeout=15000)
+    seen = fail_once(page, r"/api/trials/[^/]+/step$", "POST", status=502, times=4)
+    page.get_by_role("button", name="+1 week").click()
+    expect(page.get_by_role("heading", name=re.compile(r"^Day \d+ of "))).to_be_visible(timeout=30000)
+    assert seen["failed"] == 4 and seen["passed"] == 1
+    assert stored_id(page) == tid
+
 # ------------------------------------------------------------------ (b) trial truly gone
 def test_persistent_trial_not_found_shows_lost_state_and_stops_polling(page: Page):
     tid = create_trial()

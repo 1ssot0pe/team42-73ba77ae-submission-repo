@@ -7,7 +7,8 @@
  * - every request has its own timeout (AbortController);
  * - transient failures are retried with exponential backoff and jitter (300 ms, 900 ms, 2.7 s), bounded:
  *   GETs retry on network errors, timeouts, 409, 429, 502, 503 and 504 (at most 4 attempts);
- *   POSTs retry only on network errors before a response and on 502 and 503 (at most 3 attempts);
+ *   POSTs retry only on network errors before a response and on 502 and 503 (at most 5 attempts: those
+ *   mean the function never ran, so a brief outage should not stop Play);
  *   other 4xx are never retried;
  * - at most TRIAL_SLOTS requests to /api/trials/{id}/... are in flight at once; the rest queue;
  * - a 404 meaning "this trial is not on the server" is flagged (ApiError.trialMissing) and reported to
@@ -159,7 +160,7 @@ async function request<T>(path: string, opts: Opts = {}): Promise<T> {
   const body = isGet ? undefined : JSON.stringify(opts.body ?? {});
   const timeoutMs = opts.timeoutMs ?? (isGet ? GET_TIMEOUT_MS : POST_TIMEOUT_MS);
   const limited = TRIAL_PATH.test(path);
-  const maxAttempts = isGet ? BACKOFF_MS.length + 1 : 3;
+  const maxAttempts = isGet ? BACKOFF_MS.length + 1 : 5;   // POSTs: 300, 900, 2700, 2700 ms between tries
 
   for (let n = 1; ; n++) {
     let err: ApiError;
