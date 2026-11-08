@@ -1,18 +1,18 @@
 /* Dosing charts (Builder DOSING): SiteSmallMultiples and CusumChart. Tokens only, so dark mode follows. */
 
 .dchart-grid {
-  display: grid;
-  grid-template-columns: repeat(var(--dchart-cols, 3), minmax(0, 1fr));
+  display: flex;
   gap: 16px;
   width: 100%;
   min-width: 0;
 }
 .dchart-grid--stack {
-  grid-template-columns: minmax(0, 1fr);
+  flex-direction: column;
   gap: 12px;
 }
 
 .dchart-panel {
+  flex: 1 1 0;
   min-width: 0;
 }
 .dchart-panel__title {
@@ -164,14 +164,13 @@
   stroke-width: 1.5;
 }
 .dchart-key__band {
-  fill: var(--color-spark-violet);
   fill-opacity: 0.12;
   stroke: none;
-  width: 10px;
-  height: 8px;
 }
 .dchart-key__hollow {
   fill: var(--color-eggshell);
-  stroke: var(--color-spark-violet);
   stroke-width: 1.5;
+}
+.dchart-grid--stack .dchart-panel {
+  flex: none;
 }
