@@ -1,0 +1,79 @@
+/* Generic module page (dosing, post-dosing). design.md Section 9 "Dosing and Post-dosing".
+   Tokens only: no literal colours. Sparks stay inside the charts. No glass here except the shared slips,
+   tooltip and toasts. */
+
+.mpage__head { gap: var(--space-3); }
+.mpage__head .t-display { overflow-wrap: anywhere; }
+.mpage__lede { max-width: 68ch; }
+
+/* ------------------------------------------------------------ cards (L1 sheets, status tints) */
+.mcards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: var(--space-4);
+  align-items: stretch;
+}
+.mcard {
+  background: var(--color-taupe);
+  border-radius: var(--radius-sheet);
+  padding: var(--space-5) var(--space-6);
+  display: flex; flex-direction: column; gap: var(--space-2);
+  min-width: 0;
+}
+.mcard--warn { background: var(--status-watch-bg); }
+.mcard--bad  { background: var(--status-alert-bg); }
+.mcard--good { background: var(--status-good-bg); }
+.mcard__head { display: flex; gap: var(--space-2); align-items: center; }
+.mcard__title { font: 500 16px/1.4 var(--font-body); color: var(--color-ink); overflow-wrap: anywhere; }
+.mcard--warn .mcard__title { color: var(--status-watch-fg); }
+.mcard--bad  .mcard__title { color: var(--status-alert-fg); }
+.mcard--good .mcard__title { color: var(--status-good-fg); }
+.mcard__body { font: var(--text-body-sm); letter-spacing: var(--track-body-sm); color: var(--color-graphite); max-width: 68ch; overflow-wrap: anywhere; }
+
+/* ------------------------------------------------------------ charts */
+.mcharts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 520px), 1fr));
+  gap: var(--space-4);
+  align-items: start;
+}
+.mcharts > .chart { min-width: 0; }
+.mchart__empty { font: var(--text-body-sm); color: var(--color-smoke); padding: var(--space-6) 0; }
+
+/* ------------------------------------------------------------ forms (L1b paper documents) */
+.mforms {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 560px), 1fr));
+  gap: var(--space-6);
+  align-items: start;
+}
+.mform { display: flex; flex-direction: column; gap: var(--space-6); min-width: 0; }
+.mform__head { display: flex; flex-direction: column; gap: var(--space-2); }
+.mform__title { font: var(--text-heading-sm); letter-spacing: var(--track-heading-sm); text-wrap: balance; }
+.mform__desc { font: var(--text-body-sm); color: var(--color-smoke); max-width: 68ch; }
+.mform__fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4) var(--space-5); }
+.mform__field { min-width: 0; }
+.mform__field--wide { grid-column: 1 / -1; }
+.mform__num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.mform__foot { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-3); border-top: 1px solid var(--color-stone); padding-top: var(--space-5); }
+.mform__result { font: var(--text-body-sm); letter-spacing: var(--track-body-sm); color: var(--color-graphite); display: flex; gap: var(--space-2); align-items: baseline; flex-wrap: wrap; max-width: 68ch; overflow-wrap: anywhere; }
+.mform__result-word {
+  font: var(--text-label); letter-spacing: var(--track-label); text-transform: uppercase;
+  padding: 2px var(--space-2); border-radius: var(--radius-pill); flex: none;
+}
+.mform__result--good .mform__result-word { color: var(--status-good-fg); background: var(--status-good-bg); }
+.mform__result--alert .mform__result-word { color: var(--status-alert-fg); background: var(--status-alert-bg); }
+
+/* ------------------------------------------------------------ tables */
+.mtables { display: flex; flex-direction: column; gap: var(--space-4); }
+.mtables .ledger { min-width: 0; }
+.mtables .ledger table { width: max-content; min-width: 100%; }
+.mtables .ledger td { max-width: 40ch; overflow-wrap: break-word; }
+.mtables .ledger th { white-space: nowrap; }
+.mtables .ledger td.is-num, .mtables .ledger td.is-mono { white-space: nowrap; }
+
+@media (max-width: 720px) {
+  .mform__fields { grid-template-columns: 1fr; }
+  .paper.mform { padding: var(--space-6) var(--space-5); }
+  .mcard { padding: var(--space-5); }
+}
