@@ -1,0 +1,29 @@
+{
+  "id": "J11-fixed",
+  "title": "Refresh mid-trial on each page; second tab; deep links",
+  "env": "preview-j11-15",
+  "base_url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app",
+  "passed": true,
+  "error": null,
+  "duration_s": 53.8,
+  "timings": {
+    "create_trial": 0.83,
+    "decide:confirm shortlist": 0.43,
+    "reload:/": 2.99,
+    "reload:/predose": 3.68,
+    "reload:/portal": 1.93,
+    "reload:/dosing": 2.8,
+    "reload:/postdose": 2.58
+  },
+  "failures": [],
+  "notes": [
+    "trial T-133840-d26c at D+13 / 90"
+  ],
+  "console_errors": [],
+  "console_error_count": 0,
+  "network_failures": [],
+  "network_failure_count": 0,
+  "api_calls": 135,
+  "toasts": [],
+  "shots": []
+}

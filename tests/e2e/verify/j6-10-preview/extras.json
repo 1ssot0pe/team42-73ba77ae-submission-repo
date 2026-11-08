@@ -1,0 +1,2908 @@
+{
+  "base_url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app",
+  "results": [
+    {
+      "id": "J10v",
+      "title": "J10 with case-insensitive accepted check",
+      "env": "preview-j6-10-extras",
+      "base_url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app",
+      "passed": true,
+      "error": null,
+      "duration_s": 46.5,
+      "timings": {
+        "create_trial": 0.83,
+        "decide:confirm shortlist": 0.39,
+        "ask:neutral": 0.39,
+        "ask:leading": 0.34,
+        "ask:unblinding": 0.34,
+        "ask:identifying": 0.35
+      },
+      "failures": [],
+      "notes": [
+        "before lock at day -1",
+        "[before lock] neutral: ACCEPTED No unblinding cues, leading wording, personal data, safety or consent issues found. Waiting for an ethics reviewer.",
+        "[before lock] leading: ACCEPTED Rejected: leading cannot be fixed by rewording.",
+        "[before lock] unblinding: ACCEPTED Rewrite proposed: Do you think you received the study session or the study session capsule? Waiting for an ethics reviewer.",
+        "[before lock] identifying: ACCEPTED Rejected: personal cannot be fixed by rewording.",
+        "after lock at day 73",
+        "[after lock] neutral: ACCEPTED No unblinding cues, leading wording, personal data, safety or consent issues found. Waiting for an ethics reviewer.",
+        "[after lock] leading: ACCEPTED Rejected: leading cannot be fixed by rewording.",
+        "[after lock] unblinding: ACCEPTED Rewrite proposed: Do you think you received the study session or the study session capsule? Waiting for an ethics reviewer.",
+        "[after lock] identifying: ACCEPTED Rejected: personal cannot be fixed by rewording."
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 290,
+      "toasts": [
+        "NO UNBLINDING CUES, LEADING WORDING, PERSONAL DATA, SAFETY OR CONSENT ISSUES FOUND. WAITING FOR AN ETHICS REVIEWER.",
+        "REJECTED: LEADING CANNOT BE FIXED BY REWORDING.",
+        "REWRITE PROPOSED: DO YOU THINK YOU RECEIVED THE STUDY SESSION OR THE STUDY SESSION CAPSULE? WAITING FOR AN ETHICS REVIEWER.",
+        "REJECTED: PERSONAL CANNOT BE FIXED BY REWORDING."
+      ],
+      "shots": []
+    },
+    {
+      "id": "J6x",
+      "title": "API-1 repeat applications + API-4 1e400",
+      "env": "preview-j6-10-extras",
+      "base_url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app",
+      "passed": true,
+      "error": null,
+      "duration_s": 10.5,
+      "timings": {
+        "create_trial": 0.82,
+        "apply:0": 0.35,
+        "apply:1": 0.3,
+        "apply:2": 0.31,
+        "apply:3": 0.32,
+        "apply:4": 0.35,
+        "apply:5": 0.35,
+        "apply:6": 0.35,
+        "apply:7": 0.37,
+        "apply:8": 0.31,
+        "apply:9": 0.3,
+        "apply:10": 0.28,
+        "apply:11": 0.37
+      },
+      "failures": [],
+      "notes": [
+        "apply 0: PRE-SCREENING AGENT Result ELIGIBLE PORTAL-0001 \u00b7 D\u22121 Every criterion the agent checks is met. Final eligibility is alwa",
+        "apply 1: PRE-SCREENING AGENT Result ELIGIBLE PORTAL-0002 \u00b7 D\u22121 Every criterion the agent checks is met. Final eligibility is alwa",
+        "apply 2: PRE-SCREENING AGENT Result ELIGIBLE PORTAL-0003 \u00b7 D\u22121 Every criterion the agent checks is met. Final eligibility is alwa",
+        "apply 3: PRE-SCREENING AGENT Result ELIGIBLE PORTAL-0004 \u00b7 D\u22121 Every criterion the agent checks is met. Final eligibility is alwa",
+        "apply 4: PRE-SCREENING AGENT Result ELIGIBLE PORTAL-0005 \u00b7 D\u22121 Every criterion the agent checks is met. Final eligibility is alwa",
+        "apply 5: PRE-SCREENING AGENT Result ELIGIBLE PORTAL-0006 \u00b7 D\u22121 Every criterion the agent checks is met. Final eligibility is alwa",
+        "apply 6: PRE-SCREENING AGENT Result ELIGIBLE PORTAL-0007 \u00b7 D\u22121 Every criterion the agent checks is met. Final eligibility is alwa",
+        "apply 7: PRE-SCREENING AGENT Result ELIGIBLE PORTAL-0008 \u00b7 D\u22121 Every criterion the agent checks is met. Final eligibility is alwa",
+        "apply 8: PRE-SCREENING AGENT Result ELIGIBLE PORTAL-0009 \u00b7 D\u22121 Every criterion the agent checks is met. Final eligibility is alwa",
+        "apply 9: PRE-SCREENING AGENT Result ELIGIBLE PORTAL-0010 \u00b7 D\u22121 Every criterion the agent checks is met. Final eligibility is alwa",
+        "apply 10: PRE-SCREENING AGENT Result ELIGIBLE PORTAL-0011 \u00b7 D\u22121 Every criterion the agent checks is met. Final eligibility is alwa",
+        "apply 11: PRE-SCREENING AGENT Result ELIGIBLE PORTAL-0012 \u00b7 D\u22121 Every criterion the agent checks is met. Final eligibility is alwa",
+        "1e400: inline='Enter your age as a number' result='PRE-SCREENING AGENT Result Fill in the form and press Apply. The pre-screening agent checks it against the protocol's criteria and explains its decision here. Final eligibility is always confirmed by ' toasts=['SCREENED \u00b7 PORTAL-0010 \u00b7 ELIGIBLE', 'SCREENED \u00b7 PORTAL-0011 \u00b7 ELIGIBLE', 'SCREENED \u00b7 PORTAL-0012 \u00b7 ELIGIBLE']"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 27,
+      "toasts": [
+        "TRIAL T-133751-DF02 CREATED",
+        "SCREENED \u00b7 PORTAL-0001 \u00b7 ELIGIBLE",
+        "SCREENED \u00b7 PORTAL-0002 \u00b7 ELIGIBLE",
+        "SCREENED \u00b7 PORTAL-0003 \u00b7 ELIGIBLE",
+        "SCREENED \u00b7 PORTAL-0004 \u00b7 ELIGIBLE",
+        "SCREENED \u00b7 PORTAL-0005 \u00b7 ELIGIBLE",
+        "SCREENED \u00b7 PORTAL-0006 \u00b7 ELIGIBLE",
+        "SCREENED \u00b7 PORTAL-0007 \u00b7 ELIGIBLE",
+        "SCREENED \u00b7 PORTAL-0008 \u00b7 ELIGIBLE",
+        "SCREENED \u00b7 PORTAL-0009 \u00b7 ELIGIBLE",
+        "SCREENED \u00b7 PORTAL-0010 \u00b7 ELIGIBLE",
+        "SCREENED \u00b7 PORTAL-0011 \u00b7 ELIGIBLE",
+        "SCREENED \u00b7 PORTAL-0012 \u00b7 ELIGIBLE"
+      ],
+      "shots": [
+        "docs/testing/screenshots/preview-J6x-1.png (1e400 outcome)"
+      ]
+    },
+    {
+      "id": "J7x",
+      "title": "Approval double-submit (locked mutation)",
+      "env": "preview-j6-10-extras",
+      "base_url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app",
+      "passed": true,
+      "error": null,
+      "duration_s": 8.0,
+      "timings": {
+        "create_trial": 0.82
+      },
+      "failures": [],
+      "notes": [
+        "triple-click Approve: approved toasts=['APPROVED \u00b7 CLINICIAN: CONFIRM SHORTLIST OF 49 ELIGIBLE APPLICANTS AND REVIEW 56 FLAGGED'], slip errors=[], open shortlist slips=0",
+        "state mentions 'confirm shortlist' 0 times"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 23,
+      "toasts": [
+        "TRIAL T-133802-0098 CREATED",
+        "APPROVED \u00b7 CLINICIAN: CONFIRM SHORTLIST OF 49 ELIGIBLE APPLICANTS AND REVIEW 56 FLAGGED"
+      ],
+      "shots": []
+    },
+    {
+      "id": "J8x",
+      "title": "BP-2 transient 404 + TrialLost",
+      "env": "preview-j6-10-extras",
+      "base_url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app",
+      "passed": true,
+      "error": null,
+      "duration_s": 11.9,
+      "timings": {
+        "create_trial": 0.82
+      },
+      "failures": [],
+      "notes": [
+        "injected 404s: 1; start page: False; lost: 0",
+        "TrialLost shown after 1.8s: Trial T-000000-DEAD has expired This trial is no longer on the server. Simulated trials are kept for a limited time. Start a new trial. Start a new trial",
+        "toasts: []"
+      ],
+      "console_errors": [
+        {
+          "t": 3.86,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app/"
+        },
+        {
+          "t": 9.34,
+          "text": "Failed to load resource: the server responded with a status of 404 ()",
+          "url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app/"
+        },
+        {
+          "t": 10.61,
+          "text": "Failed to load resource: the server responded with a status of 404 ()",
+          "url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app/"
+        }
+      ],
+      "console_error_count": 3,
+      "network_failures": [
+        {
+          "t": 3.86,
+          "method": "GET",
+          "url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app/api/trials/T-133810-92b3/state",
+          "status": 404,
+          "backend": null,
+          "body": "{\"detail\":\"Trial not found (injected)\"}"
+        },
+        {
+          "t": 9.34,
+          "method": "GET",
+          "url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app/api/trials/T-000000-DEAD/state",
+          "status": 404,
+          "backend": null,
+          "body": "{\"detail\":\"trial not found\"}"
+        },
+        {
+          "t": 10.61,
+          "method": "GET",
+          "url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app/api/trials/T-000000-DEAD/state",
+          "status": 404,
+          "backend": null,
+          "body": "{\"detail\":\"trial not found\"}"
+        }
+      ],
+      "network_failure_count": 3,
+      "api_calls": 26,
+      "toasts": [],
+      "shots": [
+        "docs/testing/screenshots/preview-J8x-1.png (TrialLost for unknown id)"
+      ]
+    },
+    {
+      "id": "JT",
+      "title": "Timing probe: approve + play",
+      "env": "preview-j6-10-extras",
+      "base_url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app",
+      "passed": true,
+      "error": null,
+      "duration_s": 4.8,
+      "timings": {
+        "create_trial": 0.83,
+        "decide:confirm shortlist": 0.36
+      },
+      "failures": [],
+      "notes": [
+        "play result disabled; day -1 -> -1"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 16,
+      "toasts": [
+        "TRIAL T-133823-7B9D CREATED",
+        "APPROVED \u00b7 CLINICIAN: CONFIRM SHORTLIST OF 49 ELIGIBLE APPLICANTS AND REVIEW 56 FLAGGED"
+      ],
+      "shots": []
+    }
+  ],
+  "api_timings": [
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "protocols",
+      "status": 200,
+      "ms": 117.3
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "protocols/example_psilocybin_trd.md",
+      "status": 200,
+      "ms": 163.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "protocols/example_psilocybin_trd.md",
+      "status": 200,
+      "ms": 109.4
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials",
+      "status": 200,
+      "ms": 592.7
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 233.8
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 252.2
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 225.6
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 243.9
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/state",
+      "status": 200,
+      "ms": 224.0
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 274.6
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 223.5
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 225.5
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 251.5
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 237.7
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 236.9
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/approvals/e99ce27f",
+      "status": 200,
+      "ms": 335.3
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "bottlenecks",
+      "status": 200,
+      "ms": 141.9
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 252.5
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 372.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/modules/postdose/view",
+      "status": 200,
+      "ms": 215.7
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/state",
+      "status": 200,
+      "ms": 252.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 263.6
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 306.6
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/modules/postdose/view",
+      "status": 200,
+      "ms": 297.0
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/modules/postdose/actions/ask_question",
+      "status": 200,
+      "ms": 279.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 310.7
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 316.2
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/modules/postdose/view",
+      "status": 200,
+      "ms": 256.2
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/modules/postdose/actions/ask_question",
+      "status": 200,
+      "ms": 288.7
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 218.8
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 225.9
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/modules/postdose/view",
+      "status": 200,
+      "ms": 216.6
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/modules/postdose/actions/ask_question",
+      "status": 200,
+      "ms": 299.3
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 213.2
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 301.4
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/modules/postdose/view",
+      "status": 200,
+      "ms": 228.7
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/modules/postdose/actions/ask_question",
+      "status": 200,
+      "ms": 267.7
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 247.6
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 283.8
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/state",
+      "status": 200,
+      "ms": 240.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 242.0
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 277.2
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 252.0
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 253.2
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 237.1
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 422.8
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 237.7
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 317.4
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 244.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 205.5
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 225.5
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 496.3
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 236.2
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 313.6
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 237.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 244.5
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 205.3
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 510.6
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 260.3
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 287.5
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 237.4
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 258.3
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 228.3
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 507.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 286.2
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 288.7
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 233.5
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 250.7
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 221.4
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 478.3
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 228.2
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 263.8
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 244.8
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 224.8
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 393.6
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 435.8
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 220.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 263.8
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 246.4
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 249.5
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 230.1
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 399.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 254.5
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 303.3
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 220.7
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 248.9
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 264.8
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 423.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 256.7
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 303.2
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 248.5
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 259.3
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 215.9
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 398.0
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 231.0
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 322.0
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 233.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 249.8
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 244.3
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 444.7
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 234.2
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 306.8
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 257.6
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 255.8
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 269.8
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 489.2
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 258.6
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 319.4
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 236.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 252.0
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 219.7
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 306.5
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 247.0
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 318.5
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 231.9
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 230.3
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 251.6
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 295.3
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 220.7
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 327.4
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 239.0
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 224.8
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 240.3
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 314.8
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 248.8
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 277.9
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 241.2
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 238.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 211.1
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 313.8
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 233.2
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 266.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 224.9
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 302.6
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 238.1
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 299.6
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 212.4
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 226.2
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 229.8
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 241.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 229.2
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 254.7
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 228.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 312.6
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 247.0
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 245.9
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 224.0
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 297.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 205.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 229.4
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 237.6
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 278.5
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 233.8
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 293.7
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 243.7
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 309.9
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 269.3
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 226.8
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 229.4
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 308.7
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 220.6
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 295.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 246.5
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 221.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 244.4
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 274.9
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 214.9
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 267.4
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 226.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 242.7
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 241.7
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 271.5
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 231.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 250.0
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 240.7
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 254.8
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 267.0
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 393.3
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 243.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 282.8
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 305.2
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 326.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 262.0
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 318.7
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 230.2
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 248.3
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 244.2
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 228.5
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 261.5
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 293.3
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 221.5
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 295.2
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 207.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 228.2
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 244.0
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 290.0
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 220.6
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 314.7
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 231.5
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 246.2
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 228.3
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 302.4
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 255.3
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 294.5
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 274.3
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 243.8
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 246.0
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 270.3
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 221.0
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 291.6
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 248.5
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 243.9
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 235.1
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 280.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 243.5
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 290.3
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 242.3
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 239.5
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 240.9
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 302.0
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 241.8
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 279.2
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 245.9
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 243.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 231.1
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 254.8
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 236.2
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 253.2
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 246.0
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 234.5
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 225.3
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 305.4
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 221.4
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 306.8
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 241.2
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 219.7
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 232.7
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 288.7
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 234.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 322.0
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 240.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 223.5
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 209.9
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 282.7
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 229.8
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 302.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 229.9
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 235.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 253.2
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 300.6
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 235.8
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 327.8
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 224.4
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 252.2
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 313.2
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 293.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 243.7
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 332.0
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 248.7
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 228.9
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 242.2
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/step",
+      "status": 200,
+      "ms": 289.5
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 235.8
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 258.2
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 255.3
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 326.5
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 229.7
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "bottlenecks",
+      "status": 200,
+      "ms": 120.2
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 292.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 1024.9
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/modules/postdose/view",
+      "status": 200,
+      "ms": 745.9
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/state",
+      "status": 200,
+      "ms": 254.0
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 251.5
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 254.1
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/modules/postdose/view",
+      "status": 200,
+      "ms": 250.8
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/modules/postdose/actions/ask_question",
+      "status": 200,
+      "ms": 341.8
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 245.6
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 268.6
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/modules/postdose/view",
+      "status": 200,
+      "ms": 288.6
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/modules/postdose/actions/ask_question",
+      "status": 200,
+      "ms": 298.8
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 265.8
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 310.0
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/modules/postdose/view",
+      "status": 200,
+      "ms": 255.7
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/modules/postdose/actions/ask_question",
+      "status": 200,
+      "ms": 310.5
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 279.8
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 306.0
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/modules/postdose/view",
+      "status": 200,
+      "ms": 249.9
+    },
+    {
+      "j": "J10v",
+      "method": "POST",
+      "path": "trials/{id}/modules/postdose/actions/ask_question",
+      "status": 200,
+      "ms": 316.3
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 225.3
+    },
+    {
+      "j": "J10v",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 266.2
+    },
+    {
+      "j": "J6x",
+      "method": "GET",
+      "path": "protocols",
+      "status": 200,
+      "ms": 121.9
+    },
+    {
+      "j": "J6x",
+      "method": "GET",
+      "path": "protocols/example_psilocybin_trd.md",
+      "status": 200,
+      "ms": 104.7
+    },
+    {
+      "j": "J6x",
+      "method": "GET",
+      "path": "protocols/example_psilocybin_trd.md",
+      "status": 200,
+      "ms": 128.5
+    },
+    {
+      "j": "J6x",
+      "method": "POST",
+      "path": "trials",
+      "status": 200,
+      "ms": 527.5
+    },
+    {
+      "j": "J6x",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 224.1
+    },
+    {
+      "j": "J6x",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 293.7
+    },
+    {
+      "j": "J6x",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 246.8
+    },
+    {
+      "j": "J6x",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 268.2
+    },
+    {
+      "j": "J6x",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 252.0
+    },
+    {
+      "j": "J6x",
+      "method": "GET",
+      "path": "trials/{id}/state",
+      "status": 200,
+      "ms": 253.5
+    },
+    {
+      "j": "J6x",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 232.6
+    },
+    {
+      "j": "J6x",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 244.6
+    },
+    {
+      "j": "J6x",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 245.0
+    },
+    {
+      "j": "J6x",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 249.8
+    },
+    {
+      "j": "J6x",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 345.3
+    },
+    {
+      "j": "J6x",
+      "method": "POST",
+      "path": "trials/{id}/modules/predose/actions/apply",
+      "status": 200,
+      "ms": 308.3
+    },
+    {
+      "j": "J6x",
+      "method": "POST",
+      "path": "trials/{id}/modules/predose/actions/apply",
+      "status": 200,
+      "ms": 253.4
+    },
+    {
+      "j": "J6x",
+      "method": "POST",
+      "path": "trials/{id}/modules/predose/actions/apply",
+      "status": 200,
+      "ms": 273.2
+    },
+    {
+      "j": "J6x",
+      "method": "POST",
+      "path": "trials/{id}/modules/predose/actions/apply",
+      "status": 200,
+      "ms": 281.0
+    },
+    {
+      "j": "J6x",
+      "method": "POST",
+      "path": "trials/{id}/modules/predose/actions/apply",
+      "status": 200,
+      "ms": 299.2
+    },
+    {
+      "j": "J6x",
+      "method": "POST",
+      "path": "trials/{id}/modules/predose/actions/apply",
+      "status": 200,
+      "ms": 312.5
+    },
+    {
+      "j": "J6x",
+      "method": "POST",
+      "path": "trials/{id}/modules/predose/actions/apply",
+      "status": 200,
+      "ms": 309.6
+    },
+    {
+      "j": "J6x",
+      "method": "POST",
+      "path": "trials/{id}/modules/predose/actions/apply",
+      "status": 200,
+      "ms": 330.6
+    },
+    {
+      "j": "J6x",
+      "method": "POST",
+      "path": "trials/{id}/modules/predose/actions/apply",
+      "status": 200,
+      "ms": 274.3
+    },
+    {
+      "j": "J6x",
+      "method": "POST",
+      "path": "trials/{id}/modules/predose/actions/apply",
+      "status": 200,
+      "ms": 256.0
+    },
+    {
+      "j": "J6x",
+      "method": "POST",
+      "path": "trials/{id}/modules/predose/actions/apply",
+      "status": 200,
+      "ms": 243.6
+    },
+    {
+      "j": "J6x",
+      "method": "POST",
+      "path": "trials/{id}/modules/predose/actions/apply",
+      "status": 200,
+      "ms": 315.1
+    },
+    {
+      "j": "J7x",
+      "method": "GET",
+      "path": "protocols",
+      "status": 200,
+      "ms": 124.9
+    },
+    {
+      "j": "J7x",
+      "method": "GET",
+      "path": "protocols/example_psilocybin_trd.md",
+      "status": 200,
+      "ms": 116.9
+    },
+    {
+      "j": "J7x",
+      "method": "GET",
+      "path": "protocols/example_psilocybin_trd.md",
+      "status": 200,
+      "ms": 103.7
+    },
+    {
+      "j": "J7x",
+      "method": "POST",
+      "path": "trials",
+      "status": 200,
+      "ms": 651.5
+    },
+    {
+      "j": "J7x",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 249.7
+    },
+    {
+      "j": "J7x",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 260.6
+    },
+    {
+      "j": "J7x",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 313.6
+    },
+    {
+      "j": "J7x",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 351.7
+    },
+    {
+      "j": "J7x",
+      "method": "GET",
+      "path": "trials/{id}/state",
+      "status": 200,
+      "ms": 212.9
+    },
+    {
+      "j": "J7x",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 303.2
+    },
+    {
+      "j": "J7x",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 259.7
+    },
+    {
+      "j": "J7x",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 254.3
+    },
+    {
+      "j": "J7x",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 283.8
+    },
+    {
+      "j": "J7x",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 440.0
+    },
+    {
+      "j": "J7x",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 234.4
+    },
+    {
+      "j": "J7x",
+      "method": "POST",
+      "path": "trials/{id}/approvals/40dec38d",
+      "status": 200,
+      "ms": 381.9
+    },
+    {
+      "j": "J7x",
+      "method": "GET",
+      "path": "trials/{id}/state",
+      "status": 200,
+      "ms": 370.7
+    },
+    {
+      "j": "J7x",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 264.3
+    },
+    {
+      "j": "J7x",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 404.4
+    },
+    {
+      "j": "J7x",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 222.6
+    },
+    {
+      "j": "J7x",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 296.2
+    },
+    {
+      "j": "J7x",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 276.5
+    },
+    {
+      "j": "J7x",
+      "method": "GET",
+      "path": "trials/{id}/state",
+      "status": 200,
+      "ms": 442.9
+    },
+    {
+      "j": "J8x",
+      "method": "GET",
+      "path": "protocols",
+      "status": 200,
+      "ms": 141.2
+    },
+    {
+      "j": "J8x",
+      "method": "GET",
+      "path": "protocols/example_psilocybin_trd.md",
+      "status": 200,
+      "ms": 121.3
+    },
+    {
+      "j": "J8x",
+      "method": "GET",
+      "path": "protocols/example_psilocybin_trd.md",
+      "status": 200,
+      "ms": 123.5
+    },
+    {
+      "j": "J8x",
+      "method": "POST",
+      "path": "trials",
+      "status": 200,
+      "ms": 664.4
+    },
+    {
+      "j": "J8x",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 241.7
+    },
+    {
+      "j": "J8x",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 313.9
+    },
+    {
+      "j": "J8x",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 312.7
+    },
+    {
+      "j": "J8x",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 320.1
+    },
+    {
+      "j": "J8x",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 376.6
+    },
+    {
+      "j": "J8x",
+      "method": "GET",
+      "path": "trials/{id}/state",
+      "status": 200,
+      "ms": 297.1
+    },
+    {
+      "j": "J8x",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 234.4
+    },
+    {
+      "j": "J8x",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 241.8
+    },
+    {
+      "j": "J8x",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 259.2
+    },
+    {
+      "j": "J8x",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 269.3
+    },
+    {
+      "j": "J8x",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 317.6
+    },
+    {
+      "j": "J8x",
+      "method": "GET",
+      "path": "trials/{id}/state",
+      "status": 404,
+      "ms": 1.8
+    },
+    {
+      "j": "J8x",
+      "method": "GET",
+      "path": "trials/{id}/state",
+      "status": 200,
+      "ms": 423.3
+    },
+    {
+      "j": "J8x",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 258.3
+    },
+    {
+      "j": "J8x",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 264.0
+    },
+    {
+      "j": "J8x",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 238.8
+    },
+    {
+      "j": "J8x",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 256.2
+    },
+    {
+      "j": "J8x",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 225.6
+    },
+    {
+      "j": "J8x",
+      "method": "GET",
+      "path": "trials/{id}/state",
+      "status": 404,
+      "ms": 253.2
+    },
+    {
+      "j": "J8x",
+      "method": "GET",
+      "path": "trials/{id}/state",
+      "status": 404,
+      "ms": 264.6
+    },
+    {
+      "j": "J8x",
+      "method": "GET",
+      "path": "protocols",
+      "status": 200,
+      "ms": 109.5
+    },
+    {
+      "j": "J8x",
+      "method": "GET",
+      "path": "protocols/example_psilocybin_trd.md",
+      "status": 200,
+      "ms": 112.1
+    },
+    {
+      "j": "JT",
+      "method": "GET",
+      "path": "protocols",
+      "status": 200,
+      "ms": 150.7
+    },
+    {
+      "j": "JT",
+      "method": "GET",
+      "path": "protocols/example_psilocybin_trd.md",
+      "status": 200,
+      "ms": 140.5
+    },
+    {
+      "j": "JT",
+      "method": "GET",
+      "path": "protocols/example_psilocybin_trd.md",
+      "status": 200,
+      "ms": 115.9
+    },
+    {
+      "j": "JT",
+      "method": "POST",
+      "path": "trials",
+      "status": 200,
+      "ms": 532.7
+    },
+    {
+      "j": "JT",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 303.2
+    },
+    {
+      "j": "JT",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 371.4
+    },
+    {
+      "j": "JT",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 237.4
+    },
+    {
+      "j": "JT",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 244.6
+    },
+    {
+      "j": "JT",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 251.7
+    },
+    {
+      "j": "JT",
+      "method": "GET",
+      "path": "trials/{id}/state",
+      "status": 200,
+      "ms": 255.3
+    },
+    {
+      "j": "JT",
+      "method": "GET",
+      "path": "trials/{id}/approvals",
+      "status": 200,
+      "ms": 241.0
+    },
+    {
+      "j": "JT",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 245.9
+    },
+    {
+      "j": "JT",
+      "method": "GET",
+      "path": "trials/{id}/kpis",
+      "status": 200,
+      "ms": 227.7
+    },
+    {
+      "j": "JT",
+      "method": "GET",
+      "path": "trials/{id}/messages",
+      "status": 200,
+      "ms": 249.7
+    },
+    {
+      "j": "JT",
+      "method": "GET",
+      "path": "trials/{id}/events",
+      "status": 200,
+      "ms": 242.8
+    },
+    {
+      "j": "JT",
+      "method": "POST",
+      "path": "trials/{id}/approvals/f57f92b6",
+      "status": 200,
+      "ms": 323.8
+    }
+  ]
+}

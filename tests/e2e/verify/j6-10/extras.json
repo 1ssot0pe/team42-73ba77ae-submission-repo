@@ -1,0 +1,225 @@
+{
+  "base_url": "http://127.0.0.1:5321",
+  "results": [
+    {
+      "id": "J10v",
+      "title": "J10 with case-insensitive accepted check",
+      "env": "verify-j610-extras",
+      "base_url": "http://127.0.0.1:5321",
+      "passed": true,
+      "error": null,
+      "duration_s": 23.0,
+      "timings": {
+        "create_trial": 0.07,
+        "decide:confirm shortlist": 0.06,
+        "ask:neutral": 0.06,
+        "ask:leading": 0.06,
+        "ask:unblinding": 0.06,
+        "ask:identifying": 0.05
+      },
+      "failures": [],
+      "notes": [
+        "before lock at day 31",
+        "[before lock] neutral: ACCEPTED No unblinding cues, leading wording, personal data, safety or consent issues found. Waiting for an ethics reviewer.",
+        "[before lock] leading: ACCEPTED Rejected: leading cannot be fixed by rewording.",
+        "[before lock] unblinding: ACCEPTED Rewrite proposed: Do you think you received the study session or the study session capsule? Waiting for an ethics reviewer.",
+        "[before lock] identifying: ACCEPTED Rejected: personal cannot be fixed by rewording.",
+        "after lock at day 73",
+        "[after lock] neutral: ACCEPTED No unblinding cues, leading wording, personal data, safety or consent issues found. Waiting for an ethics reviewer.",
+        "[after lock] leading: ACCEPTED Rejected: leading cannot be fixed by rewording.",
+        "[after lock] unblinding: ACCEPTED Rewrite proposed: Do you think you received the study session or the study session capsule? Waiting for an ethics reviewer.",
+        "[after lock] identifying: ACCEPTED Rejected: personal cannot be fixed by rewording."
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 315,
+      "toasts": [
+        "NO UNBLINDING CUES, LEADING WORDING, PERSONAL DATA, SAFETY OR CONSENT ISSUES FOUND. WAITING FOR AN ETHICS REVIEWER.",
+        "REJECTED: LEADING CANNOT BE FIXED BY REWORDING.",
+        "REWRITE PROPOSED: DO YOU THINK YOU RECEIVED THE STUDY SESSION OR THE STUDY SESSION CAPSULE? WAITING FOR AN ETHICS REVIEWER.",
+        "REJECTED: PERSONAL CANNOT BE FIXED BY REWORDING."
+      ],
+      "shots": []
+    },
+    {
+      "id": "J6x",
+      "title": "API-1 repeat applications + API-4 1e400",
+      "env": "verify-j610-extras",
+      "base_url": "http://127.0.0.1:5321",
+      "passed": true,
+      "error": null,
+      "duration_s": 6.3,
+      "timings": {
+        "create_trial": 0.06,
+        "apply:0": 0.06,
+        "apply:1": 0.06,
+        "apply:2": 0.06,
+        "apply:3": 0.06,
+        "apply:4": 0.07,
+        "apply:5": 0.07,
+        "apply:6": 0.06,
+        "apply:7": 0.07,
+        "apply:8": 0.06,
+        "apply:9": 0.07,
+        "apply:10": 0.06,
+        "apply:11": 0.06
+      },
+      "failures": [],
+      "notes": [
+        "apply 0: PRE-SCREENING AGENT Result ELIGIBLE PORTAL-0001 \u00b7 D\u22121 Every criterion the agent checks is met. Final eligibility is alwa",
+        "apply 1: PRE-SCREENING AGENT Result ELIGIBLE PORTAL-0002 \u00b7 D\u22121 Every criterion the agent checks is met. Final eligibility is alwa",
+        "apply 2: PRE-SCREENING AGENT Result ELIGIBLE PORTAL-0003 \u00b7 D\u22121 Every criterion the agent checks is met. Final eligibility is alwa",
+        "apply 3: PRE-SCREENING AGENT Result ELIGIBLE PORTAL-0004 \u00b7 D\u22121 Every criterion the agent checks is met. Final eligibility is alwa",
+        "apply 4: PRE-SCREENING AGENT Result ELIGIBLE PORTAL-0005 \u00b7 D\u22121 Every criterion the agent checks is met. Final eligibility is alwa",
+        "apply 5: PRE-SCREENING AGENT Result ELIGIBLE PORTAL-0006 \u00b7 D\u22121 Every criterion the agent checks is met. Final eligibility is alwa",
+        "apply 6: PRE-SCREENING AGENT Result ELIGIBLE PORTAL-0007 \u00b7 D\u22121 Every criterion the agent checks is met. Final eligibility is alwa",
+        "apply 7: PRE-SCREENING AGENT Result ELIGIBLE PORTAL-0008 \u00b7 D\u22121 Every criterion the agent checks is met. Final eligibility is alwa",
+        "apply 8: PRE-SCREENING AGENT Result ELIGIBLE PORTAL-0009 \u00b7 D\u22121 Every criterion the agent checks is met. Final eligibility is alwa",
+        "apply 9: PRE-SCREENING AGENT Result ELIGIBLE PORTAL-0010 \u00b7 D\u22121 Every criterion the agent checks is met. Final eligibility is alwa",
+        "apply 10: PRE-SCREENING AGENT Result ELIGIBLE PORTAL-0011 \u00b7 D\u22121 Every criterion the agent checks is met. Final eligibility is alwa",
+        "apply 11: PRE-SCREENING AGENT Result ELIGIBLE PORTAL-0012 \u00b7 D\u22121 Every criterion the agent checks is met. Final eligibility is alwa",
+        "1e400: inline='Enter your age as a number' result='PRE-SCREENING AGENT Result Fill in the form and press Apply. The pre-screening agent checks it against the protocol's criteria and explains its decision here. Final eligibility is always confirmed by ' toasts=['SCREENED \u00b7 PORTAL-0010 \u00b7 ELIGIBLE', 'SCREENED \u00b7 PORTAL-0011 \u00b7 ELIGIBLE', 'SCREENED \u00b7 PORTAL-0012 \u00b7 ELIGIBLE']"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 34,
+      "toasts": [
+        "TRIAL T-130850-EB49 CREATED",
+        "SCREENED \u00b7 PORTAL-0001 \u00b7 ELIGIBLE",
+        "SCREENED \u00b7 PORTAL-0002 \u00b7 ELIGIBLE",
+        "SCREENED \u00b7 PORTAL-0003 \u00b7 ELIGIBLE",
+        "SCREENED \u00b7 PORTAL-0004 \u00b7 ELIGIBLE",
+        "SCREENED \u00b7 PORTAL-0005 \u00b7 ELIGIBLE",
+        "SCREENED \u00b7 PORTAL-0006 \u00b7 ELIGIBLE",
+        "SCREENED \u00b7 PORTAL-0007 \u00b7 ELIGIBLE",
+        "SCREENED \u00b7 PORTAL-0008 \u00b7 ELIGIBLE",
+        "SCREENED \u00b7 PORTAL-0009 \u00b7 ELIGIBLE",
+        "SCREENED \u00b7 PORTAL-0010 \u00b7 ELIGIBLE",
+        "SCREENED \u00b7 PORTAL-0011 \u00b7 ELIGIBLE",
+        "SCREENED \u00b7 PORTAL-0012 \u00b7 ELIGIBLE"
+      ],
+      "shots": [
+        "docs/testing/screenshots/verify-J6x-1.png (1e400 outcome)"
+      ]
+    },
+    {
+      "id": "J7x",
+      "title": "Approval double-submit (locked mutation)",
+      "env": "verify-j610-extras",
+      "base_url": "http://127.0.0.1:5321",
+      "passed": false,
+      "error": "TimeoutError: Locator.wait_for: Timeout 20000ms exceeded.",
+      "duration_s": 26.4,
+      "timings": {
+        "create_trial": 0.06
+      },
+      "failures": [
+        {
+          "t": 26.37,
+          "msg": "exception: TimeoutError: Locator.wait_for: Timeout 20000ms exceeded.",
+          "shot": "docs/testing/screenshots/verify-J7x-1.png",
+          "url": "http://127.0.0.1:5321/"
+        }
+      ],
+      "notes": [
+        "triple-click Approve: approved toasts=['APPROVED \u00b7 CLINICIAN: CONFIRM SHORTLIST OF 49 ELIGIBLE APPLICANTS AND REVIEW 56 FLAGGED'], slip errors=[], open shortlist slips=0",
+        "state mentions 'confirm shortlist' 0 times",
+        "lind/.claude/worktrees/parallax-e2e/.venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py\", line 13635, in wait_for\n    self._sync(\n  File \"/Users/dannybud/Desktop/unblind/.claude/worktrees/parallax-e2e/.venv/lib/python3.12/site-packages/playwright/_impl/_sync_base.py\", line 111, in _sync\n    return task.result()\n           ^^^^^^^^^^^^^\n  File \"/Users/dannybud/Desktop/unblind/.claude/worktrees/parallax-e2e/.venv/lib/python3.12/site-packages/playwright/_impl/_locator.py\", line 767, in wait_for\n    await self._frame.wait_for_selector(\n  File \"/Users/dannybud/Desktop/unblind/.claude/worktrees/parallax-e2e/.venv/lib/python3.12/site-packages/playwright/_impl/_frame.py\", line 395, in wait_for_selector\n    await self._channel.send(\n  File \"/Users/dannybud/Desktop/unblind/.claude/worktrees/parallax-e2e/.venv/lib/python3.12/site-packages/playwright/_impl/_connection.py\", line 78, in send\n    return await self._connection.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/dannybud/Desktop/unblind/.claude/worktrees/parallax-e2e/.venv/lib/python3.12/site-packages/playwright/_impl/_connection.py\", line 636, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Locator.wait_for: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"article.slip\").filter(has=locator(\".slip__title\").filter(has_text=re.compile(r\"Protocol fix\", re.IGNORECASE))).first to be visible\n\n"
+      ],
+      "console_errors": [
+        {
+          "t": 6.23,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5321/"
+        }
+      ],
+      "console_error_count": 1,
+      "network_failures": [
+        {
+          "t": 6.23,
+          "method": "GET",
+          "url": "http://127.0.0.1:5321/api/trials/T-130857-521c",
+          "status": 404,
+          "backend": "127.0.0.1:8321",
+          "body": "{\"detail\":\"Not Found\"}"
+        }
+      ],
+      "network_failure_count": 1,
+      "api_calls": 29,
+      "toasts": [
+        "TRIAL T-130857-521C CREATED",
+        "APPROVED \u00b7 CLINICIAN: CONFIRM SHORTLIST OF 49 ELIGIBLE APPLICANTS AND REVIEW 56 FLAGGED"
+      ],
+      "shots": [
+        "docs/testing/screenshots/verify-J7x-1.png (exception: TimeoutError: Locator.wait_fo)"
+      ]
+    },
+    {
+      "id": "J8x",
+      "title": "BP-2 transient 404 + TrialLost",
+      "env": "verify-j610-extras",
+      "base_url": "http://127.0.0.1:5321",
+      "passed": false,
+      "error": null,
+      "duration_s": 10.1,
+      "timings": {
+        "create_trial": 0.06
+      },
+      "failures": [
+        {
+          "t": 7.72,
+          "msg": "the 404 was not injected",
+          "shot": "docs/testing/screenshots/verify-J8x-1.png",
+          "url": "http://127.0.0.1:5321/"
+        }
+      ],
+      "notes": [
+        "injected 404s: 0; start page: False; lost: 0",
+        "TrialLost shown after 1.3s: Trial T-000000-DEAD has expired This trial is no longer on the server. Simulated trials are kept for a limited time. Start a new trial. Start a new trial",
+        "toasts: []"
+      ],
+      "console_errors": [
+        {
+          "t": 7.77,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5321/"
+        },
+        {
+          "t": 8.77,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5321/"
+        }
+      ],
+      "console_error_count": 2,
+      "network_failures": [
+        {
+          "t": 7.77,
+          "method": "GET",
+          "url": "http://127.0.0.1:5321/api/trials/T-000000-DEAD/state",
+          "status": 404,
+          "backend": "127.0.0.1:8322",
+          "body": "{\"detail\":\"trial not found\"}"
+        },
+        {
+          "t": 8.77,
+          "method": "GET",
+          "url": "http://127.0.0.1:5321/api/trials/T-000000-DEAD/state",
+          "status": 404,
+          "backend": "127.0.0.1:8321",
+          "body": "{\"detail\":\"trial not found\"}"
+        }
+      ],
+      "network_failure_count": 2,
+      "api_calls": 38,
+      "toasts": [],
+      "shots": [
+        "docs/testing/screenshots/verify-J8x-1.png (the 404 was not injected)",
+        "docs/testing/screenshots/verify-J8x-2.png (TrialLost for unknown id)"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "id": "J13-play",
+  "title": "Preview: Play 2 min (no backend kill), 30-day API steps, 404 count",
+  "env": "preview-j11-15",
+  "base_url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app",
+  "passed": true,
+  "error": null,
+  "duration_s": 127.2,
+  "timings": {
+    "create_trial": 0.82,
+    "play_trials": 3,
+    "play_days": 214,
+    "step_calls": 107,
+    "step_p50_ms": 348,
+    "step_p90_ms": 553,
+    "step_p95_ms": 591,
+    "step_max_ms": 863,
+    "stalls": 0,
+    "api_status_counts": {
+      "200": 686
+    },
+    "trial_404s": 0,
+    "api_step_s": [
+      1.7,
+      0.55,
+      0.4
+    ]
+  },
+  "failures": [],
+  "notes": [
+    "play: 3 trials, 214 days, step calls 107, stalls 0, lost 0; API statuses {200: 686}",
+    "API step 30 days: HTTP 200 in 1.70s, day now 61",
+    "API step 30 days: HTTP 200 in 0.55s, day now 90",
+    "API step 31 days: HTTP 200 in 0.40s, day now 90"
+  ],
+  "console_errors": [
+    {
+      "t": 77.36,
+      "text": "Failed to load resource: net::ERR_NETWORK_CHANGED",
+      "url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app/"
+    },
+    {
+      "t": 77.36,
+      "text": "Failed to load resource: net::ERR_NETWORK_CHANGED",
+      "url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app/"
+    }
+  ],
+  "console_error_count": 2,
+  "network_failures": [
+    {
+      "t": 77.36,
+      "method": "POST",
+      "url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app/api/trials/T-134054-86d2/step",
+      "status": null,
+      "error": "net::ERR_NETWORK_CHANGED",
+      "body": null
+    },
+    {
+      "t": 77.36,
+      "method": "GET",
+      "url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app/api/trials/T-134054-86d2/events?module=master&limit=40",
+      "status": null,
+      "error": "net::ERR_NETWORK_CHANGED",
+      "body": null
+    }
+  ],
+  "network_failure_count": 2,
+  "api_calls": 693,
+  "toasts": [],
+  "shots": [
+    "docs/testing/screenshots/preview-J13-play-1.png (after 30-day steps and reload)"
+  ]
+}

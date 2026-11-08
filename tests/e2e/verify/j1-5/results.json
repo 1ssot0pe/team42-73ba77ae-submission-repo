@@ -1,0 +1,245 @@
+{
+  "base_url": "http://127.0.0.1:5311",
+  "env": "verify-j15-local",
+  "at": "2026-11-08 13:07:42",
+  "results": [
+    {
+      "id": "J1",
+      "title": "Psilocybin, manual approvals: 2 fixes, shortlist, drift action, amendment, FDA report",
+      "env": "verify-j15-local",
+      "base_url": "http://127.0.0.1:5311",
+      "passed": false,
+      "error": null,
+      "duration_s": 22.4,
+      "timings": {
+        "create_trial": 0.11,
+        "decide:^Protocol fix.*guess questionn": 0.06,
+        "decide:^Protocol fix.*expectancy": 0.06,
+        "decide:confirm shortlist": 0.06,
+        "play_to_drift": 9.08,
+        "decide:raters to remote": 0.06,
+        "play_to_amendment": 0.9,
+        "decide:permanent": 0.06,
+        "play_to_close": 7.42,
+        "decide:Sign off the FDA blinding repo": 0.07
+      },
+      "failures": [
+        {
+          "t": 22.37,
+          "msg": "[mission control at close] stray 'UNBLIND' in UI text: ['BLINDING ROWS EXPORTED IN UNBLIND-BLIND-1', 'Release the UNBLIND-BLIND-1 harmonised export', 'Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters', 'Prepared the UNBLIND-BLIND-1 export (357 rows) and asked a human to approve its release.']",
+          "shot": "",
+          "url": "http://127.0.0.1:5311/"
+        }
+      ],
+      "notes": [
+        "trial T-130554-15c5",
+        "drift action slip at day 47"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 339,
+      "toasts": [
+        "TRIAL T-130554-15C5 CREATED",
+        "APPROVED \u00b7 PROTOCOL FIX: ADD THE UNBLIND-BLIND-1 GUESS QUESTIONNAIRE FOR PARTICIPANTS AND RATERS",
+        "APPROVED \u00b7 PROTOCOL FIX: MEASURE EXPECTANCY BEFORE RANDOMISATION AND AT END OF TREATMENT",
+        "APPROVED \u00b7 CLINICIAN: CONFIRM SHORTLIST OF 49 ELIGIBLE APPLICANTS AND REVIEW 56 FLAGGED",
+        "APPROVED \u00b7 MOVE SITE B RATERS TO REMOTE (CENTRAL) ASSESSMENT",
+        "APPROVED \u00b7 MAKE REMOTE CENTRAL RATERS PERMANENT AT EVERY SITE (AFTER DRIFT AT SITE B (MANCHESTER))",
+        "TRIAL CLOSED \u00b7 FDA BLINDING REPORT WAITING",
+        "APPROVED \u00b7 SIGN OFF THE FDA BLINDING REPORT"
+      ],
+      "shots": [
+        "docs/testing/screenshots/verify-J1-1.png (closed and signed)"
+      ]
+    },
+    {
+      "id": "J2",
+      "title": "Auto-approve on, play to close",
+      "env": "verify-j15-local",
+      "base_url": "http://127.0.0.1:5311",
+      "passed": false,
+      "error": null,
+      "duration_s": 19.9,
+      "timings": {
+        "create_trial": 0.06,
+        "play_to_close": 16.55
+      },
+      "failures": [
+        {
+          "t": 19.95,
+          "msg": "[mission control (auto) at close] stray 'UNBLIND' in UI text: ['BLINDING ROWS EXPORTED IN UNBLIND-BLIND-1', 'Release the UNBLIND-BLIND-1 harmonised export', 'UNBLIND-BLIND-1 export written after approval by demo reviewer (auto-approve ON): 358 rows, 99.4% complete, 117 rows withheld (no consent).', 'approved: Release the UNBLIND-BLIND-1 harmonised export']",
+          "shot": "",
+          "url": "http://127.0.0.1:5311/"
+        }
+      ],
+      "notes": [
+        "trial T-130616-3cbc",
+        "header at close: 'The trial is closed. The FDA blinding report was signed by demo reviewer (auto-approve ON) on D+90.'"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 298,
+      "toasts": [
+        "TRIAL T-130616-3CBC CREATED",
+        "TRIAL CLOSED \u00b7 REPORT SIGNED BY DEMO REVIEWER (AUTO-APPROVE ON)"
+      ],
+      "shots": []
+    },
+    {
+      "id": "J3",
+      "title": "MDMA example to close: CAPS-5 labels everywhere, drift at Site C",
+      "env": "verify-j15-local",
+      "base_url": "http://127.0.0.1:5311",
+      "passed": false,
+      "error": null,
+      "duration_s": 29.4,
+      "timings": {
+        "create_trial": 0.11,
+        "decide:confirm shortlist": 0.07,
+        "play_to_drift": 6.52,
+        "decide:raters to remote": 0.1,
+        "play_to_close": 10.47
+      },
+      "failures": [
+        {
+          "t": 21.95,
+          "msg": "[/] MADRS label in an MDMA/PTSD trial: ['Collected 1 follow-up visits (MADRS, end-of-treatment guess and expectancy), 1 late because they fell before the primary', 'Collected 2 follow-up visits (MADRS, end-of-treatment guess and expectancy), 1 late because they fell before the primary', 'Collected 3 follow-up visits (MADRS, end-of-treatment guess and expectancy), 1 late because they fell before the primary', 'Collected 3 follow-up visits (MADRS, end-of-treatment guess and expectancy).']",
+          "shot": "docs/testing/screenshots/verify-J3-1.png",
+          "url": "http://127.0.0.1:5311/"
+        },
+        {
+          "t": 26.41,
+          "msg": "[/dosing] MADRS label in an MDMA/PTSD trial: ['0 of 73 participants have a week-6 MADRS.', 'Primary endpoint locked: 0 of 73 participants have a week-6 MADRS. No more changes to the primary analysis data.', \"Recorded 1 rater assessment(s): MADRS plus the rater's guess.\", \"Recorded 2 rater assessment(s): MADRS plus the rater's guess.\"]",
+          "shot": "docs/testing/screenshots/verify-J3-2.png",
+          "url": "http://127.0.0.1:5311/dosing"
+        },
+        {
+          "t": 26.67,
+          "msg": "[/dosing] no CAPS-5 label anywhere on the page",
+          "shot": "docs/testing/screenshots/verify-J3-3.png",
+          "url": "http://127.0.0.1:5311/dosing"
+        },
+        {
+          "t": 29.08,
+          "msg": "[/postdose] MADRS label in an MDMA/PTSD trial: ['# FDA blinding report: T-130636-e81b **SYNTHETIC DATA.** Standard: UNBLIND-BLIND-1. Drafted on day 90. Primary endpoint ', 'COMP005: -3.6 MADRS points vs placebo (95% CI -5.7 to -1.5). COMP006: -3.8 points vs 1 mg psilocybin (95% CI -5.8 to -1.', 'Collected 1 follow-up visits (MADRS, end-of-treatment guess and expectancy), 1 late because they fell before the primary', 'Collected 2 follow-up visits (MADRS, end-of-treatment guess and expectancy), 1 late because they fell before the primary']",
+          "shot": "docs/testing/screenshots/verify-J3-4.png",
+          "url": "http://127.0.0.1:5311/postdose"
+        },
+        {
+          "t": 29.37,
+          "msg": "[/postdose] no CAPS-5 label anywhere on the page",
+          "shot": "docs/testing/screenshots/verify-J3-5.png",
+          "url": "http://127.0.0.1:5311/postdose"
+        }
+      ],
+      "notes": [
+        "trial T-130636-e81b",
+        "drift slip at day 33: Move Site C raters to remote (central) assessment"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 358,
+      "toasts": [],
+      "shots": [
+        "docs/testing/screenshots/verify-J3-1.png ([/] MADRS label in an MDMA/PTSD trial: [)",
+        "docs/testing/screenshots/verify-J3-2.png ([/dosing] MADRS label in an MDMA/PTSD tr)",
+        "docs/testing/screenshots/verify-J3-3.png ([/dosing] no CAPS-5 label anywhere on th)",
+        "docs/testing/screenshots/verify-J3-4.png ([/postdose] MADRS label in an MDMA/PTSD )",
+        "docs/testing/screenshots/verify-J3-5.png ([/postdose] no CAPS-5 label anywhere on )"
+      ]
+    },
+    {
+      "id": "J4",
+      "title": "Pasted custom protocol with other site names",
+      "env": "verify-j15-local",
+      "base_url": "http://127.0.0.1:5311",
+      "passed": false,
+      "error": null,
+      "duration_s": 28.8,
+      "timings": {
+        "create_trial": 0.11,
+        "decide:confirm shortlist": 0.06,
+        "play_to_drift_or_close": 7.78,
+        "decide:raters to remote": 0.06
+      },
+      "failures": [
+        {
+          "t": 26.98,
+          "msg": "example site names leak into a custom-protocol trial: ['Bristol@/: participant unblinding at Site C (Bristol) (guess accuracy 91%, 95% interval 62% to 98%, n=11) noted', 'Bristol@/postdose: # FDA blinding report: T-130705-bb24 **SYNTHETIC DATA.** Standard: UNBLIND-BLIND-1. Drafted on day 9', 'Bristol@/predose: participant unblinding at Site C (Bristol) (guess accuracy 91%, 95% interval 62% to 98%, n=11) noted', 'London@/: participant unblinding at Site A (London) (guess accuracy 79%, 95% interval 62% to 89%, n=33) noted ', 'London@/postdose: # FDA blinding report: T-130705-bb24 **SYNTHETIC DATA.** Standard: UNBLIND-BLIND-1. Drafted on day 9']",
+          "shot": "docs/testing/screenshots/verify-J4-1.png",
+          "url": "http://127.0.0.1:5311/postdose"
+        },
+        {
+          "t": 27.27,
+          "msg": "none of the pasted site names (Leeds, Glasgow, Cardiff) appear anywhere",
+          "shot": "docs/testing/screenshots/verify-J4-2.png",
+          "url": "http://127.0.0.1:5311/postdose"
+        }
+      ],
+      "notes": [
+        "trial T-130705-bb24",
+        "drift slip day 39: Move Site B raters to remote (central) assessment",
+        "pasted site names seen: []"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 369,
+      "toasts": [],
+      "shots": [
+        "docs/testing/screenshots/verify-J4-1.png (example site names leak into a custom-pr)",
+        "docs/testing/screenshots/verify-J4-2.png (none of the pasted site names (Leeds, Gl)"
+      ]
+    },
+    {
+      "id": "J5",
+      "title": "Garbage protocol (!!! ???)",
+      "env": "verify-j15-local",
+      "base_url": "http://127.0.0.1:5311",
+      "passed": false,
+      "error": null,
+      "duration_s": 8.0,
+      "timings": {
+        "create": 4.03
+      },
+      "failures": [
+        {
+          "t": 8.0,
+          "msg": "garbage input '!!! ???' was accepted as a protocol with no warning to the user",
+          "shot": "docs/testing/screenshots/verify-J5-3.png",
+          "url": "http://127.0.0.1:5311/"
+        },
+        {
+          "t": 8.0,
+          "msg": "[after garbage protocol] stray 'UNBLIND' in UI text: ['Waiting for a human: Protocol fix: Move outcome raters to central, remote, blinded assessment; Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters; Protocol fix: Measure expectancy before randomisation and at end of treatment; Protocol fix: Use a low dose of the same drug as comparator; Protocol fix: Stratify randomisation by prior psychedelic use; Clinician: confirm shortlist of 0 eligible applicants and review 215 flagged', 'BLINDING ROWS EXPORTED IN UNBLIND-BLIND-1', 'Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters', 'asked a human to approve: Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters']",
+          "shot": "",
+          "url": "http://127.0.0.1:5311/"
+        }
+      ],
+      "notes": [
+        "toasts: ['TRIAL T-130734-6868 CREATED']",
+        "a trial was created from garbage: T-130734-6868; header: 'WAITING\\nWaiting for a human: 6 decisions to sign.'",
+        "heading: 'Setup before day 1 of 90'",
+        "pre-dosing header: 'Protocol: !!! ???. 500 applicants screened. The shortlist waits for a clinician.'"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 45,
+      "toasts": [],
+      "shots": [
+        "docs/testing/screenshots/verify-J5-1.png (garbage protocol trial, pre-dosing)",
+        "docs/testing/screenshots/verify-J5-2.png (garbage protocol trial, mission control)",
+        "docs/testing/screenshots/verify-J5-3.png (garbage input '!!! ???' was accepted as )"
+      ]
+    }
+  ]
+}

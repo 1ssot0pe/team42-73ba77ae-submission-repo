@@ -1,0 +1,17 @@
+{
+  "trial": "T-133832-8cd8",
+  "approve_err": null,
+  "samples": [
+    {
+      "t": 0.36,
+      "play_enabled": true,
+      "blocked": null,
+      "phase": "dosing",
+      "day": -1
+    }
+  ],
+  "play_after": "timeout",
+  "day_after": 27,
+  "console_errors": [],
+  "network_failures": []
+}

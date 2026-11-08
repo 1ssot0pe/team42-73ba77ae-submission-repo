@@ -1,0 +1,148 @@
+{
+  "id": "J13L",
+  "title": "Trial-lost screen",
+  "env": "verify-j1115",
+  "base_url": "http://127.0.0.1:5331",
+  "passed": true,
+  "error": null,
+  "duration_s": 16.5,
+  "timings": {
+    "create_trial": 0.06,
+    "a-playing_lost_after_s": 1.8,
+    "b-closed-nav_lost_after_s": 1.3
+  },
+  "failures": [],
+  "notes": [
+    "(a) T-131038-88c7 playing at day 17; deleting files",
+    "(b) closed T-131045-7ffa: 5 s after delete, lost shown without interaction: False"
+  ],
+  "console_errors": [
+    {
+      "t": 4.2,
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "url": "http://127.0.0.1:5331/"
+    },
+    {
+      "t": 5.21,
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "url": "http://127.0.0.1:5331/"
+    },
+    {
+      "t": 14.38,
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "url": "http://127.0.0.1:5331/predose"
+    },
+    {
+      "t": 14.38,
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "url": "http://127.0.0.1:5331/predose"
+    },
+    {
+      "t": 14.38,
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "url": "http://127.0.0.1:5331/predose"
+    },
+    {
+      "t": 14.39,
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "url": "http://127.0.0.1:5331/predose"
+    },
+    {
+      "t": 14.39,
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "url": "http://127.0.0.1:5331/predose"
+    },
+    {
+      "t": 14.39,
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "url": "http://127.0.0.1:5331/predose"
+    },
+    {
+      "t": 15.39,
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "url": "http://127.0.0.1:5331/predose"
+    }
+  ],
+  "console_error_count": 9,
+  "network_failures": [
+    {
+      "t": 4.2,
+      "method": "POST",
+      "url": "http://127.0.0.1:5331/api/trials/T-131038-88c7/step",
+      "status": 404,
+      "backend": "127.0.0.1:8331",
+      "body": "{\"detail\":\"trial not found\"}"
+    },
+    {
+      "t": 5.21,
+      "method": "GET",
+      "url": "http://127.0.0.1:5331/api/trials/T-131038-88c7/state",
+      "status": 404,
+      "backend": "127.0.0.1:8332",
+      "body": "{\"detail\":\"trial not found\"}"
+    },
+    {
+      "t": 14.38,
+      "method": "GET",
+      "url": "http://127.0.0.1:5331/api/trials/T-131045-7ffa/approvals?status=all",
+      "status": 404,
+      "backend": "127.0.0.1:8332",
+      "body": "{\"detail\":\"trial not found\"}"
+    },
+    {
+      "t": 14.38,
+      "method": "GET",
+      "url": "http://127.0.0.1:5331/api/trials/T-131045-7ffa/record?sections=protocol%2Cprotocol_versions%2Cdesign_review%2Crecruitment%2Capplicants%2Cenrolled%2Cmeasurement_plan",
+      "status": 404,
+      "backend": "127.0.0.1:8331",
+      "body": "{\"detail\":\"trial not found\"}"
+    },
+    {
+      "t": 14.39,
+      "method": "GET",
+      "url": "http://127.0.0.1:5331/api/trials/T-131045-7ffa/kpis",
+      "status": 404,
+      "backend": "127.0.0.1:8332",
+      "body": "{\"detail\":\"trial not found\"}"
+    },
+    {
+      "t": 14.39,
+      "method": "GET",
+      "url": "http://127.0.0.1:5331/api/trials/T-131045-7ffa/approvals?status=all",
+      "status": 404,
+      "backend": "127.0.0.1:8331",
+      "body": "{\"detail\":\"trial not found\"}"
+    },
+    {
+      "t": 14.39,
+      "method": "GET",
+      "url": "http://127.0.0.1:5331/api/trials/T-131045-7ffa/record?sections=protocol%2Cprotocol_versions%2Cdesign_review%2Crecruitment%2Capplicants%2Cenrolled%2Cmeasurement_plan",
+      "status": 404,
+      "backend": "127.0.0.1:8332",
+      "body": "{\"detail\":\"trial not found\"}"
+    },
+    {
+      "t": 14.39,
+      "method": "GET",
+      "url": "http://127.0.0.1:5331/api/trials/T-131045-7ffa/kpis",
+      "status": 404,
+      "backend": "127.0.0.1:8331",
+      "body": "{\"detail\":\"trial not found\"}"
+    },
+    {
+      "t": 15.39,
+      "method": "GET",
+      "url": "http://127.0.0.1:5331/api/trials/T-131045-7ffa/state",
+      "status": 404,
+      "backend": "127.0.0.1:8332",
+      "body": "{\"detail\":\"trial not found\"}"
+    }
+  ],
+  "network_failure_count": 9,
+  "api_calls": 120,
+  "toasts": [],
+  "shots": [
+    "docs/testing/screenshots/verify-J13-4.png (a-playing TrialLost)",
+    "docs/testing/screenshots/verify-J13-5.png (b-closed-nav TrialLost)"
+  ]
+}

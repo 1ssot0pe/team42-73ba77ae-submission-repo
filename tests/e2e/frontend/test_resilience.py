@@ -158,6 +158,19 @@ def test_one_503_on_step_retries_and_advances(page: Page):
     assert stored_id(page) == tid
 
 
+
+def test_four_502s_on_step_still_advance(page: Page):
+    """NEW-1: during a backend outage one step can hit 502 several times in a row. 502/503 mean the
+    function never ran, so the client keeps retrying (up to 5 attempts) instead of stopping Play."""
+    tid = create_trial()
+    open_trial(page, tid)
+    expect(page.locator(".mc-dock__id")).to_have_text(tid, timeout=15000)
+    seen = fail_once(page, r"/api/trials/[^/]+/step$", "POST", status=502, times=4)
+    page.get_by_role("button", name="+1 week").click()
+    expect(page.get_by_role("heading", name=re.compile(r"^Day \d+ of "))).to_be_visible(timeout=30000)
+    assert seen["failed"] == 4 and seen["passed"] == 1
+    assert stored_id(page) == tid
+
 # ------------------------------------------------------------------ (b) trial truly gone
 def test_persistent_trial_not_found_shows_lost_state_and_stops_polling(page: Page):
     tid = create_trial()
@@ -205,3 +218,55 @@ def test_refresh_mid_trial_reattaches_to_the_same_trial(page: Page):
     other.goto(APP + "/")
     expect(other.locator(".mc-dock__id")).to_have_text(tid, timeout=15000)
     other.close()
+
+
+# ------------------------------------------------------------------ (d) stale refresh after an approval (N-1)
+def test_state_is_fresh_after_approvals_while_a_slow_refresh_is_in_flight(page: Page):
+    """N-1 (seen on the Vercel preview): after the last approval the header kept "N to sign" and Play stayed
+    disabled, while the server had nothing pending. A refresh that started before an approval was saved was
+    reused for the refresh after it, so the page kept the old state. Here every /state response is held for
+    1.5 s (with data from when it was requested), which makes that overlap certain."""
+    body = json.dumps({"example": "example_psilocybin_trd.md", "n_applicants": 60, "seed": 7,
+                       "auto_approve": False}).encode()
+    req = urllib.request.Request(f"{API}/api/trials", data=body, method="POST", headers={"Content-Type": "application/json"})
+    with urllib.request.urlopen(req, timeout=60) as r:
+        tid = json.load(r)["trial_id"]
+    with urllib.request.urlopen(f"{API}/api/trials/{tid}/approvals", timeout=30) as r:
+        assert len(json.load(r)) >= 2, "needs at least two pending approvals"
+
+    # In the page: a /state response is received at once (data as of the request) but handed to the app
+    # 1.5 s later, without blocking other requests. (A Playwright route handler can't do this: it runs
+    # handlers one at a time, so later responses would be fetched late and come back fresh.)
+    page.add_init_script("""
+      const realFetch = window.fetch.bind(window);
+      window.fetch = async (input, init) => {
+        const res = await realFetch(input, init);
+        const url = typeof input === "string" ? input : input.url;
+        if (window.__slowState && /\\/api\\/trials\\/[^/]+\\/state$/.test(url)) await new Promise(r => setTimeout(r, 1500));
+        return res;
+      };
+    """)
+    open_trial(page, tid)
+    expect(page.locator(".mc-dock__id")).to_have_text(tid, timeout=15000)
+    page.evaluate("window.__slowState = true")
+    slips = page.locator("article.slip")
+    slips.filter(has=page.locator("input[id$='-reviewer']")).first.wait_for(timeout=15000)
+    signed = 0
+    for _ in range(12):                          # sign everything pending, without waiting for refreshes
+        pending = slips.filter(has=page.locator("input[id$='-reviewer']"))
+        if pending.count() == 0:
+            break
+        s = pending.first
+        s.scroll_into_view_if_needed()
+        s.locator("input[id$='-reviewer']").fill("Test Reviewer")
+        s.get_by_role("button", name="Approve").click()
+        signed += 1
+        page.wait_for_timeout(300)
+    assert signed >= 2
+    with urllib.request.urlopen(f"{API}/api/trials/{tid}/state", timeout=30) as r:
+        server = json.load(r)
+    if server["pending_approvals"] == 0:
+        # the page must catch up without a reload: no "N to sign" pill left
+        expect(page.get_by_text(re.compile(r"^[1-9]\d* to sign$"))).to_have_count(0, timeout=12000)
+    else:
+        expect(page.get_by_text(f"{server['pending_approvals']} to sign", exact=True).first).to_be_visible(timeout=12000)

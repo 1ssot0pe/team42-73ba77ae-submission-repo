@@ -1,0 +1,181 @@
+{
+  "base_url": "https://parallax-423oj7mbm-dannybudiada-7381s-projects.vercel.app",
+  "env": "preview-n1",
+  "at": "2026-11-08 13:52:05",
+  "results": [
+    {
+      "id": "J1",
+      "title": "Psilocybin, manual approvals: 2 fixes, shortlist, drift action, amendment, FDA report",
+      "env": "preview-n1",
+      "base_url": "https://parallax-423oj7mbm-dannybudiada-7381s-projects.vercel.app",
+      "passed": false,
+      "error": null,
+      "duration_s": 62.8,
+      "timings": {
+        "create_trial": 1.34,
+        "decide:^Protocol fix.*guess questionn": 0.61,
+        "decide:^Protocol fix.*expectancy": 0.33,
+        "decide:confirm shortlist": 0.94,
+        "play_to_drift": 29.78,
+        "decide:raters to remote": 0.61,
+        "play_to_amendment": 2.44,
+        "decide:permanent": 0.84,
+        "play_to_close": 19.31,
+        "decide:Sign off the FDA blinding repo": 0.72
+      },
+      "failures": [
+        {
+          "t": 7.7,
+          "msg": "still blocked after the shortlist: 'WAITING\\nWaiting for a human: 4 decisions to sign.'",
+          "shot": "docs/testing/screenshots/preview-n1-J1-1.png",
+          "url": "https://parallax-423oj7mbm-dannybudiada-7381s-projects.vercel.app/"
+        },
+        {
+          "t": 60.96,
+          "msg": "no FDA report sign-off slip at close",
+          "shot": "docs/testing/screenshots/preview-n1-J1-2.png",
+          "url": "https://parallax-423oj7mbm-dannybudiada-7381s-projects.vercel.app/"
+        },
+        {
+          "t": 62.73,
+          "msg": "[mission control at close] stray 'UNBLIND' in UI text: ['BLINDING ROWS EXPORTED IN UNBLIND-BLIND-1', 'Release the UNBLIND-BLIND-1 harmonised export', 'Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters', 'Prepared the UNBLIND-BLIND-1 export (357 rows) and asked a human to approve its release.']",
+          "shot": "",
+          "url": "https://parallax-423oj7mbm-dannybudiada-7381s-projects.vercel.app/"
+        }
+      ],
+      "notes": [
+        "trial T-134837-0af8",
+        "drift action slip at day 47"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 332,
+      "toasts": [
+        "TRIAL T-134837-0AF8 CREATED",
+        "APPROVED \u00b7 PROTOCOL FIX: ADD THE UNBLIND-BLIND-1 GUESS QUESTIONNAIRE FOR PARTICIPANTS AND RATERS",
+        "APPROVED \u00b7 PROTOCOL FIX: MEASURE EXPECTANCY BEFORE RANDOMISATION AND AT END OF TREATMENT",
+        "APPROVED \u00b7 CLINICIAN: CONFIRM SHORTLIST OF 49 ELIGIBLE APPLICANTS AND REVIEW 56 FLAGGED",
+        "APPROVED \u00b7 MOVE SITE B RATERS TO REMOTE (CENTRAL) ASSESSMENT",
+        "APPROVED \u00b7 MAKE REMOTE CENTRAL RATERS PERMANENT AT EVERY SITE (AFTER DRIFT AT SITE B (MANCHESTER))",
+        "TRIAL CLOSED \u00b7 FDA BLINDING REPORT WAITING",
+        "APPROVED \u00b7 SIGN OFF THE FDA BLINDING REPORT"
+      ],
+      "shots": [
+        "docs/testing/screenshots/preview-n1-J1-1.png (still blocked after the shortlist: 'WAIT)",
+        "docs/testing/screenshots/preview-n1-J1-2.png (no FDA report sign-off slip at close)",
+        "docs/testing/screenshots/preview-n1-J1-3.png (closed and signed)"
+      ]
+    },
+    {
+      "id": "J3",
+      "title": "MDMA example to close: CAPS-5 labels everywhere, drift at Site C",
+      "env": "preview-n1",
+      "base_url": "https://parallax-423oj7mbm-dannybudiada-7381s-projects.vercel.app",
+      "passed": false,
+      "error": null,
+      "duration_s": 75.7,
+      "timings": {
+        "create_trial": 0.83,
+        "decide:confirm shortlist": 0.34,
+        "play_to_drift": 21.72,
+        "decide:raters to remote": 0.66,
+        "play_to_close": 31.16
+      },
+      "failures": [
+        {
+          "t": 61.9,
+          "msg": "[/] MADRS label in an MDMA/PTSD trial: ['Collected 1 follow-up visits (MADRS, end-of-treatment guess and expectancy), 1 late because they fell before the primary', 'Collected 2 follow-up visits (MADRS, end-of-treatment guess and expectancy), 1 late because they fell before the primary', 'Collected 3 follow-up visits (MADRS, end-of-treatment guess and expectancy), 1 late because they fell before the primary', 'Collected 3 follow-up visits (MADRS, end-of-treatment guess and expectancy).']",
+          "shot": "docs/testing/screenshots/preview-n1-J3-1.png",
+          "url": "https://parallax-423oj7mbm-dannybudiada-7381s-projects.vercel.app/"
+        },
+        {
+          "t": 70.33,
+          "msg": "[/dosing] MADRS label in an MDMA/PTSD trial: ['0 of 73 participants have a week-6 MADRS.', 'Primary endpoint locked: 0 of 73 participants have a week-6 MADRS. No more changes to the primary analysis data.', \"Recorded 1 rater assessment(s): MADRS plus the rater's guess.\", \"Recorded 2 rater assessment(s): MADRS plus the rater's guess.\"]",
+          "shot": "docs/testing/screenshots/preview-n1-J3-2.png",
+          "url": "https://parallax-423oj7mbm-dannybudiada-7381s-projects.vercel.app/dosing"
+        },
+        {
+          "t": 70.59,
+          "msg": "[/dosing] no CAPS-5 label anywhere on the page",
+          "shot": "docs/testing/screenshots/preview-n1-J3-3.png",
+          "url": "https://parallax-423oj7mbm-dannybudiada-7381s-projects.vercel.app/dosing"
+        },
+        {
+          "t": 75.47,
+          "msg": "[/postdose] MADRS label in an MDMA/PTSD trial: ['# FDA blinding report: T-134939-0bd7 **SYNTHETIC DATA.** Standard: UNBLIND-BLIND-1. Drafted on day 90. Primary endpoint ', 'COMP005: -3.6 MADRS points vs placebo (95% CI -5.7 to -1.5). COMP006: -3.8 points vs 1 mg psilocybin (95% CI -5.8 to -1.', 'Collected 1 follow-up visits (MADRS, end-of-treatment guess and expectancy), 1 late because they fell before the primary', 'Collected 2 follow-up visits (MADRS, end-of-treatment guess and expectancy), 1 late because they fell before the primary']",
+          "shot": "docs/testing/screenshots/preview-n1-J3-4.png",
+          "url": "https://parallax-423oj7mbm-dannybudiada-7381s-projects.vercel.app/postdose"
+        },
+        {
+          "t": 75.74,
+          "msg": "[/postdose] no CAPS-5 label anywhere on the page",
+          "shot": "docs/testing/screenshots/preview-n1-J3-5.png",
+          "url": "https://parallax-423oj7mbm-dannybudiada-7381s-projects.vercel.app/postdose"
+        }
+      ],
+      "notes": [
+        "trial T-134939-0bd7",
+        "drift slip at day 35: Move Site C raters to remote (central) assessment"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 333,
+      "toasts": [],
+      "shots": [
+        "docs/testing/screenshots/preview-n1-J3-1.png ([/] MADRS label in an MDMA/PTSD trial: [)",
+        "docs/testing/screenshots/preview-n1-J3-2.png ([/dosing] MADRS label in an MDMA/PTSD tr)",
+        "docs/testing/screenshots/preview-n1-J3-3.png ([/dosing] no CAPS-5 label anywhere on th)",
+        "docs/testing/screenshots/preview-n1-J3-4.png ([/postdose] MADRS label in an MDMA/PTSD )",
+        "docs/testing/screenshots/preview-n1-J3-5.png ([/postdose] no CAPS-5 label anywhere on )"
+      ]
+    },
+    {
+      "id": "J4",
+      "title": "Pasted custom protocol with other site names",
+      "env": "preview-n1",
+      "base_url": "https://parallax-423oj7mbm-dannybudiada-7381s-projects.vercel.app",
+      "passed": false,
+      "error": null,
+      "duration_s": 71.0,
+      "timings": {
+        "create_trial": 0.82,
+        "decide:confirm shortlist": 0.36,
+        "play_to_drift_or_close": 22.69,
+        "decide:raters to remote": 1.04
+      },
+      "failures": [
+        {
+          "t": 68.98,
+          "msg": "example site names leak into a custom-protocol trial: ['Bristol@/: participant unblinding at Site C (Bristol) (guess accuracy 91%, 95% interval 62% to 98%, n=11) noted', 'Bristol@/postdose: # FDA blinding report: T-135055-c505 **SYNTHETIC DATA.** Standard: UNBLIND-BLIND-1. Drafted on day 9', 'Bristol@/predose: participant unblinding at Site C (Bristol) (guess accuracy 91%, 95% interval 62% to 98%, n=11) noted', 'London@/: participant unblinding at Site A (London) (guess accuracy 79%, 95% interval 62% to 89%, n=33) noted ', 'London@/postdose: # FDA blinding report: T-135055-c505 **SYNTHETIC DATA.** Standard: UNBLIND-BLIND-1. Drafted on day 9']",
+          "shot": "docs/testing/screenshots/preview-n1-J4-1.png",
+          "url": "https://parallax-423oj7mbm-dannybudiada-7381s-projects.vercel.app/postdose"
+        },
+        {
+          "t": 69.28,
+          "msg": "none of the pasted site names (Leeds, Glasgow, Cardiff) appear anywhere",
+          "shot": "docs/testing/screenshots/preview-n1-J4-2.png",
+          "url": "https://parallax-423oj7mbm-dannybudiada-7381s-projects.vercel.app/postdose"
+        }
+      ],
+      "notes": [
+        "trial T-135055-c505",
+        "drift slip day 41: Move Site B raters to remote (central) assessment",
+        "pasted site names seen: []"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 341,
+      "toasts": [],
+      "shots": [
+        "docs/testing/screenshots/preview-n1-J4-1.png (example site names leak into a custom-pr)",
+        "docs/testing/screenshots/preview-n1-J4-2.png (none of the pasted site names (Leeds, Gl)"
+      ]
+    }
+  ]
+}

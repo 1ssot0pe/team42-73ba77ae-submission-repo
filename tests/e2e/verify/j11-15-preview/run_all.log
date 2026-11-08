@@ -1,0 +1,52 @@
+== J11 Refresh mid-trial on each page; second tab; deep links [preview-j11-15]
+    note J11: trial T-133505-863e at D+6 / 90
+    FAIL J11: [reload /] day changed 'D+6 / 90' -> 'D+13 / 90'
+    FAIL J11: [reload /predose] day changed 'D+6 / 90' -> 'D+13 / 90'
+    FAIL J11: [reload /portal] day changed 'D+6 / 90' -> 'D+13 / 90'
+    FAIL J11: [reload /dosing] day changed 'D+6 / 90' -> 'D+13 / 90'
+    FAIL J11: [reload /postdose] day changed 'D+6 / 90' -> 'D+13 / 90'
+    FAIL J11: [deep link /predose fresh] no 'No trial yet' empty state
+    FAIL J11: [deep link /portal fresh] no 'No trial yet' empty state
+    FAIL J11: [deep link /dosing fresh] no 'No trial yet' empty state
+    FAIL J11: [deep link /postdose fresh] no 'No trial yet' empty state
+    FAIL J11: [unknown path] not redirected to / (at https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Fparallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app%252Fno-such-page%26nonce%3D92969abe67425939520005ae8648e734575b3b31ee466d1a75909743b3db4e70)
+   -> FAIL in 59.7s, 10 failures, 0 console errors, 0 network failures
+== J13 Play for 2 minutes under polling load; step 30 days at once [preview-j11-15]
+    FAIL J13: play stopped early at day -1: toasts ['TRIAL T-133703-94B6 CREATED', 'TRIAL CLOSED · REPORT SIGNED BY DEMO REVIEWER (AUTO-APPROVE ON)', 'TRIAL T-133803-FDD7 CREATED']
+    note J13: 2 minutes: 3 trials, 182 simulated days, 92 step calls, step latency ms p50=381 max=1519
+    note J13: step 30 days: HTTP 401 in 0.27s, day now None
+    FAIL J13: step 30 days failed: HTTP 401 {"access":"vercel curl <deployment-url>","mcp":"With an authorized Vercel MCP connection (https:\/\/mcp.vercel.com), call web_fetch_vercel_url with url set to the full deployment URL.","protection":{"
+    note J13: step 31 days: HTTP 401 in 0.07s, day now None
+    FAIL J13: step 31 days failed: HTTP 401 {"access":"vercel curl <deployment-url>","mcp":"With an authorized Vercel MCP connection (https:\/\/mcp.vercel.com), call web_fetch_vercel_url with url set to the full deployment URL.","protection":{"
+   -> FAIL in 125.5s, 3 failures, 0 console errors, 0 network failures
+== J14 Gemini off (local) / on (production): dock pill matches /api/health [preview-j11-15]
+    FAIL J14: /api/health HTTP 401
+    note J14: health gemini=False
+    note J14: dock pill: 'GEMINI ON'
+    FAIL J14: dock says 'GEMINI ON' but /api/health gemini=False
+   -> FAIL in 6.6s, 2 failures, 0 console errors, 0 network failures
+== J15 Every nav link, including Evidence engine [preview-j11-15]
+    note J15: Evidence engine href: http://localhost:8501
+    FAIL J15: Evidence engine link points at http://localhost:8501, which only works on the developer's machine
+    note J15: Evidence engine tab url after click: chrome-error://chromewebdata/
+    FAIL J15: Evidence engine tab did not load (url chrome-error://chromewebdata/, title '')
+   -> FAIL in 9.0s, 2 failures, 0 console errors, 0 network failures
+
+SUMMARY preview-j11-15 https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app
+  J11  FAIL   59.7s  Refresh mid-trial on each page; second tab; deep links
+        - [reload /] day changed 'D+6 / 90' -> 'D+13 / 90'
+        - [reload /predose] day changed 'D+6 / 90' -> 'D+13 / 90'
+        - [reload /portal] day changed 'D+6 / 90' -> 'D+13 / 90'
+        - [reload /dosing] day changed 'D+6 / 90' -> 'D+13 / 90'
+        - [reload /postdose] day changed 'D+6 / 90' -> 'D+13 / 90'
+  J13  FAIL  125.5s  Play for 2 minutes under polling load; step 30 days at once
+        - play stopped early at day -1: toasts ['TRIAL T-133703-94B6 CREATED', 'TRIAL CLOSED · REPORT SIGNED BY DEMO REVIEWER (AUTO-APPROVE ON)', 'TRIAL T-133803-FDD7 CRE
+        - step 30 days failed: HTTP 401 {"access":"vercel curl <deployment-url>","mcp":"With an authorized Vercel MCP connection (https:\/\/mcp.vercel.com), call web_fetc
+        - step 31 days failed: HTTP 401 {"access":"vercel curl <deployment-url>","mcp":"With an authorized Vercel MCP connection (https:\/\/mcp.vercel.com), call web_fetc
+  J14  FAIL    6.6s  Gemini off (local) / on (production): dock pill matches /api
+        - /api/health HTTP 401
+        - dock says 'GEMINI ON' but /api/health gemini=False
+  J15  FAIL    9.0s  Every nav link, including Evidence engine
+        - Evidence engine link points at http://localhost:8501, which only works on the developer's machine
+        - Evidence engine tab did not load (url chrome-error://chromewebdata/, title '')
+results: tests/e2e/verify/j11-15-preview/run_all.json

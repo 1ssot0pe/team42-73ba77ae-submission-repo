@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import contextlib
 import json
+import os
 import re
 import time
 import traceback
@@ -55,6 +56,14 @@ class Journey:
                                            color_scheme=color_scheme, reduced_motion="reduce")
         self.context.set_default_timeout(timeout_ms)
         self.context.add_init_script(TOAST_SPY)
+        # Protected Vercel previews: PARALLAX_BYPASS_FILE names a file holding the protection-bypass secret.
+        # The header goes only to the deployment's own origin (not to Google Fonts, where a custom
+        # header would trigger a CORS preflight). The secret is never logged.
+        bypass_file = os.environ.get("PARALLAX_BYPASS_FILE")
+        if bypass_file:
+            secret = Path(bypass_file).read_text().strip()
+            self.context.route(f"{self.base_url}/**", lambda route: route.continue_(
+                headers={**route.request.headers, "x-vercel-protection-bypass": secret}))
         self.console_errors: List[Dict[str, Any]] = []
         self.network_failures: List[Dict[str, Any]] = []
         self.failures: List[Dict[str, Any]] = []
@@ -314,6 +323,11 @@ def play(j: Journey, stop_when: Optional[Callable[[], bool]] = None, timeout_s: 
     """
     p = j.page
     btn = dock_button(p, "Play")
+    # After a decision the app refreshes state before enabling Play: ~0.06 s locally, ~0.3 s on Vercel.
+    # Give it up to 8 s rather than checking once (that raced on the preview).
+    t0 = time.time()
+    while not btn.is_enabled() and time.time() - t0 < 8:
+        p.wait_for_timeout(200)
     if not btn.is_enabled():
         return "disabled"
     btn.click()
