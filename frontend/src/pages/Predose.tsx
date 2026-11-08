@@ -5,8 +5,9 @@
  * `only` picks one slice of the page for a workspace stage:
  *   "design"      protocol editor, FDA checklist, blinding risk sphere, drafted section, versions
  *   "recruitment" recruitment ads and the measurement plan
- *   "screening"   screening funnel, fairness table, flagged ledger
+ *   "screening"   screening funnel and approvals; the flagged ledger and fairness table open in drawers
  * Left undefined, everything renders. Data fetching is identical in every case.
+ * Design v2: ledgers, full tables and the agent log open in right-hand drawers ("View ..." buttons).
  */
 import { useEffect, useState, type ReactNode } from "react";
 import { api, errorText } from "../api";
@@ -18,8 +19,9 @@ import {
 import { FdaChecklist } from "../components/predose/FdaChecklist";
 import { ProtocolEditor } from "../components/predose/ProtocolEditor";
 import { DraftedSection, VersionHistory } from "../components/predose/BlindingSection";
-import { FairnessTable, FlaggedLedger, ScreeningFunnel } from "../components/predose/Screening";
-import { MeasurementPlanLedger, RecruitmentAds } from "../components/predose/RecruitmentAds";
+import { FairnessTable, FlaggedLedger, ScreeningFunnel, fairnessSummary } from "../components/predose/Screening";
+import { MeasurementPlanLedger, RecruitmentAds, measurementPlanSummary } from "../components/predose/RecruitmentAds";
+import { DetailsDrawer, DetailsRow } from "../components/projects/Drawer";
 import { RiskCard } from "../components/predose/UnblindingSphere";
 import { PredoseApprovals } from "../components/review/PredoseApprovals";
 import "../styles/module.css";
@@ -80,6 +82,15 @@ export default function Predose({ only }: { only?: PredoseSlice } = {}) {
   const enrolledN = data?.enrolled?.length ?? 0;
   const funnel = data?.recruitment?.funnel;
 
+  const flaggedN = (data?.applicants ?? []).filter((a) => a.screening?.decision === "needs_clinician").length;
+  const fairness = fairnessSummary(data?.recruitment?.fairness ?? []);
+  const planLine = measurementPlanSummary(data?.measurement_plan);
+  const agentLog = (
+    <DetailsDrawer label="View agent log" title="Agent log" subtitle="Pre-dosing agents, newest first" width={560}>
+      <AgentLog module="predose" title="Agent log" />
+    </DetailsDrawer>
+  );
+
   const show = (slice: PredoseSlice) => !only || only === slice;
   const full = !only;
   const lead = enrolledN > 0
@@ -137,6 +148,7 @@ export default function Predose({ only }: { only?: PredoseSlice } = {}) {
                     <DraftedSection md={dr?.blinding_section_md} />
                     <VersionHistory versions={versions} />
                   </section>
+                  {only === "design" ? <DetailsRow>{agentLog}</DetailsRow> : null}
                 </>
               ) : null}
 
@@ -144,8 +156,23 @@ export default function Predose({ only }: { only?: PredoseSlice } = {}) {
                 <section className="st-section">
                   <SectionHead label="Pre-screening agent" title="Screening" />
                   <ScreeningFunnel funnel={funnel} />
-                  <FairnessTable groups={data.recruitment?.fairness ?? []} />
-                  <FlaggedLedger applicants={data.applicants ?? []} />
+                  {fairness ? (
+                    <p className="st-status">
+                      <span className={`st-dot st-dot--${fairness.flagged ? "watch" : "good"}`} aria-hidden="true" />
+                      {fairness.text}
+                    </p>
+                  ) : null}
+                  <DetailsRow>
+                    <DetailsDrawer label="View screening ledger" title="Screening ledger"
+                      meta={<><span className="num">{flaggedN}</span> flagged</>}
+                      subtitle="Applicants flagged for a clinician, newest first" width={720}>
+                      <FlaggedLedger applicants={data.applicants ?? []} />
+                    </DetailsDrawer>
+                    <DetailsDrawer label="View fairness table" title="Fairness" subtitle="Eligibility by group" width={640}>
+                      <FairnessTable groups={data.recruitment?.fairness ?? []} />
+                    </DetailsDrawer>
+                    {only === "screening" ? agentLog : null}
+                  </DetailsRow>
                 </section>
               ) : null}
 
@@ -158,12 +185,19 @@ export default function Predose({ only }: { only?: PredoseSlice } = {}) {
 
                   <section className="st-section">
                     <SectionHead label="Measurement planner" title="Measurement plan" />
-                    <MeasurementPlanLedger plan={data.measurement_plan} />
+                    <p className="st-lead">{planLine}</p>
+                    <DetailsRow>
+                      <DetailsDrawer label="View measurement plan" title="Measurement plan" width={760}
+                        subtitle="Instruments, who answers them and when">
+                        <MeasurementPlanLedger plan={data.measurement_plan} />
+                      </DetailsDrawer>
+                      {only === "recruitment" ? agentLog : null}
+                    </DetailsRow>
                   </section>
                 </>
               ) : null}
 
-              {full ? <AgentLog module="predose" title="Agent log" /> : null}
+              {full ? <DetailsRow>{agentLog}</DetailsRow> : null}
             </>
           )}
         </div>

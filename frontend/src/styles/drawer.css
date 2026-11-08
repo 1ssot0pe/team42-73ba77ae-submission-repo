@@ -1,0 +1,92 @@
+/* Right-hand details drawer and the quiet "View ..." buttons that open it (design v2).
+   Flat eggshell surface, hairline left border, a dim scrim. No glass. Full width on phones.
+   Content inside is portalled to <body>, so the stage-page ledger and log rules are repeated here. */
+
+/* ------------------------------------------------------------ details buttons */
+.pdr-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-2) var(--space-6); min-width: 0; }
+.pdr-btn {
+  appearance: none; background: none; border: 0; padding: 4px 0; margin: 0; cursor: pointer;
+  display: inline-flex; align-items: baseline; gap: var(--space-2); max-width: 100%; text-align: left;
+  font: 400 14px/1.4 var(--font-body); color: var(--color-graphite);
+}
+.pdr-btn__label {
+  text-decoration: underline; text-decoration-color: var(--color-stone); text-underline-offset: 4px;
+  overflow-wrap: anywhere;
+}
+.pdr-btn__meta { font: 400 13px/1.4 var(--font-body); color: var(--color-smoke); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pdr-btn:hover { color: var(--color-ink); }
+.pdr-btn:hover .pdr-btn__label { text-decoration-color: currentColor; }
+.pdr-btn:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 3px; border-radius: 2px; }
+.pdr__close { flex: none; text-decoration: underline; text-decoration-color: var(--color-stone); text-underline-offset: 4px; }
+.pdr__close:hover { text-decoration-color: currentColor; }
+
+/* ------------------------------------------------------------ drawer */
+.pdr-root { position: fixed; inset: 0; z-index: 190; }
+.pdr-scrim { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.24); animation: pdr-fade 160ms ease-out; }
+.pdr {
+  position: absolute; top: 0; right: 0; bottom: 0;
+  width: min(var(--pdr-w, 480px), 100vw); max-width: 100vw;
+  display: flex; flex-direction: column; min-width: 0;
+  background: var(--color-eggshell); color: var(--color-ink);
+  border-left: 1px solid var(--color-stone);
+  overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  animation: pdr-in 200ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.pdr:focus { outline: none; }
+.pdr:focus-visible { box-shadow: inset 2px 0 0 var(--color-ink); }
+.pdr__head {
+  position: sticky; top: 0; z-index: 2;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-4);
+  padding: var(--space-6); padding-top: max(var(--space-6), env(safe-area-inset-top, 0px));
+  background: var(--color-eggshell); border-bottom: 1px solid var(--color-stone);
+}
+.pdr__heading { display: flex; flex-direction: column; gap: var(--space-1); min-width: 0; }
+.pdr__title { margin: 0; font: 300 24px/1.2 var(--font-display); letter-spacing: -0.2px; color: var(--color-ink); text-wrap: balance; overflow-wrap: anywhere; }
+.pdr__sub { margin: 0; font: 400 13px/1.5 var(--font-body); color: var(--color-smoke); }
+.pdr__body {
+  display: flex; flex-direction: column; gap: var(--space-6); min-width: 0;
+  padding: var(--space-6); padding-bottom: max(var(--space-8), env(safe-area-inset-bottom, 0px));
+}
+.pdr__body .num, .pdr__body .t-readout { font-variant-numeric: tabular-nums; }
+@media (max-width: 560px) {
+  .pdr { border-left: 0; }
+  .pdr__head, .pdr__body { padding-left: var(--space-4); padding-right: var(--space-4); }
+}
+@keyframes pdr-in { from { transform: translateX(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes pdr-fade { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .pdr, .pdr-scrim { animation: none; } }
+
+/* ------------------------------------------------------------ content inside the drawer: flat */
+/* Ledgers: no sheet, hairline above, wide tables scroll sideways inside the drawer, never the page. */
+.pdr .ledger { background: none; border-radius: 0; border-top: 1px solid var(--color-stone); max-width: 100%; min-width: 0; overflow: visible; }
+.pdr .pdr__body > .ledger:first-child, .pdr .pdr__body > .mtables:first-child > .ledger:first-child,
+.pdr .pdr__body > .stack:first-child > .ledger:first-child { border-top: 0; }
+.pdr .ledger__scroll { max-height: none !important; overflow-x: auto; overflow-y: visible; -webkit-overflow-scrolling: touch; }
+.pdr .ledger__title { padding: var(--space-4) 0 var(--space-2); font: 600 16px/1.4 var(--font-body); }
+.pdr .ledger__empty { padding: var(--space-4) 0; }
+.pdr .ledger th { position: static; background: none; text-transform: none; letter-spacing: 0; font: 400 13px/1.5 var(--font-body); color: var(--color-smoke); border-bottom: 1px solid var(--color-stone); }
+.pdr .ledger th:first-child, .pdr .ledger td:first-child { padding-left: 0; }
+.pdr .ledger th:last-child, .pdr .ledger td:last-child { padding-right: 0; }
+.pdr .mtables { gap: var(--space-6); }
+
+/* Agent log: flat, no taupe sheet, the drawer scrolls rather than the list. */
+.pdr .log { background: none; border-radius: 0; padding: 0; gap: var(--space-4); }
+.pdr .log__head { padding: 0; }
+.pdr .log__head > .row > .t-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.pdr .log__rows { max-height: none; padding: 0; -webkit-mask-image: none; mask-image: none; }
+.pdr .log__row { padding-left: 0; padding-right: 0; }
+.pdr .log__row--human { padding-left: var(--space-3); }
+.pdr .log__row--warn { background: none; }
+.pdr .log__row--warn .log__text { color: var(--color-ink); }
+.pdr .log__empty { padding: var(--space-2) 0; }
+
+/* Charts inside a wide drawer stack in one column. */
+.pdr .mcharts { grid-template-columns: minmax(0, 1fr); gap: var(--space-8); }
+
+/* Agent log tags: a small dot plus a word, not a pill. */
+.log__tag { display: inline-flex; align-items: center; gap: 6px; font: 400 12px/1.4 var(--font-body); color: var(--color-smoke); }
+.log__tag::before { content: ""; width: 7px; height: 7px; border-radius: 50%; flex: none; background: var(--color-ash); }
+.log__tag--watch { color: var(--status-watch-fg); }
+.log__tag--watch::before { background: var(--status-watch-fg); }
+.log__tag--good::before { background: var(--status-good-fg); }

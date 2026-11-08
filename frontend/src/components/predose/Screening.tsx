@@ -3,7 +3,7 @@
  * Funnel: Applied → Eligible (auto) → Excluded (auto) → Needs clinician → Enrolled, bar length proportional
  * to the count, stone fill with an ink leading edge; Needs clinician watch, Excluded alert, Enrolled ink.
  */
-import { EvidenceQuote, LedgerTable, StatusPill, formatNumber } from "../shared";
+import { EvidenceQuote, LedgerTable, formatNumber } from "../shared";
 import type { Applicant, FairnessGroup, Funnel } from "../../types";
 
 const STAGES: Array<{ key: keyof Funnel; label: string; tone: string }> = [
@@ -54,7 +54,7 @@ export function FlaggedLedger({ applicants }: { applicants: Applicant[] }) {
     <span className="flagged__who">
       <span className="t-id">{a.id}</span>
       <span className="c-graphite">{a.name}</span>
-      {a.source === "portal" ? <StatusPill tone="outline">Portal</StatusPill> : null}
+      {a.source === "portal" ? <span className="st-label">From the portal</span> : null}
     </span>,
     <ul className="flagged__reasons">{a.screening.reasons.map((r, i) => <li key={i}>{r}</li>)}</ul>,
     a.screening.evidence?.length ? (
@@ -64,7 +64,7 @@ export function FlaggedLedger({ applicants }: { applicants: Applicant[] }) {
     ) : <span className="c-ash">No disclosure</span>,
   ]);
   return (
-    <LedgerTable title={`Flagged for a clinician · ${flagged.length} applicants`}
+    <LedgerTable title={`Flagged for a clinician: ${flagged.length} ${flagged.length === 1 ? "applicant" : "applicants"}`}
       columns={["Applicant", "Reasons", "Quoted disclosure"]} rows={rows} maxHeight={420}
       empty="No applicant is waiting for a clinician." />
   );
@@ -87,7 +87,9 @@ export function FairnessTable({ groups }: { groups: FairnessGroup[] }) {
       <div className="fair__notes">
         {groups.map((g) => (
           <div key={g.by} className="fair__note">
-            <StatusPill tone={g.flag ? "watch" : "good"}>{g.flag ? "Check" : "Even"}</StatusPill>
+            <span className="st-status fair__word">
+              <span className={`st-dot st-dot--${g.flag ? "watch" : "good"}`} aria-hidden="true" />{g.flag ? "Check" : "Even"}
+            </span>
             <span className="t-body-sm c-graphite">
               {g.by}: spread <span className="num">{formatNumber(g.spread_pts)} pts</span>
               {g.note ? `. ${g.note}` : ", within 20 pts."}
@@ -97,4 +99,14 @@ export function FairnessTable({ groups }: { groups: FairnessGroup[] }) {
       </div>
     </div>
   );
+}
+
+/** One line for the page: how many groupings were checked and whether any needs a look. Null before screening. */
+export function fairnessSummary(groups: FairnessGroup[]): { text: string; flagged: boolean } | null {
+  if (!groups.length) return null;
+  const flagged = groups.filter((g) => g.flag).map((g) => g.by);
+  if (flagged.length === 0) {
+    return { flagged: false, text: `Fairness: eligibility is even across ${groups.length === 1 ? "the one grouping" : `all ${groups.length} groupings`} checked.` };
+  }
+  return { flagged: true, text: `Fairness: check eligibility by ${flagged.join(" and ")}. The full table is in the fairness drawer.` };
 }

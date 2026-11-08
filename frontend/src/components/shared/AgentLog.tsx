@@ -2,15 +2,15 @@
  * AgentLog (design.md 8.9). The lab notebook of everything the agents did. Newest first.
  * Props: module (optional: only that module's events, e.g. "predose"); title (default "Agent log");
  *   limit (events fetched, default 400); moduleTabs (default true when no module is given: filter pills by module).
- * Filter tabs: All, Decisions, Warnings, Human. Decision rows carry a DECISION pill, warnings a watch tint,
- * human rows a good-tint left hairline. Refetches whenever trial.tick changes.
+ * Filter tabs: All, Decisions, Warnings, Human. Each tagged row carries a small dot plus a word (Decision,
+ * Warning, Human); human rows also a good-tint left hairline. Refetches whenever trial.tick changes.
  */
 import { useEffect, useMemo, useState } from "react";
 import { api, errorText } from "../../api";
 import { useTrial } from "../../trial";
 import type { EventLevel, TrialEvent } from "../../types";
 import { formatDay, moduleLabel } from "./format";
-import { StatusPill } from "./Pills";
+import "../../styles/drawer.css";
 
 type Filter = "all" | "decision" | "warn" | "human";
 const FILTERS: Array<{ id: Filter; label: string }> = [
@@ -95,9 +95,9 @@ export function AgentLog({ module, title = "Agent log", limit = 400, moduleTabs 
                 <span className="log__agent">
                   {e.agent}
                   {!module && e.module ? <span className="log__module">{moduleLabel(String(e.module))}</span> : null}
-                  {e.level === "decision" ? <StatusPill tone="outline">Decision</StatusPill> : null}
-                  {e.level === "warn" ? <StatusPill tone="watch">Warning</StatusPill> : null}
-                  {e.level === "human" ? <StatusPill tone="good">Human</StatusPill> : null}
+                  {e.level === "decision" ? <span className="log__tag">Decision</span> : null}
+                  {e.level === "warn" ? <span className="log__tag log__tag--watch">Warning</span> : null}
+                  {e.level === "human" ? <span className="log__tag log__tag--good">Human</span> : null}
                 </span>
                 <span className="log__text">{e.text}</span>
               </div>

@@ -1,12 +1,13 @@
 /**
  * Report stage: the FDA blinding report status (from state.report_status) and the post-dosing approvals,
- * which is where the report is signed off.
+ * which is where the report is signed off. The whole trial's agent log opens in a right-hand drawer.
  */
-import { ApprovalInbox } from "../shared";
+import { AgentLog, ApprovalInbox } from "../shared";
 import { ReportSeal } from "../mission/ReportStatus";
 import { isSigned, reportSentence, signedText } from "../mission/reportText";
 import type { TrialState } from "../../types";
 import { StatusDot, type DotTone } from "./StatusDot";
+import { DetailsDrawer, DetailsRow } from "./Drawer";
 
 const TONE: Record<string, DotTone> = {
   none: "neutral",
@@ -32,6 +33,11 @@ export function ReportPanel({ state }: { state: TrialState }) {
           {isSigned(rs) ? <ReportSeal report={rs} /> : <StatusDot tone={TONE[rs?.status ?? "none"] ?? "neutral"}>{word}</StatusDot>}
         </p>
         <p className="ws-lede">{line}</p>
+        <DetailsRow>
+          <DetailsDrawer label="View agent log" title="Agent log" subtitle="Every agent in the trial, newest first" width={600}>
+            <AgentLog title="Agent log" />
+          </DetailsDrawer>
+        </DetailsRow>
       </section>
       <section className="ws-section">
         <ApprovalInbox module="postdose" title="Sign-off" />

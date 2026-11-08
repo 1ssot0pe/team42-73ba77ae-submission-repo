@@ -63,7 +63,7 @@ export function RecruitmentAds({ recruitment }: { recruitment: Recruitment | nul
           <section className="st-block stack">
             <div className="row">
               <span className="st-label">Behavioural targeting</span>
-              <StatusPill tone="watch">Parked</StatusPill>
+              <span className="st-status"><span className="st-dot st-dot--watch" aria-hidden="true" />Parked</span>
             </div>
             <p className="t-body-sm c-graphite">{parked}</p>
           </section>
@@ -115,13 +115,23 @@ export function MeasurementPlanLedger({ plan }: { plan: MeasurementPlan | null |
   return (
     <div className="stack">
       <div className="row mplan__meta">
-        <StatusPill tone="ink">{plan.standard}</StatusPill>
         <span className="t-body-sm c-graphite">
-          <span className="num">{plan.instruments.length}</span> instruments · primary endpoint at
+          {plan.standard}: <span className="num">{plan.instruments.length}</span> instruments, primary endpoint at
           week <span className="num">{plan.primary_week}</span>
         </span>
       </div>
       <LedgerTable columns={[{ label: "Instrument", mono: true }, "Who", "Questions", "Timepoints", "Purpose"]} rows={rows} maxHeight={560} />
     </div>
   );
+}
+
+/** One sentence for the page, so the full ledger can live in a drawer. */
+export function measurementPlanSummary(plan: MeasurementPlan | null | undefined): string {
+  if (!plan || !Array.isArray(plan.instruments) || plan.instruments.length === 0) {
+    return "The measurement planner builds the UNBLIND-BLIND-1 schedule once a clinician approves the shortlist.";
+  }
+  const n = plan.instruments.length;
+  const who = Array.from(new Set(plan.instruments.map((i) => humanise(i.who).toLowerCase()).filter(Boolean)));
+  const whoText = who.length ? `, answered by ${who.length > 1 ? `${who.slice(0, -1).join(", ")} and ${who[who.length - 1]}` : who[0]}` : "";
+  return `${plan.standard ? `${plan.standard}: ` : ""}${n} ${n === 1 ? "instrument" : "instruments"}${whoText}. Primary endpoint at week ${plan.primary_week}.`;
 }

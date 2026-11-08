@@ -2,7 +2,9 @@
  * Generic stage content for dosing and follow-up (design v2). Embedded inside the project workspace,
  * which supplies the heading, trial clock and stepper, so no page chrome is drawn here.
  * Rendered entirely from the module's view model (GET /modules/{module}/view), refetched on every trial tick:
- *   stub note -> bottlenecks -> one readout row -> agent notes -> charts -> approvals -> forms -> tables -> agent log.
+ *   stub note -> one readout row -> approvals -> the key chart -> details -> forms.
+ * Design v2: the bottlenecks, the other charts, the agent notes, the tables and the agent log open in
+ * right-hand drawers.
  * Every view key is optional; normalise.ts reads them defensively.
  */
 import { useEffect, useMemo, useState } from "react";
@@ -15,6 +17,7 @@ import {
 import {
   ModuleChart, ViewCards, ViewForm, ViewTables, readCards, readCharts, readForms, readKpis, readTables,
 } from "../components/module";
+import { DetailsDrawer, DetailsRow } from "../components/projects/Drawer";
 import "../styles/module.css";
 
 export interface ModulePageProps {
@@ -72,6 +75,7 @@ export default function ModulePage({ module }: ModulePageProps) {
 
   const isStub = view?.status === "stub" || state?.module_status?.[module] === "stub";
   const title = (typeof view?.title === "string" && view.title) || label;
+  const keyChart = model.charts[0] ?? null;
 
   if (!trialId) {
     return (
@@ -103,39 +107,59 @@ export default function ModulePage({ module }: ModulePageProps) {
       ) : null}
       {view?.error ? <EmptyState title="View not available" message={String(view.error)} /> : null}
 
-      <section className="st-section st-section--first" aria-label="Bottlenecks and readouts">
-        <BottleneckCards module={module} />
+      <section className="st-section st-section--first" aria-label="Readouts">
         <ReadoutGrid kpis={model.kpis} empty={view ? "This module reports no readouts yet." : "Loading readouts."} />
       </section>
 
-      {model.cards.length > 0 ? (
-        <section className="st-section" aria-labelledby="m-cards">
-          <div className="st-head">
-            <div className="st-head__text">
-              <h2 id="m-cards" className="st-title">What the agents see</h2>
-              <p className="st-label"><span className="num">{model.cards.length}</span> {model.cards.length === 1 ? "note" : "notes"}</p>
-            </div>
-          </div>
-          <ViewCards cards={model.cards} />
-        </section>
-      ) : null}
-
-      {model.charts.length > 0 ? (
-        <section className="st-section" aria-labelledby="m-charts">
-          <div className="st-head">
-            <div className="st-head__text">
-              <h2 id="m-charts" className="st-title">Charts</h2>
-              <p className="st-label">Synthetic data</p>
-            </div>
-          </div>
-          <div className="mcharts">
-            {model.charts.map((c, i) => <ModuleChart key={`${c.title}-${i}`} chart={c} />)}
-          </div>
-        </section>
-      ) : null}
-
       <section className="st-section" aria-label="Approvals">
         <ApprovalInbox module={module} title="Approvals" />
+      </section>
+
+      <section className="st-section" aria-labelledby="m-charts">
+        {keyChart ? (
+          <>
+            <div className="st-head">
+              <div className="st-head__text">
+                <h2 id="m-charts" className="st-title">At a glance</h2>
+                <p className="st-label">Synthetic data</p>
+              </div>
+            </div>
+            <div className="mcharts mcharts--key">
+              <ModuleChart chart={keyChart} />
+            </div>
+          </>
+        ) : (
+          <h2 id="m-charts" className="mdetails__title">Details</h2>
+        )}
+        <DetailsRow>
+          <DetailsDrawer label="View bottlenecks" title="Bottlenecks" width={560}
+            subtitle="The published problems this stage is built to fix, with their sources">
+            <BottleneckCards module={module} />
+          </DetailsDrawer>
+          {model.charts.length > 1 ? (
+            <DetailsDrawer label="View all charts" title="Charts" subtitle="Synthetic data" width={760}
+              meta={<><span className="num">{model.charts.length}</span> charts</>}>
+              <div className="mcharts">
+                {model.charts.map((c, i) => <ModuleChart key={`${c.title}-${i}`} chart={c} />)}
+              </div>
+            </DetailsDrawer>
+          ) : null}
+          {model.cards.length > 0 ? (
+            <DetailsDrawer label="View agent notes" title="What the agents see"
+              meta={<><span className="num">{model.cards.length}</span> {model.cards.length === 1 ? "note" : "notes"}</>}>
+              <ViewCards cards={model.cards} />
+            </DetailsDrawer>
+          ) : null}
+          {model.tables.length > 0 ? (
+            <DetailsDrawer label="View all tables" title="Ledgers" subtitle="Synthetic data. Wide tables scroll sideways." width={880}
+              meta={<><span className="num">{model.tables.length}</span> {model.tables.length === 1 ? "table" : "tables"}</>}>
+              <ViewTables tables={model.tables} />
+            </DetailsDrawer>
+          ) : null}
+          <DetailsDrawer label="View agent log" title="Agent log" subtitle={`${label} agents, newest first`} width={560}>
+            <AgentLog module={module} title="Agent log" />
+          </DetailsDrawer>
+        </DetailsRow>
       </section>
 
       {model.forms.length > 0 ? (
@@ -151,22 +175,6 @@ export default function ModulePage({ module }: ModulePageProps) {
           </div>
         </section>
       ) : null}
-
-      {model.tables.length > 0 ? (
-        <section className="st-section" aria-labelledby="m-tables">
-          <div className="st-head">
-            <div className="st-head__text">
-              <h2 id="m-tables" className="st-title">Ledgers</h2>
-              <p className="st-label"><span className="num">{model.tables.length}</span> {model.tables.length === 1 ? "table" : "tables"}</p>
-            </div>
-          </div>
-          <ViewTables tables={model.tables} />
-        </section>
-      ) : null}
-
-      <section className="st-section">
-        <AgentLog module={module} title="Agent log" />
-      </section>
     </div>
   );
 }
