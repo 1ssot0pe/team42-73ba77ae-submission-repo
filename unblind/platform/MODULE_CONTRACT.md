@@ -41,10 +41,17 @@ The master sets `rec["day"]` and `rec["phase"]`, delivers messages, then calls `
 | `recruitment` | predose | `{ads[], funnel{applied, auto_eligible, auto_excluded, needs_clinician, enrolled}}` |
 | `applicants` | predose | applicant dicts + `screening{decision: eligible / excluded / needs_clinician, reasons[], evidence[]}` |
 | `enrolled` | predose | `{id, name, site, stratum, prior_psychedelic_use, dosing_day, consents{...}}` |
-| `measurement_plan` | predose | `{instruments[{id, who, question(s), timepoints_days[], purpose}], standard: "UNBLIND-BLIND-1"}` |
+| `measurement_plan` | predose | `{standard: "UNBLIND-BLIND-1", primary_week, instruments[{id, who, questions[], timepoints[], timepoints_days[], purpose}]}` (see the note below) |
 | `schedule` | predose creates; dosing and postdose update `status` | `{id, participant, site, day, kind, owner, instrument, status}` where kind is one of `dosing_session, monitor_debrief, participant_checkin, rater_assessment, followup, research_question` |
 | `sessions`, `checkins`, `debriefs`, `outcomes`, `blinding_metrics`, `alerts`, `actions`, `missing_data`, `literature` | dosing | see dosing/module.py docstring |
 | `followups`, `research_questions`, `exports`, `report` | postdose | see postdose/module.py docstring |
+
+**Measurement plan timepoints.** `timepoints_days` is a list of **integers**: days relative to each participant's
+`dosing_day` (`-1` = before randomisation or baseline, `0` = dosing day, `1` = the day after, `7` = week 1,
+`21` = week 3, `7 * primary_week` = the primary endpoint visit, `56` = week 8, `84` = week 12). `timepoints` is
+the parallel list of human labels ("before randomisation", "baseline", "dosing day", "dosing +1", "week 1", ...),
+one label per day, in the same order. The primary week comes from `protocol.primary_endpoint.week`, not a fixed 6.
+So a participant's absolute day for a timepoint is `dosing_day + timepoints_days[k]`.
 
 `outcomes` rows: `{participant, site, day, visit_week, madrs, rater_id, rater_guess, patient_guess}`.
 `checkins` rows: `{participant, site, day, who: participant|rater|monitor, rater_id, guess: drug|control|dont_know, confidence, expectancy, channel: text|voice}`.

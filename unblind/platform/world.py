@@ -23,6 +23,21 @@ FIRST = ["Alex", "Sam", "Jordan", "Priya", "Tom", "Aisha", "Leo", "Maya", "Ben",
 MEDS = ["none", "sertraline (SSRI)", "escitalopram (SSRI)", "lithium", "venlafaxine (SNRI)", "quetiapine",
         "propranolol", "none", "none", "sertraline (SSRI)"]
 SITES = ["Site A (London)", "Site B (Manchester)", "Site C (Bristol)"]
+PTSD_INDICATIONS = ("ptsd", "post-traumatic stress disorder")   # protocol indications that mean PTSD (lower case)
+FREE_TEXT_DEPRESSION = [
+    "I've tried lots of antidepressants and nothing has really helped.",
+    "My GP suggested I look into trials.",
+    "I read about psilocybin research and want to help.",
+    "Depression has affected my work for years.",
+    "I'd like to try something different.",
+]
+FREE_TEXT_PTSD = [
+    "Therapy has helped a bit but the flashbacks still come back.",
+    "My GP suggested I look into trials.",
+    "I read about MDMA-assisted therapy research and want to help.",
+    "Nightmares and being on edge have affected my work for years.",
+    "I'd like to try something different.",
+]
 
 
 @dataclass
@@ -45,8 +60,12 @@ class World:
         self._baseline: Dict[str, float] = {}
 
     # ------------------------------------------------------------- recruitment
-    def applicants(self, n: int, start_id: int = 1) -> List[dict]:
+    def applicants(self, n: int, start_id: int = 1, indication: Optional[str] = None) -> List[dict]:
+        """SYNTHETIC applicants. With a PTSD indication most self-report PTSD (some depression and anxiety);
+        otherwise (the default) the population is depression-led. The default path draws exactly the same random
+        numbers as before, so seeded runs are unchanged."""
         r = self.rng
+        ptsd = str(indication or "").strip().lower() in PTSD_INDICATIONS
         out = []
         for i in range(start_id, start_id + n):
             age = r.randint(16, 79)
@@ -59,13 +78,7 @@ class World:
             cardio = r.random() < 0.06
             pregnant = r.random() < 0.02
             hidden = r.random() < 0.06
-            free = r.choice([
-                "I've tried lots of antidepressants and nothing has really helped.",
-                "My GP suggested I look into trials.",
-                "I read about psilocybin research and want to help.",
-                "Depression has affected my work for years.",
-                "I'd like to try something different.",
-            ])
+            free = r.choice(FREE_TEXT_PTSD if ptsd else FREE_TEXT_DEPRESSION)
             if hidden:
                 free = r.choice([
                     "I was diagnosed with bipolar disorder last year but I'm stable now.",
@@ -76,8 +89,10 @@ class World:
                 "id": f"APP-{i:04d}", "name": f"{r.choice(FIRST)} {chr(65 + r.randint(0, 25))}.",
                 "age": age, "phone": ("+44 7" if uk else r.choice(["+1 415", "+33 6", "+49 151"])) + f"{r.randint(100000000, 999999999)}"[:9],
                 "country": "UK" if uk else r.choice(["US", "France", "Germany"]),
-                "nearest_site": r.choice(SITES), "self_reported_diagnosis": r.choices(
-                    ["major depressive disorder", "treatment-resistant depression", "anxiety", "none"], [0.45, 0.35, 0.12, 0.08])[0],
+                "nearest_site": r.choice(SITES), "self_reported_diagnosis": (r.choices(
+                    ["post-traumatic stress disorder", "major depressive disorder", "anxiety", "none"], [0.70, 0.15, 0.10, 0.05])
+                    if ptsd else r.choices(
+                    ["major depressive disorder", "treatment-resistant depression", "anxiety", "none"], [0.45, 0.35, 0.12, 0.08]))[0],
                 "failed_antidepressants": fails, "current_medication": meds,
                 "history_psychosis": psychosis, "history_bipolar": bipolar, "cardiovascular_condition": cardio,
                 "pregnant_or_breastfeeding": pregnant, "prior_psychedelic_use": prior,

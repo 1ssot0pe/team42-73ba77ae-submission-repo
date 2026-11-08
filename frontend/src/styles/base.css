@@ -1,0 +1,152 @@
+/* Base: reset, bench canvas, specimen field, type scale, layout primitives, forms, focus, motion.
+   design.md Sections 5, 6, 7, 8.18, 10, 12. */
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body, h1, h2, h3, h4, p, figure, blockquote, dl, dd, ul, ol { margin: 0; }
+ul[role="list"], ol[role="list"] { list-style: none; padding: 0; }
+img, svg { display: block; max-width: 100%; }
+button, input, select, textarea { font: inherit; color: inherit; }
+
+/* 6.2 Graph-paper canvas */
+body {
+  min-height: 100vh;
+  color: var(--color-ink);
+  font: var(--text-body);
+  letter-spacing: var(--track-body);
+  -webkit-font-smoothing: antialiased;
+  background-color: var(--color-eggshell);
+  background-image:
+    linear-gradient(var(--color-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* 6.1 Specimen field */
+.specimen-field { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+.specimen-field span { position: absolute; border-radius: 50%; filter: blur(80px); opacity: var(--field-opacity, 0.16); }
+.specimen-field .v { width: 46vw; height: 46vw; left: -8vw; top: -10vw; background: radial-gradient(circle, var(--color-spark-violet), transparent 65%); }
+.specimen-field .e { width: 40vw; height: 40vw; right: -10vw; top: 18vh; background: radial-gradient(circle, var(--color-spark-ember), transparent 65%); }
+.specimen-field .p { width: 36vw; height: 36vw; left: 30vw; bottom: -14vw; background: radial-gradient(circle, var(--color-field-pink), transparent 65%); opacity: 0.10; }
+@media (prefers-reduced-motion: no-preference) {
+  .specimen-field span { animation: drift 48s ease-in-out infinite alternate; }
+}
+@keyframes drift { to { transform: translate3d(3vw, 2vh, 0) scale(1.06); } }
+
+/* ------------------------------------------------------------ type scale (Section 5) */
+.t-display    { font: var(--text-display);    letter-spacing: var(--track-display); text-wrap: balance; }
+.t-heading    { font: var(--text-heading);    letter-spacing: var(--track-heading); text-wrap: balance; }
+.t-heading-sm { font: var(--text-heading-sm); letter-spacing: var(--track-heading-sm); text-wrap: balance; }
+.t-title      { font: var(--text-title);      letter-spacing: var(--track-title); }
+.t-body-lg    { font: var(--text-body-lg);    letter-spacing: var(--track-body-lg); }
+.t-body       { font: var(--text-body);       letter-spacing: var(--track-body); }
+.t-body-sm    { font: var(--text-body-sm);    letter-spacing: var(--track-body-sm); }
+.t-readout-xl { font: var(--text-readout-xl); letter-spacing: var(--track-readout-xl); font-variant-numeric: tabular-nums; }
+.t-readout    { font: var(--text-readout);    letter-spacing: var(--track-readout); font-variant-numeric: tabular-nums; }
+.t-mono       { font: var(--text-mono);       letter-spacing: var(--track-mono); font-variant-numeric: tabular-nums; }
+.t-label      { font: var(--text-label);      letter-spacing: var(--track-label); text-transform: uppercase; }
+.t-caption    { font: var(--text-caption);    letter-spacing: var(--track-caption); }
+.num          { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+.c-ink { color: var(--color-ink); }
+.c-graphite { color: var(--color-graphite); }
+.c-smoke { color: var(--color-smoke); }
+.c-ash { color: var(--color-ash); }
+
+h1, h2, h3 { font-weight: 300; }
+p { max-width: 68ch; }
+a { color: inherit; text-underline-offset: 3px; }
+.link-smoke { color: var(--color-smoke); text-decoration: underline; text-decoration-thickness: 1px; }
+
+/* ------------------------------------------------------------ layout primitives (Sections 6, 7) */
+.app { position: relative; min-height: 100vh; }
+.page {
+  width: 100%;
+  max-width: calc(var(--page-max) + 2 * var(--gutter));
+  margin: 0 auto;
+  padding: var(--space-8) var(--gutter) calc(var(--space-24) + var(--space-8));
+  display: flex; flex-direction: column; gap: var(--section-gap);
+}
+.section { display: flex; flex-direction: column; gap: var(--space-4); }
+.section__head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; }
+.stack { display: flex; flex-direction: column; gap: var(--space-3); }
+.stack--tight { gap: var(--space-2); }
+.stack--loose { gap: var(--space-6); }
+.row { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+.row--between { justify-content: space-between; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); align-items: start; }
+.grid-5-7 { display: grid; grid-template-columns: 5fr 7fr; gap: var(--space-6); align-items: start; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-6); align-items: start; }
+@media (max-width: 1100px) { .grid-2, .grid-5-7, .grid-3 { grid-template-columns: 1fr; } }
+
+/* L1 notebook sheet, L1b paper document */
+.sheet { background: var(--color-taupe); border-radius: var(--radius-sheet); padding: var(--space-6); }
+.sheet--flush { padding: 0; overflow: hidden; }
+.paper { background: var(--color-eggshell); border: 1px solid var(--color-stone); border-radius: var(--radius-sheet); padding: var(--space-8); }
+.panel { padding: var(--space-5); }          /* glass slip padding */
+.eyebrow { font: var(--text-label); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--color-graphite); }
+.hairline { height: 1px; background: var(--color-stone); border: 0; margin: 0; }
+
+.visually-hidden {
+  position: absolute !important; top: 0; left: 0; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+
+/* ------------------------------------------------------------ forms (8.18) */
+.field { display: flex; flex-direction: column; gap: var(--space-2); }
+.field__label { font: var(--text-body-sm); font-weight: 500; color: var(--color-graphite); }
+.field__help { font: var(--text-caption); color: var(--color-ash); }
+.input, .select, .textarea {
+  width: 100%;
+  min-height: 40px;
+  padding: 0 var(--space-3);
+  background: var(--color-eggshell);
+  border: 1px solid var(--color-stone);
+  border-radius: var(--radius-input);
+  font: var(--text-body);
+  color: var(--color-ink);
+  transition: border-color var(--dur-hover) ease-out, box-shadow var(--dur-hover) ease-out;
+}
+.textarea { padding: var(--space-3); min-height: 120px; resize: vertical; line-height: 1.6; }
+.input:focus, .select:focus, .textarea:focus { outline: none; border-color: var(--color-ink); box-shadow: 0 0 0 3px var(--focus-ring); }
+/* Signature line input: no box, 1px ink bottom border */
+.input--line {
+  border: 0; border-bottom: 1px solid var(--color-ink); border-radius: 0; background: transparent;
+  padding: 0 var(--space-1); min-height: 36px;
+}
+.input--line:focus { box-shadow: none; border-bottom-width: 2px; }
+
+.checkbox { display: inline-flex; align-items: center; gap: var(--space-2); cursor: pointer; font: var(--text-body-sm); color: var(--color-graphite); }
+.checkbox input {
+  appearance: none; -webkit-appearance: none; margin: 0;
+  width: 18px; height: 18px; border-radius: 4px; border: 1px solid var(--color-graphite); background: var(--color-eggshell);
+  display: grid; place-content: center; flex: none;
+}
+.checkbox input::after { content: ""; width: 10px; height: 10px; border-radius: 2px; background: var(--color-ink); transform: scale(0); transition: transform 120ms ease-out; }
+.checkbox input:checked::after { transform: scale(1); }
+
+.switch { display: inline-flex; align-items: center; gap: var(--space-2); cursor: pointer; font: var(--text-body-sm); color: var(--color-graphite); }
+.switch input {
+  appearance: none; -webkit-appearance: none; margin: 0; flex: none;
+  width: 36px; height: 20px; border-radius: var(--radius-pill); background: var(--color-stone); position: relative;
+  transition: background var(--dur-hover) ease-out;
+}
+.switch input::after {
+  content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%;
+  background: var(--color-eggshell); box-shadow: var(--glass-edge); transition: transform var(--dur-hover) ease-out;
+}
+.switch input:checked { background: var(--color-ink); }
+.switch input:checked::after { transform: translateX(16px); }
+/* Auto-approve: the track turns amber when on (8.4) */
+.switch--watch input:checked { background: var(--status-watch-fg); }
+
+/* ------------------------------------------------------------ focus and motion (Sections 10, 12) */
+:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; }
+.input:focus-visible, .select:focus-visible, .textarea:focus-visible { outline: none; }
+
+/* Reduced motion: no drift, digit rolls or scale. Motion classes are gated on no-preference;
+   this is a backstop. Simple opacity fades stay. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .specimen-field span { animation: none !important; }
+}

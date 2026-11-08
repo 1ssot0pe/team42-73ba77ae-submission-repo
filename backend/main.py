@@ -78,7 +78,7 @@ def health():
 @app.get("/api/bottlenecks")
 def get_bottlenecks():
     p = DATA / "bottlenecks.json"
-    return json.loads(p.read_text()) if p.exists() else {"bottlenecks": []}
+    return _strip_private(json.loads(p.read_text()) if p.exists() else {"bottlenecks": []})
 
 
 @app.get("/api/protocols")

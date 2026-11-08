@@ -1,0 +1,116 @@
+/* UNBLIND Lab Glass tokens (design.md Section 14). The ONLY place literal colours live,
+   together with the other files in src/styles/. Components use var(--...). */
+:root {
+  /* Bench (light) */
+  --color-eggshell: #fdfcfc; --color-taupe: #f5f3f1; --color-stone: #ebe8e4;
+  --color-ink: #000000; --color-graphite: #44403b; --color-smoke: #777169; --color-ash: #a59f97;
+  --color-spark-violet: #0447ff; --color-spark-ember: #ff4704; --color-grid: rgba(0,0,0,0.035);
+  --color-field-pink: #ff8fc7;
+  --status-good-fg: #25654a; --status-good-bg: #e6f1ea;
+  --status-watch-fg: #8a5a00; --status-watch-bg: #faf0da;
+  --status-alert-fg: #a3352a; --status-alert-bg: #fae8e4;
+  --status-neutral-fg: #44403b; --status-neutral-bg: #ebe8e4;
+  --button-border: #e5e5e5;
+  --button-border-on-glass: rgba(0,0,0,0.14);
+
+  --glass-fill: rgba(253,252,252,0.58); --glass-fill-strong: rgba(253,252,252,0.82);
+  --glass-blur: 22px; --glass-saturate: 165%;
+  --glass-rim: inset 0 0 0 1px rgba(255,255,255,0.65);
+  --glass-edge: 0 0 0 0.5px rgba(0,0,0,0.08);
+  --glass-depth: 0 1px 1px rgba(0,0,0,0.04), 0 10px 30px rgba(68,64,59,0.10);
+  --glass-specular: linear-gradient(180deg, rgba(255,255,255,0.70) 0%, rgba(255,255,255,0.08) 38%, rgba(255,255,255,0) 60%);
+  --field-opacity: 0.16;
+
+  /* Derived tokens used by components (design.md 8.11, 8.12, 8.13, 8.16, 8.18) */
+  --chart-grid: rgba(0,0,0,0.06);            /* chart gridlines, darker variant of --color-grid */
+  --focus-ring: rgba(0,0,0,0.08);            /* 3px input focus ring */
+  --rule-quote: rgba(0,0,0,0.2);             /* evidence quote left rule: ink at 20% */
+  --wash-good: rgba(37,101,74,0.04); --wash-alert: rgba(163,53,42,0.04);   /* diff line washes */
+  --sphere-highlight: rgba(255,255,255,0.9);
+  --mask-fade: rgba(0,0,0,1);                /* used only inside mask-image */
+
+  --font-display: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Type scale (design.md Section 5): weight size/line-height family, plus tracking */
+  --text-display: 300 48px/1.08 var(--font-display);      --track-display: -0.96px;
+  --text-heading: 300 36px/1.17 var(--font-display);      --track-heading: -0.72px;
+  --text-heading-sm: 300 28px/1.15 var(--font-display);   --track-heading-sm: -0.56px;
+  --text-title: 500 18px/1.4 var(--font-body);            --track-title: -0.1px;
+  --text-body-lg: 400 18px/1.6 var(--font-body);          --track-body-lg: 0;
+  --text-body: 400 15px/1.6 var(--font-body);             --track-body: 0.15px;
+  --text-body-sm: 400 13px/1.5 var(--font-body);          --track-body-sm: 0.13px;
+  --text-button: 500 14px/1 var(--font-body);             --track-button: 0.14px;
+  --text-readout-xl: 400 40px/1.05 var(--font-mono);      --track-readout-xl: -0.8px;
+  --text-readout: 400 24px/1.1 var(--font-mono);          --track-readout: -0.3px;
+  --text-mono: 400 13px/1.69 var(--font-mono);            --track-mono: 0;
+  --text-label: 500 11px/1.4 var(--font-mono);            --track-label: 0.08em;
+  --text-caption: 400 11px/1.5 var(--font-body);          --track-caption: 0.1px;
+
+  /* Spacing (4px base) */
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 20px; --space-6: 24px;
+  --space-8: 32px; --space-10: 40px; --space-12: 48px; --space-16: 64px; --space-24: 96px;
+
+  --radius-pill: 9999px; --radius-sheet: 20px; --radius-glass: 24px; --radius-input: 10px; --radius-plate: 6px;
+  --page-max: 1280px; --gutter: 64px; --section-gap: 64px;
+
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur-hover: 160ms; --dur-enter: 220ms;
+  color-scheme: light;
+}
+@media (max-width: 1100px) { :root { --gutter: 24px; } }
+@media (max-width: 420px)  { :root { --gutter: 16px; } }
+
+/* Darkroom: follows the system unless the user picked light */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-eggshell: #0e0d0c; --color-taupe: #171614; --color-stone: #2a2724;
+    --color-ink: #f5f3f1; --color-graphite: #d6d1cb; --color-smoke: #a59f97; --color-ash: #7a746c;
+    --color-spark-violet: #4d7bff; --color-spark-ember: #ff6a33; --color-grid: rgba(255,255,255,0.04);
+    --color-field-pink: #ff8fc7;
+    --status-good-fg: #7cc9a2; --status-good-bg: #16261e;
+    --status-watch-fg: #e8b65a; --status-watch-bg: #2a2112;
+    --status-alert-fg: #f08a7d; --status-alert-bg: #2c1714;
+    --status-neutral-fg: #d6d1cb; --status-neutral-bg: #2a2724;
+    --button-border: #2a2724;
+    --button-border-on-glass: rgba(255,255,255,0.24);
+    --glass-fill: rgba(23,22,20,0.55); --glass-fill-strong: rgba(23,22,20,0.82); --glass-saturate: 140%;
+    --glass-rim: inset 0 0 0 1px rgba(255,255,255,0.10); --glass-edge: 0 0 0 0.5px rgba(0,0,0,0.6);
+    --glass-depth: 0 1px 1px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.45);
+    --glass-specular: linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0) 45%);
+    --field-opacity: 0.22;
+    --chart-grid: rgba(255,255,255,0.07);
+    --focus-ring: rgba(255,255,255,0.12);
+    --rule-quote: rgba(245,243,241,0.2);
+    --wash-good: rgba(124,201,162,0.06); --wash-alert: rgba(240,138,125,0.06);
+    --sphere-highlight: rgba(255,255,255,0.35);
+    --mask-fade: rgba(0,0,0,1);
+    color-scheme: dark;
+  }
+}
+/* Darkroom: manual toggle wins */
+:root[data-theme="dark"] {
+    --color-eggshell: #0e0d0c; --color-taupe: #171614; --color-stone: #2a2724;
+    --color-ink: #f5f3f1; --color-graphite: #d6d1cb; --color-smoke: #a59f97; --color-ash: #7a746c;
+    --color-spark-violet: #4d7bff; --color-spark-ember: #ff6a33; --color-grid: rgba(255,255,255,0.04);
+    --color-field-pink: #ff8fc7;
+    --status-good-fg: #7cc9a2; --status-good-bg: #16261e;
+    --status-watch-fg: #e8b65a; --status-watch-bg: #2a2112;
+    --status-alert-fg: #f08a7d; --status-alert-bg: #2c1714;
+    --status-neutral-fg: #d6d1cb; --status-neutral-bg: #2a2724;
+    --button-border: #2a2724;
+    --button-border-on-glass: rgba(255,255,255,0.24);
+    --glass-fill: rgba(23,22,20,0.55); --glass-fill-strong: rgba(23,22,20,0.82); --glass-saturate: 140%;
+    --glass-rim: inset 0 0 0 1px rgba(255,255,255,0.10); --glass-edge: 0 0 0 0.5px rgba(0,0,0,0.6);
+    --glass-depth: 0 1px 1px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.45);
+    --glass-specular: linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0) 45%);
+    --field-opacity: 0.22;
+    --chart-grid: rgba(255,255,255,0.07);
+    --focus-ring: rgba(255,255,255,0.12);
+    --rule-quote: rgba(245,243,241,0.2);
+    --wash-good: rgba(124,201,162,0.06); --wash-alert: rgba(240,138,125,0.06);
+    --sphere-highlight: rgba(255,255,255,0.35);
+    --mask-fade: rgba(0,0,0,1);
+    color-scheme: dark;
+}

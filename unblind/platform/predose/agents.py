@@ -5,11 +5,13 @@ Rules first, Gemini as an optional refinement. Every Gemini answer is validated
 """
 from __future__ import annotations
 
+import copy
 import re
 from typing import Any, Dict, List, Optional
 
 from ... import model as ubmodel          # existing UNBLIND model (calibration, counterfactuals)
 from ..core import Ctx, TrialRecord, digest
+from ..world import PTSD_INDICATIONS
 
 M = "predose"
 SITES = ["Site A (London)", "Site B (Manchester)", "Site C (Bristol)"]
@@ -246,6 +248,8 @@ CHECK_PATTERNS = {"blinding_questionnaire": r"guess|blinding", "expectancy_measu
                   "alternative_control": r"placebo|comparator|control", "durability": r"follow[- ]up|month",
                   "monitors": r"monitor|facilitator|physician", "factorial": r"factorial", "abuse_potential": r"abuse"}
 
+PRESENT_PATTERNS = {"central_raters": r"central(ised|ized)? blinded raters?|remote raters?|videoconferenc"}
+
 FIXES = {  # fix id -> (title, structured change, sentence appended to the protocol text)
     "central_raters": ("Move outcome raters to central, remote, blinded assessment",
         {"rater_model": "central_remote", "design_flags.raters_attend_sessions": False},
@@ -287,6 +291,24 @@ def _get(p: dict, key: str, default: Any = None) -> Any:
         sub = p.get(head)
         return _get(sub, tail, default) if isinstance(sub, dict) else default
     return p.get(key, default)
+
+
+def protocol_base(rec: TrialRecord) -> dict:
+    """What an approval was proposed against: the current protocol digest and version number."""
+    return {"base_digest": digest((rec.get("protocol") or {}).get("text", "")),
+            "base_version": (rec.get("protocol_versions") or [{}])[-1].get("version")}
+
+
+def protocol_changed_since(rec: TrialRecord, action: dict, allow_fixes: bool = False) -> bool:
+    """True when the protocol changed after the approval was proposed. With allow_fixes, versions made by other
+    approved fixes do not count (fixes only append their own sentence, so they never overwrite each other)."""
+    base = action.get("base_digest")
+    if not base or base == digest((rec.get("protocol") or {}).get("text", "")):
+        return False
+    if not allow_fixes:
+        return True
+    since = [v for v in rec.get("protocol_versions") or [] if (v.get("version") or 0) > (action.get("base_version") or 0)]
+    return any(not v.get("fix") for v in since)
 
 
 def fix_satisfied(p: dict, fid: str) -> bool:
@@ -331,7 +353,13 @@ class ProtocolCoDesigner:
         text = p.get("text", "")
         for cid, item, test in CHECKLIST:
             present = bool(test(p))
-            ev = _find(text, CHECK_PATTERNS[cid]) or ""
+            ev = ""
+            if present:   # quote the sentence that satisfies the item, not the first sentence that mentions the topic
+                if cid in FIXES and FIXES[cid][2] in text:
+                    ev = FIXES[cid][2]
+                elif cid in PRESENT_PATTERNS:
+                    ev = _find(text, PRESENT_PATTERNS[cid]) or ""
+            ev = ev or _find(text, CHECK_PATTERNS[cid]) or ""
             out.append({"id": cid, "item": item, "present": present, "evidence": ev[:300],
                         "note": "" if present else "Missing or not stated in the protocol"})
         return out
@@ -362,16 +390,19 @@ class ProtocolCoDesigner:
         ok = sum(c["present"] for c in checklist)
 
         rejected = sorted({a["action"].get("fix") for a in rec["approvals"] if a["module"] == M
-                           and a["action"].get("type") == "apply_fix" and a["status"] == "rejected"})
+                           and a["action"].get("type") == "apply_fix" and a["status"] == "rejected"
+                           and a["action"].get("fix") in FIXES and not fix_satisfied(p, a["action"]["fix"])})
         prev = rec.get("design_review") or {}
         dr = {"risk": risk, "checklist": checklist, "model_fixes": model_fixes, "proposed_fixes": proposed,
               "rejected_fixes": rejected,
               "blinding_section_md": self.draft_section(p),
               "baseline_risk": prev.get("baseline_risk", risk),
               "baseline_checklist_ok": prev.get("baseline_checklist_ok", ok)}
+        for k, v in prev.items():   # keep state other agents keep here (pending_drift, participant_unblinding_notes, ...)
+            dr.setdefault(k, v)
         rec["design_review"] = dr
         rec.event(self.name, f"{reason}: u={risk['u']} ({risk['band']}), expected bias {risk['expected_bias_g']} g, "
-                             f"FDA checklist {ok}/{len(CHECKLIST)}, {len(proposed)} fixes proposed", "decision", M)
+                             f"FDA checklist {ok}/{len(CHECKLIST)}, {len(proposed)} fix{'' if len(proposed) == 1 else 'es'} proposed", "decision", M)
 
         pending = {a["action"].get("fix") for a in ctx.approvals.pending(M) if a["action"].get("type") == "apply_fix"}
         for fid in proposed:
@@ -383,17 +414,26 @@ class ProtocolCoDesigner:
             ctx.approvals.request(self.name, M, f"Protocol fix: {title}",
                                   "The co-designer found this missing against the FDA July 2026 guidance or the blinding "
                                   "risk model. Approving adds the sentence below, saves a new protocol version and re-checks.",
-                                  {"type": "apply_fix", "fix": fid}, evidence={"sentence_to_add": sentence})
+                                  {"type": "apply_fix", "fix": fid, **protocol_base(rec)},
+                                  evidence={"sentence_to_add": sentence})
         return dr
 
-    def apply_fix(self, rec: TrialRecord, ctx: Ctx, fid: str, approver: str) -> dict:
+    def apply_fix(self, rec: TrialRecord, ctx: Ctx, fid: str, approver: str, amendment_site: Optional[str] = None) -> dict:
         title, change, sentence = FIXES[fid]
         p = rec["protocol"]
         for k, v in change.items():
             _set(p, k, v)
         p["text"] = (p.get("text", "").rstrip() + "\n" + sentence + "\n")
-        v = new_version(rec, f"fix approved by {approver}: {title}", [sentence])
-        rec.event(self.name, f"applied fix '{fid}' as protocol version {v['version']}", "decision", M)
+        if amendment_site:
+            what, why = f"amendment '{fid}' (after drift at {amendment_site})", f"amendment approved by {approver}: {title}"
+        elif rec.get("enrolled"):
+            what, why = (f"fix '{fid}' as a protocol amendment (participants are enrolled)",
+                         f"amendment (fix) approved by {approver}: {title}")
+        else:
+            what, why = f"fix '{fid}'", f"fix approved by {approver}: {title}"
+        v = new_version(rec, why, [sentence])
+        v["fix"] = fid
+        rec.event(self.name, f"applied {what} as protocol version {v['version']}", "decision", M)
         dr = self.review(rec, ctx, reason=f"re-check after version {v['version']}")
         ctx.bus.post(M, "master", "protocol_amended", {"fix": fid, "version": v["version"], "risk": dr["risk"]},
                      f"Protocol version {v['version']}: {title}")
@@ -463,7 +503,8 @@ class RecruitmentAgent:
 CRITERIA = [  # id, label, rule, why
     ("age", "Age", "18 to 65", "Typical adult trial range"),
     ("uk_mobile", "UK mobile", "+44 7 number", "Check-ins run through the UK chatbot"),
-    ("diagnosis", "Diagnosis", "MDD or TRD; TRD needs at least 2 failed antidepressants", "Matches the protocol population"),
+    ("diagnosis", "Diagnosis", "Follows the protocol indication: MDD or TRD for depression (TRD needs at least 2 failed "
+     "antidepressants); PTSD for PTSD", "Matches the protocol population"),
     ("psychosis_bipolar", "Psychosis, personal bipolar", "Exclude", "Safety; standard psychedelic exclusion"),
     ("cardio", "Uncontrolled cardiovascular condition", "Exclude", "Blood pressure rises during sessions"),
     ("pregnancy", "Pregnancy or breastfeeding", "Exclude", "Safety"),
@@ -478,6 +519,7 @@ CRITERIA = [  # id, label, rule, why
 DISCLOSURE = re.compile(r"bipolar|psychos|psychotic|schizo|cardiolog|heart|blood pressure|pregnan|suicid|self[- ]harm|seizure|epilep", re.I)
 SSRI_SNRI = re.compile(r"\bssri\b|\bsnri\b|sertraline|escitalopram|citalopram|fluoxetine|paroxetine|venlafaxine|duloxetine", re.I)
 DEPRESSION_DX = ("major depressive disorder", "treatment-resistant depression")
+PTSD_DX = ("post-traumatic stress disorder", "ptsd")
 AGE_BANDS = [("18-30", 18, 30), ("31-45", 31, 45), ("46-65", 46, 65), ("65+", 66, 200)]
 CRITERION_LABEL = {c[0]: c[1] for c in CRITERIA}
 
@@ -511,7 +553,7 @@ class PreScreeningAgent:
         elif not phone.startswith("+447"):
             excl.append(("uk_mobile", "Not a UK mobile (+44 7) number; check-ins run through the UK chatbot"))
 
-        ind = protocol.get("indication", "")
+        ind = str(protocol.get("indication") or "").strip().lower()
         dx = a.get("self_reported_diagnosis")
         if ind in DEPRESSION_DX:
             if dx is None:
@@ -524,6 +566,11 @@ class PreScreeningAgent:
                     flags.append(("diagnosis", "Number of failed antidepressants not stated"))
                 elif int(fails) < 2:
                     excl.append(("diagnosis", f"{fails} failed antidepressants; treatment-resistant depression needs at least 2"))
+        elif ind in PTSD_INDICATIONS:     # the TRD rule (failed antidepressants) does not apply to PTSD
+            if dx is None:
+                flags.append(("diagnosis", "Diagnosis not stated"))
+            elif str(dx).strip().lower() not in PTSD_DX:
+                excl.append(("diagnosis", f"Diagnosis '{dx}' does not match the protocol population (PTSD)"))
         elif dx is not None:
             flags.append(("diagnosis", f"Diagnosis '{dx}' needs a clinician check against the protocol population ({ind or 'unknown'})"))
 
@@ -678,23 +725,74 @@ class Enroller:
 # Phase 4: measurement planner (UNBLIND-BLIND-1 instruments and the shared schedule)
 # ---------------------------------------------------------------------------
 INSTRUMENTS = [
-    {"id": "UB1-EXP0", "who": "participant", "questions": ["How much do you expect to improve? (0 to 10)"], "timepoints_days": ["before randomisation"], "purpose": "Baseline expectancy (FDA July 2026)"},
-    {"id": "UB1-PG", "who": "participant", "questions": ["Which group do you think you are in? (drug, control, don't know)", "How sure are you? (0 to 100)", "How much do you expect to improve? (0 to 10)"], "timepoints_days": ["dosing +1", "week 1", "week 3", "week 6"], "purpose": "Participant blinding and expectancy"},
-    {"id": "UB1-RG", "who": "rater", "questions": ["Which group do you think this participant is in?", "How sure are you? (0 to 100)"], "timepoints_days": ["week 1", "week 3", "week 6"], "purpose": "Rater blinding (central raters)"},
-    {"id": "UB1-MD", "who": "monitor", "questions": ["Free-text debrief: effects, adverse events, anything that could reveal the arm"], "timepoints_days": ["dosing day"], "purpose": "Safety and unblinding cues"},
-    {"id": "MADRS", "who": "rater", "questions": ["MADRS total (0 to 60)"], "timepoints_days": ["baseline", "week 1", "week 3", "week 6"], "purpose": "Primary outcome"},
-    {"id": "UB1-FU", "who": "participant", "questions": ["Follow-up check-in and end-of-treatment guess and expectancy"], "timepoints_days": ["week 8", "week 12"], "purpose": "Durability and end-of-treatment blinding"},
+    {"id": "UB1-EXP0", "who": "participant", "questions": ["How much do you expect to improve? (0 to 10)"], "timepoints": ["before randomisation"], "purpose": "Baseline expectancy (FDA July 2026)"},
+    {"id": "UB1-PG", "who": "participant", "questions": ["Which group do you think you are in? (drug, control, don't know)", "How sure are you? (0 to 100)", "How much do you expect to improve? (0 to 10)"], "timepoints": ["dosing +1", "week 1", "week 3", "week {primary}"], "purpose": "Participant blinding and expectancy"},
+    {"id": "UB1-RG", "who": "rater", "questions": ["Which group do you think this participant is in?", "How sure are you? (0 to 100)"], "timepoints": ["week 1", "week 3", "week {primary}"], "purpose": "Rater blinding (central raters)"},
+    {"id": "UB1-MD", "who": "monitor", "questions": ["Free-text debrief: effects, adverse events, anything that could reveal the arm"], "timepoints": ["dosing day"], "purpose": "Safety and unblinding cues"},
+    {"id": "MADRS", "who": "rater", "questions": ["MADRS total (0 to 60)"], "timepoints": ["baseline", "week 1", "week 3", "week {primary}"], "purpose": "Primary outcome"},
+    {"id": "UB1-FU", "who": "participant", "questions": ["Follow-up check-in and end-of-treatment guess and expectancy"], "timepoints": ["week 8", "week 12"], "purpose": "Durability and end-of-treatment blinding"},
 ]
+
+
+def _timepoint_day(label: str) -> int:
+    """Day relative to the participant's dosing day: -1 before randomisation or baseline, 0 dosing day,
+    1 the day after, 7 * N for week N."""
+    if label in ("before randomisation", "baseline"):
+        return -1
+    if label == "dosing day":
+        return 0
+    m = re.fullmatch(r"dosing \+(\d+)", label)
+    if m:
+        return int(m.group(1))
+    m = re.fullmatch(r"week (\d+)", label)
+    if m:
+        return 7 * int(m.group(1))
+    raise ValueError(f"unknown timepoint label {label!r}")
+
+
+def plan_instruments(primary_week: int) -> List[dict]:
+    """INSTRUMENTS for one protocol: human labels in `timepoints` and, 1:1 with them, integer days relative to
+    the dosing day in `timepoints_days`. '{primary}' becomes the protocol's primary week."""
+    out = []
+    for ins in INSTRUMENTS:
+        labels = list(dict.fromkeys(t.format(primary=primary_week) for t in ins["timepoints"]))
+        d = copy.deepcopy(ins)
+        d["timepoints"] = labels
+        d["timepoints_days"] = [_timepoint_day(t) for t in labels]
+        out.append(d)
+    return out
+
+
 SCHEDULE_KINDS = ("dosing_session", "monitor_debrief", "participant_checkin", "rater_assessment", "followup")
+
+
+def _letter(j: int) -> str:
+    """0 -> A, 25 -> Z, 26 -> AA (spreadsheet style), so any number of sites gets a distinct letter."""
+    out = ""
+    j += 1
+    while j:
+        j, r = divmod(j - 1, 26)
+        out = chr(65 + r) + out
+    return out
+
+
+def rater_ids(enrolled: List[dict], protocol_sites: Optional[List[str]] = None) -> Dict[str, List[str]]:
+    """Two rater ids per site, lettered A, B, C... in the order the protocol lists its sites; any enrolled site
+    the protocol does not list is lettered after those, in sorted order. The letter is a position, not the site's
+    own name: a protocol with only Site A and Site C gives Site C the ids R-B1/R-B2. For the default sites
+    ("Site A (London)", "Site B (Manchester)", "Site C (Bristol)") this gives R-A1/R-A2, R-B1/R-B2, R-C1/R-C2."""
+    sites = list(dict.fromkeys(protocol_sites or []))
+    sites += sorted({p["site"] for p in enrolled} - set(sites))
+    return {s: ["R-" + _letter(j) + "1", "R-" + _letter(j) + "2"] for j, s in enumerate(sites)}
 
 
 def build_schedule(rec):
     wk = int(rec["protocol"].get("primary_endpoint", {}).get("week", 6))
-    raters = {s: ["R-" + s[5] + "1", "R-" + s[5] + "2"] for s in SITES}       # e.g. R-A1, R-B2
+    raters = rater_ids(rec["enrolled"], rec["protocol"].get("sites"))          # e.g. R-A1, R-B2
     sched = []
     for i, p in enumerate(rec["enrolled"]):
         d, pid, site = p["dosing_day"], p["id"], p["site"]
-        rid = raters.get(site, ["R-X1"])[i % 2]
+        rid = raters[site][i % 2]
 
         def add(kind, day, owner, instrument, **extra):
             sched.append({"id": f"{pid}-{kind}-{day}", "participant": pid, "site": site, "day": day, "kind": kind,
@@ -718,7 +816,7 @@ class MeasurementPlanner:
             rec.event(self.name, "schedule already exists; not rebuilt", "info", M)
             return rec["schedule"]
         wk = int(rec["protocol"].get("primary_endpoint", {}).get("week", 6))
-        rec["measurement_plan"] = {"standard": "UNBLIND-BLIND-1", "instruments": [dict(i) for i in INSTRUMENTS],
+        rec["measurement_plan"] = {"standard": "UNBLIND-BLIND-1", "instruments": plan_instruments(wk),
                                    "primary_week": wk}
         rec["schedule"] = build_schedule(rec)
         n = len(rec["enrolled"])

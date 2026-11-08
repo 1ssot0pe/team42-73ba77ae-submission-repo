@@ -1,0 +1,176 @@
+/* Mission control (design.md Section 9; 8.3 phase track, 8.4 control dock, 8.10 agent network, 8.13 paper editor).
+   Classes are prefixed mc- so they never collide with other pages. Only var() references: no literal colours. */
+
+/* ------------------------------------------------------------ page */
+.mc-page { min-width: 0; }
+/* keep content clear of the floating dock: its measured height plus its offset and some air */
+.mc-page--dock { padding-bottom: calc(var(--dock-h, 64px) + env(safe-area-inset-bottom, 0px) + var(--space-16)); }
+.mc-page > * { min-width: 0; }
+
+/* ------------------------------------------------------------ header */
+.mc-head { gap: var(--space-3); }
+.mc-head__title { font-weight: 300; }
+.mc-head__title .num { font-weight: 400; letter-spacing: -0.04em; }
+.mc-head__sub { font: var(--text-heading-sm); letter-spacing: var(--track-heading-sm); color: var(--color-smoke); }
+.mc-head__sub .num { letter-spacing: -0.02em; }
+.mc-head__now { color: var(--color-smoke); display: flex; gap: var(--space-3); align-items: baseline; flex-wrap: wrap; }
+.mc-head__now--blocked { color: var(--color-graphite); }
+.mc-head__flag {
+  font: var(--text-label); letter-spacing: var(--track-label); text-transform: uppercase;
+  color: var(--status-watch-fg); background: var(--status-watch-bg);
+  padding: 3px var(--space-2); border-radius: var(--radius-pill); flex: none;
+}
+
+/* rolling day digits */
+.mc-roll { display: inline-block; overflow: hidden; vertical-align: bottom; line-height: 1.08; }
+.mc-roll__digits { display: inline-block; font-weight: 400; letter-spacing: -0.04em; }
+@media (prefers-reduced-motion: no-preference) {
+  .mc-roll__digits { animation: mc-roll 220ms var(--ease-out) both; }
+}
+@keyframes mc-roll { from { transform: translateY(60%); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* ------------------------------------------------------------ start a trial: paper protocol editor (8.13) */
+.mc-editor { padding: var(--space-6) var(--space-8) var(--space-8); display: flex; flex-direction: column; gap: var(--space-3); }
+.mc-editor__head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-3); flex-wrap: wrap; }
+.mc-editor__text {
+  width: 100%; max-width: 72ch; min-height: 420px; resize: vertical;
+  border: 0; background: transparent; color: var(--color-ink); padding: 0;
+  font: 400 15px/1.7 var(--font-body); letter-spacing: var(--track-body);
+}
+.mc-editor__text:focus { outline: none; }
+.mc-editor:focus-within { border-color: var(--color-ink); box-shadow: 0 0 0 3px var(--focus-ring); }
+.mc-start__actions { display: flex; align-items: center; gap: var(--space-3) var(--space-4); flex-wrap: wrap; }
+.mc-start__actions .field__help { flex: 1 1 240px; }
+.mc-start__create { margin-left: auto; }
+@media (max-width: 720px) {
+  .mc-editor { padding: var(--space-5); }
+  .mc-editor__text { min-height: 320px; }
+  .mc-start__create { margin-left: 0; width: 100%; }
+}
+
+/* ------------------------------------------------------------ 8.3 phase track (L2 glass) */
+.mc-track { padding: var(--space-5) var(--space-6) var(--space-4); display: flex; flex-direction: column; gap: var(--space-5); }
+.mc-phases { list-style: none; margin: 0; padding: 0; display: flex; gap: var(--space-2); flex-wrap: wrap; }
+.mc-phase {
+  display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 var(--space-3);
+  border-radius: var(--radius-pill);
+  font: var(--text-label); letter-spacing: var(--track-label); text-transform: uppercase;
+}
+.mc-phase--done { color: var(--color-graphite); box-shadow: inset 0 0 0 1px var(--color-stone); }
+.mc-phase--current { color: var(--color-eggshell); background: var(--color-ink); }
+.mc-phase--next { color: var(--color-smoke); }
+.mc-phase__check { width: 10px; height: 10px; flex: none; }
+
+.mc-ruler { position: relative; height: 44px; margin: 0 var(--space-2); }
+.mc-ruler__days {
+  position: absolute; left: 0; right: 0; top: 10px; height: 8px;
+  background-image: repeating-linear-gradient(90deg, var(--color-ash) 0 1px, transparent 1px calc(100% / 90));
+  opacity: 0.55;
+  border-bottom: 1px solid var(--color-ash);
+}
+.mc-ruler__week { position: absolute; top: 4px; width: 1px; height: 15px; background: var(--color-graphite); }
+.mc-ruler__wlabel {
+  position: absolute; top: 19px; left: 0; transform: translateX(-50%);
+  font: 400 10px/1 var(--font-mono); font-variant-numeric: tabular-nums; color: var(--color-smoke); white-space: nowrap;
+}
+.mc-ruler__end {
+  position: absolute; top: 33px; font: 400 10px/1 var(--font-mono); font-variant-numeric: tabular-nums; color: var(--color-smoke);
+}
+.mc-ruler__end--start { left: 0; }
+.mc-ruler__end--stop { right: 0; }
+.mc-needle {
+  position: absolute; top: 0; bottom: 8px; left: var(--mc-needle, 0%); width: 2px; margin-left: -1px;
+  background: var(--color-ink); border-radius: 1px;
+}
+@media (prefers-reduced-motion: no-preference) { .mc-needle { transition: left 180ms var(--ease-out); } }
+.mc-needle--blocked { background: var(--status-watch-fg); }
+.mc-needle__day {
+  position: absolute; top: -12px; left: 6px; white-space: nowrap;
+  font: 500 11px/1 var(--font-mono); font-variant-numeric: tabular-nums; color: var(--color-ink);
+}
+.mc-needle--blocked .mc-needle__day { color: var(--status-watch-fg); }
+.mc-track__blocked {
+  max-width: none;
+  font: var(--text-body-sm); letter-spacing: var(--track-body-sm); color: var(--status-watch-fg);
+}
+.mc-track__blocked { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.mc-track__dot {
+  display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: var(--space-2);
+  background: var(--status-watch-fg); vertical-align: 1px;
+}
+.mc-track__status { font: var(--text-body-sm); color: var(--color-smoke); max-width: none; }
+@media (max-width: 720px) {
+  .mc-track { padding: var(--space-4); }
+  .mc-ruler__week--odd .mc-ruler__wlabel { display: none; }
+  .mc-phase { height: 24px; padding: 0 var(--space-2); }
+}
+
+/* ------------------------------------------------------------ readouts */
+.mc-readouts { display: flex; flex-direction: column; gap: var(--space-6); }
+.mc-readouts__group { display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; }
+.mc-readouts__empty { background: var(--color-taupe); border-radius: var(--radius-sheet); padding: var(--space-4) var(--space-5); max-width: none; }
+
+/* ------------------------------------------------------------ inbox | log */
+.mc-columns > * { min-width: 0; }
+
+/* ------------------------------------------------------------ 8.10 agent network */
+.mc-net { background: var(--color-taupe); border-radius: var(--radius-sheet); padding: var(--space-5) var(--space-6) var(--space-4); display: flex; flex-direction: column; gap: var(--space-2); }
+.mc-net__head { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-3); flex-wrap: wrap; }
+.mc-net__total { font: 400 12px/1 var(--font-mono); color: var(--color-graphite); }
+.mc-net__canvas { width: 100%; overflow: hidden; }
+.mc-net__canvas svg { display: block; }
+.mc-net__spoke { stroke: var(--color-ink); stroke-opacity: 0.12; stroke-width: 1; stroke-dasharray: 2 4; }
+.mc-net__edge { stroke: var(--color-ink); stroke-opacity: 0.35; stroke-linecap: round; }
+.mc-net__count {
+  font: 400 10px var(--font-mono); font-variant-numeric: tabular-nums; fill: var(--color-graphite);
+  paint-order: stroke; stroke: var(--color-taupe); stroke-width: 4px; stroke-linejoin: round;
+}
+.mc-net__disc { fill: var(--color-eggshell); fill-opacity: 0.7; stroke: var(--color-graphite); stroke-width: 1; }
+.mc-net__node--stub .mc-net__disc { stroke-dasharray: 4 3; stroke: var(--color-ash); }
+.mc-net__core { fill: var(--color-ink); }
+.mc-net__node--stub .mc-net__core { fill: none; stroke: var(--color-ash); stroke-width: 1; }
+.mc-net__label { font: 400 11px var(--font-mono); fill: var(--color-graphite); paint-order: stroke; stroke: var(--color-taupe); stroke-width: 4px; stroke-linejoin: round; }
+.mc-net__stub { font: 500 9px var(--font-mono); letter-spacing: 0.08em; fill: var(--color-smoke); }
+@media (max-width: 720px) { .mc-net { padding: var(--space-4); } }
+
+/* ------------------------------------------------------------ 8.4 control dock (L3 floating glass) */
+.mc-dock-wrap {
+  position: fixed; left: 0; right: 0; z-index: 70;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 20px);
+  padding: 0 var(--gutter); display: flex; justify-content: center; pointer-events: none;
+}
+.mc-dock {
+  pointer-events: auto; max-width: var(--page-max);
+  min-height: 64px; padding: var(--space-3) var(--space-3) var(--space-3) var(--space-3);
+  border-radius: var(--radius-pill);
+  display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; justify-content: center;
+}
+@media (prefers-reduced-motion: no-preference) { .mc-dock { animation: glass-enter var(--dur-enter) var(--ease-out) both; } }
+.mc-dock__controls { display: flex; align-items: center; gap: var(--space-2); }
+.mc-dock__controls .btn { min-width: 40px; }
+.mc-dock__play { min-width: 96px; }
+.mc-dock__divider { width: 1px; height: 28px; background: var(--color-stone); flex: none; }
+.mc-dock__auto { min-height: 40px; padding-right: var(--space-1); white-space: nowrap; }
+.mc-dock__meta { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+.mc-dock__id { font: 400 12px/1 var(--font-mono); font-variant-numeric: tabular-nums; color: var(--color-graphite); }
+.mc-dock__meta .btn { height: 40px; }
+.mc-dock .mc-dock__mods-short { display: none; }
+
+@media (max-width: 1100px) {
+  .mc-dock { border-radius: var(--radius-glass); }
+  .mc-dock__divider--meta { display: none; }
+  .mc-dock__meta { width: 100%; justify-content: center; }
+}
+@media (max-width: 720px) {
+  .mc-dock-wrap { bottom: calc(env(safe-area-inset-bottom, 0px) + 12px); }
+  .mc-dock { padding: var(--space-3); gap: var(--space-2); width: 100%; }
+  .mc-dock__controls { width: 100%; justify-content: center; }
+  .mc-dock__controls .btn { flex: 1 1 0; padding: 0 var(--space-2); }
+  .mc-dock__divider { display: none; }
+  .mc-dock__meta .pill { height: 22px; padding: 0 6px; font-size: 10px; }
+  .mc-dock .mc-dock__id, .mc-dock .mc-dock__meta .pill { display: none; }
+  .mc-dock .mc-dock__meta .mc-dock__mods-short { display: inline-flex; }
+  .mc-dock .mc-dock__meta { width: auto; gap: var(--space-1); flex-wrap: nowrap; }
+  .mc-dock .mc-dock__meta .btn { padding: 0 var(--space-2); }
+  .mc-dock__auto { padding-right: 0; }
+}

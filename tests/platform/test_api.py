@@ -176,3 +176,36 @@ def test_reads_during_a_long_step_do_not_crash():
     t.join(timeout=60)
     assert not errors, errors
     assert out["advanced"] is True
+
+
+def _private_keys(obj, path=""):
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            if str(k).startswith("_"):
+                yield f"{path}.{k}"
+            yield from _private_keys(v, f"{path}.{k}")
+    elif isinstance(obj, list):
+        for i, v in enumerate(obj):
+            yield from _private_keys(v, f"{path}[{i}]")
+
+
+def test_no_response_key_starts_with_underscore():
+    created = _new_trial()
+    tid = created["trial_id"]
+    posts = [created]
+    r = client.post(f"/api/trials/{tid}/approvals/{_shortlist(tid)['id']}",
+                    json={"reviewer": "Dr Clinician", "decision": "approved"})
+    posts.append(r.json())
+    posts.append(client.post(f"/api/trials/{tid}/step", json={"days": 2}).json())
+    posts.append(client.post(f"/api/trials/{tid}/modules/predose/actions/apply",
+                             json={"applicant": {"age": 30, "phone": "+447700900123", "_hidden_exclusion": True}}).json())
+    for body in posts:
+        assert not list(_private_keys(body)), list(_private_keys(body))[:5]
+    urls = ["/api/health", "/api/bottlenecks", "/api/protocols", "/api/trials", f"/api/trials/{tid}/state",
+            f"/api/trials/{tid}/record", f"/api/trials/{tid}/events", f"/api/trials/{tid}/approvals",
+            f"/api/trials/{tid}/kpis", f"/api/trials/{tid}/messages", f"/api/trials/{tid}/modules/predose/view"]
+    for u in urls:
+        r = client.get(u)
+        assert r.status_code == 200, (u, r.text[:200])
+        bad = list(_private_keys(r.json()))
+        assert not bad, (u, bad[:5])
