@@ -14,6 +14,8 @@ The maths is a short meta-regression. The hard part is collecting about eight fa
 
 > Built in 24 hours at Agentverse 2026 (Biotech track). Prototype. The bundled calibration set is **synthetic** until real trials are extracted and approved by a person.
 
+**Live app:** [parallax-two-tau.vercel.app](https://parallax-two-tau.vercel.app). Use the **Evidence studio** to check a published trial (try `NCT03866174`), or **Trials** to run a synthetic trial end to end.
+
 **Data:** no patient data is used. Every person in the demo is synthetic and labelled; every real number is published and cited. See [DATA.md](DATA.md) for what each dataset is, how it was made and the evidence behind it.
 
 ## Quick start
