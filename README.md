@@ -1,132 +1,187 @@
-# team42-73ba77ae-submission-repo
+# Parallax
 
-## Parallax
+**Parallax: AI agents that run psychedelic trials so they measure and control the bias that sinks them.**
 
-*Parallax is the shift in what you see when you look from a different place. A rater sitting in the dosing room sees a different trial from one who never enters it, and a patient who has tripped sees a different trial from one who has not. Parallax measures that shift and corrects for it.*
+Live: https://parallax-two-tau.vercel.app/
 
-**How much of a psychedelic trial's result is expectation?**
+Parallax is a web app with two parts. The **Evidence studio** checks a published trial for how well its blinding held and what its effect looks like after adjusting for that. **Trials** runs a new, simulated trial end to end, with AI agents working at every stage from protocol to FDA report and a named human signing every decision that changes the trial.
 
-Patients in psychedelic trials usually know whether they got the drug. A 2026 systematic review of 112 randomised psychedelic trials found only 29.5% even assessed blinding, and psilocybin, LSD and ayahuasca studies frequently reported blinding failure above 90%. So every reported effect is drug plus expectation, and one trial cannot separate the two.
+Built at Agentverse 2026 (Biotech track) by Danny, Izzy and Callum.
 
-Many trials can. They were built differently (inert placebo or low active dose, on-site or central raters, experienced or naive participants), so their unblinding varies. Parallax fits effect against unblinding across trials, reads off the effect at zero unblinding, and ranks the design changes that would shrink the bias in the next trial.
+**Data:** no patient data is used. Every person in the app is synthetic and labelled; every real number is published and cited. See [DATA.md](DATA.md) for what each dataset is and where it came from.
 
-The maths is a short meta-regression. The hard part is collecting about eight facts per trial from registries, papers, supplements and protocol PDFs, where they are scattered or missing. That is the agents' job.
+## The problem
 
-> Built in 24 hours at Agentverse 2026 (Biotech track). Prototype. The bundled calibration set is **synthetic** until real trials are extracted and approved by a person.
+- **Functional unblinding.** In psychedelic trials, patients and the raters scoring them can usually tell who got the drug. Their expectations (**expectancy**: what someone believes the treatment will do) then inflate the measured effect. [1]
+- **Blinding is rarely checked.** A 2026 systematic review in JAMA Psychiatry of 112 randomised psychedelic trials found only 29.5% assessed whether blinding held. Psilocybin, LSD and ayahuasca studies frequently reported blinding failure above 90%, and inert-placebo MDMA trials above 85%. [1]
+- **It has already cost an approval.** In June 2024 an FDA advisory committee voted 9 to 2 that the efficacy of MDMA-assisted therapy for PTSD was not shown, with functional unblinding a central concern. [3] In August 2024 the FDA declined to approve it and asked for another phase 3 trial. [2]
+- **The advantage may be expectation.** A March 2026 JAMA Psychiatry analysis (Szigeti, Williams and colleagues) compared psychedelic trials with open-label antidepressant trials: the psychedelic advantage disappeared, with both improving by about 12 points. Szigeti called unblinding "the defining methodological problem of psychedelic trials". [4]
+- **Regulators now ask for it.** The FDA's final guidance (July 2026) names functional unblinding as the central threat and asks for blinding questionnaires, expectancy measures, **central raters** (blinded raters who are not at the dosing session) and alternative controls. [5]
+- **Effects are small.** Compass COMP005 beat placebo by 3.6 points on the **MADRS** (a 60-point clinician-rated depression scale) [7]; COMP006 beat a 1 mg dose by 3.8 points [6]. Bias of this size can decide the result.
 
-**Data:** no patient data is used. Every person in the demo is synthetic and labelled; every real number is published and cited. See [DATA.md](DATA.md) for what each dataset is, how it was made and the evidence behind it.
+**Problem statement.** Psychedelic trials cannot tell drug effect from expectation, because almost nobody measures blinding while the trial runs. Regulators now demand that evidence, and no tool produces it as a routine part of running a trial.
 
-## Quick start
+## Our solution
 
-```bash
-pip install -r requirements-dev.txt   # requirements.txt is the slim API-only set Vercel uses
-export GEMINI_API_KEY=...            # optional: without it, deterministic rules extract every field
-streamlit run app/app.py             # the demo
-python -m unblind run NCT03866174    # command line, live agent trace
-pytest -q                            # 14 offline tests
+Agents live inside the trial from protocol to FDA report and measure blinding the whole way, using one standard measurement set, **UNBLIND-BLIND-1**: each participant and rater gives a guess (drug or control), their confidence and their expectancy at fixed timepoints.
+
+- A **master agent** coordinates three modules: pre-dosing, dosing and post-dosing.
+- Every trial-changing action needs a **named human's sign-off**.
+- Allocation lives in a **sealed vault** that the AI cannot read. Agents only get group statistics, and groups smaller than 5 are suppressed "so no individual allocation can be inferred" (`MIN_CELL = 5` in `unblind/platform/core.py`).
+
+```mermaid
+flowchart LR
+  S[Evidence studio] --> M[Master agent]
+  T[Trials] --> M
+  M --> P[Pre-dosing module]
+  M --> D[Dosing module]
+  M --> F[Post-dosing module]
+  V[(Sealed vault)] -. group statistics only .-> D
+  P --> A{Named human approvals}
+  D --> A
+  F --> A
+  A --> R[FDA blinding report]
 ```
 
-The project was first called UNBLIND, so the Python package is still `unblind` (as in `python -m unblind`), the environment variables still start with `UNBLIND_`, and the shared blinding instrument set keeps its ID `UNBLIND-BLIND-1`.
+## How to use it
 
-No internet? Press **Load fixture demo** in the app sidebar. It replays two INVENTED test trials (NCT99999901, NCT99999902) from cache.
+Open https://parallax-two-tau.vercel.app/. Home has two doors: **Evidence studio** ("Check a published trial") and **Trials** ("Run a trial end to end").
 
-The app accepts any handle: an NCT ID, a DOI, a PMID or PMCID, a pasted abstract, or a short description like "psilocybin alcohol use disorder".
+![Parallax home page with the Evidence studio and Trials doors](docs/readme/01-home.png)
 
-## The agents
+> **2-minute demo path**
+> 1. **Evidence studio**: click the **NCT03866174** chip and read the Effect section.
+> 2. **Trials** > **Create a trial** > **Example: psilocybin for TRD** > **Create trial** > **Launch trial**.
+> 3. **Design review**: type your name, click **Approve selected**, and watch the checklist and blinding risk update.
+> 4. **Screening**: approve the **Clinician shortlist**; apply as a volunteer with "I was diagnosed with bipolar disorder last year".
+> 5. **Dosing**: click **Advance a week** until the Site B drift action appears, then approve it.
+> 6. **Follow-up**: ask a leading question and see the bias gate. **Report**: sign the FDA blinding report.
 
-```
-input ─► Resolver ─► Hunter ─┬─► Outcome extractor ──────┐
-                             ├─► Design extractor ───────┤──► Evidence ledger ─► Auditor ─► Statistician ─► Design advisor ─► HUMAN SIGN-OFF
-                             └─► Blinding hunter ────────┘      (fact + quote      (verbatim   (plain code,     (ranked fixes)
-                                  paper → supplement → protocol   + source + licence) quote check)  not an LLM)
-```
+### A. Evidence studio
 
-| Agent | Job | Where it decides its own next step |
-|---|---|---|
-| Resolver | Works out what the input is and finds the registered trial | DOI with no NCT ID, so it reads the paper for one. Free text, so it searches the registry and flags the match for a human to confirm |
-| Hunter | Finds the publication | Reformulates the query on a miss (registry ID, then title + sponsor, then drug + condition). Falls back to the abstract if the paper is not open access |
-| Outcome extractor | Picks the effect matching the **registered** primary endpoint | Loops back to the registry record, then rejects other timepoints, completers analyses and within-group numbers |
-| Design extractor | Comparator, rater placement, prior psychedelic use | **Results-blind**: every sentence with effect statistics is redacted before it reads, so a dramatic result cannot sway how it reads the design |
-| Blinding hunter | Guess-accuracy data | Paper, then supplements (only if open access), then protocol PDF. If the protocol planned a blinding check that was never reported, it flags possible selective reporting |
-| Auditor | Checks every fact | Deterministic code, not another LLM. The quote must appear word for word in the cited source, and the numbers must appear in the quote. Failures become "unknown" |
-| Statistician | Hedges' g from mean difference + CI + arm sizes, unblinding index, meta-regression | Plain numpy, so it cannot hallucinate |
-| Design advisor | Counterfactuals: swap comparator, move raters central, enrol naive participants | Ranks by bias reduction x feasibility (feasibility weights are team assumptions in `data/priors.json`) |
+1. Click **Evidence studio** in the top nav.
+2. In **Trial ID, DOI or pasted text**, paste a trial ID (try `NCT03866174`, or click one of the **Try** chips), a DOI or text, then click **Run**. It can take up to a minute.
+3. Read **Effect**: the **Reported** and **Bias-adjusted** effect (Hedges' g, 95% range). Read **How blinded it was** (unblinding from 0, nobody could tell, to 1, everyone could).
+4. Under **What the sources say**, click any fact to see the exact quote and source.
+5. Under **Design fixes, best first**, click **Use these fixes in a new trial**. This opens a new trial draft built from the report.
 
-Every fact has a status: **observed** (quoted and verified), **derived** (computed in code), **imputed** (estimated from design, labelled, with a wider interval) or **unknown**.
+![Evidence studio report for NCT03866174 showing reported and bias-adjusted effect](docs/readme/02-studio-result.png)
 
-## The model
+### B. Run a trial
 
-`g = a + b·u + c·central`, a random-effects meta-regression across trials.
+The vertical stepper on the right shows the stages: Draft, Design review, Recruitment, Screening, Dosing, Follow-up, Report.
 
-- `g` is the standardised effect (positive means the drug did better).
-- `u = 2 × guess accuracy − 1` is excess correct guessing (0 = coin flip, 1 = everyone knew).
-- `central` = 1 when outcome raters were remote, blinded and absent from dosing.
+1. **Create.** Go to **Trials** and click **Create a trial**. Pick a **Starting point**: **Blank page**, **Example: psilocybin for TRD** (treatment-resistant depression, scored on the MADRS) or **Example: MDMA for PTSD** (scored on the **CAPS-5**, the standard clinician-rated PTSD scale). Click **Create trial**.
 
-The reference design is zero unblinding with central blinded raters (`a + c`). The primary fit uses only trials whose blinding was **observed**. Trials with imputed blinding enter a sensitivity fit, with their extra uncertainty propagated.
+2. **Draft.** Edit the protocol as a document, then click **Launch trial**.
 
-## Evaluation (see `eval/README.md`)
+3. **Design review.** See **Blinding risk** (predicted unblinding from 0, coin flip, to 1, everyone knows) and the FDA July 2026 **Blinding checklist**. In **Review design fixes**, type your name as **Reviewer**, keep the fixes ticked and click **Approve selected**. Each approved fix adds a sentence to the protocol, saves a new version and re-checks it. You can also edit the protocol yourself and click **Save version and re-check**.
 
-1. **Planted-truth simulation** (`eval/synthetic_recovery.py`, SYNTHETIC). The truth is 0.35 g, with 60 trials and 300 replicates per scenario.
-   - **Expectancy bias only (assumptions hold):** a standard meta-analysis overstates the effect by +0.43 g and its interval contains the truth 0% of the time. Parallax's bias is −0.005 g, with 98% coverage, at the cost of intervals several times wider.
-   - **Reverse causation (people guess "drug" because they improved):** Parallax over-subtracts by about 0.15 g. This is the method's key failure mode, and why every report calls the corrected value a conservative bound.
-   - **Cross-trial confounding:** the correction is worse than doing nothing. We report it.
-   - **With only 15 trials:** the primary fit fails about a third of the time.
-2. **Extraction accuracy against a hand-verified gold set** (`eval/extraction_eval.py`). It reports field accuracy, coverage, honest abstention and audit pass rate. `data/gold_candidates.csv` holds 18 real trials with quotes and URLs, all marked **NOT VERIFIED**. A person must check each row before it becomes `data/gold.csv`.
-3. **Baseline: single-shot Gemini vs the agent pipeline** (`eval/baseline_vs_pipeline.py`). The baseline runs on **masked** text (drug, sponsor and trial names replaced) and on unmasked text. The difference measures how much a model "knows" from news coverage rather than reads from the document.
+4. **Recruitment.** Read the drafted **Recruitment ads** with their checks, and the **Measurement plan** (click **View measurement plan**).
+5. **Screening.** The **Screening funnel** shows Applied, Eligible (auto), Excluded (auto), Needs clinician and Enrolled. Click **View screening ledger** to see flagged applicants with the quoted disclosure. Sign the **Clinician shortlist** with **Approve** to enrol participants.
 
-## Data and licences
+6. **Dosing.** Move time with **Advance a day**, **Advance a week** or **Play**. The blinding monitor charts guesses from check-ins and raters (vault aggregates only). When raters at Site B drift, the agent proposes an action; approve it.
 
-| Source | Use | Licence |
-|---|---|---|
-| ClinicalTrials.gov API v2 | registry records, posted results, protocol PDFs | US NLM; generally public domain. Sponsor documents cited, not redistributed |
-| Europe PMC REST API | search, open-access full text, supplements | per-article licence, recorded on every source in the ledger (e.g. CC BY 4.0) |
-| Abstracts (non-OA) | facts with citation | publisher copyright; quoted briefly for verification only |
-| JulesCan/clinicaltrial-protocol-corpus (Hugging Face) | optional bulk protocol text | CC0-1.0, 49,002 protocols |
-| `data/calibration_synthetic.csv` | demo calibration | generated by `unblind/synthetic.py`; labelled SYNTHETIC everywhere |
+7. **Follow-up.** In the researcher portal, ask a leading question (for example one that assumes the drug worked). The bias gate rejects or rewrites it.
 
-**No patient-level data, ever.** Fetched texts are cached locally (`.cache/`, git-ignored) and are not redistributed.
+8. **Report.** Sign the FDA blinding report.
 
-## Risks and safeguards
+### C. The volunteer application view
 
-| Risk | Mitigation |
+On the **Screening** stage, below the funnel, is the volunteer application form. Fill it in as an applicant. Free text such as "I was diagnosed with bipolar disorder last year" is not decided automatically: it goes to a clinician, with the quote.
+
+### Tips
+
+- The vertical stepper on the right shows where you are. On phones it becomes a row of dots.
+- The Gemini key is held on the server. Without it, Parallax runs in **Rule-based mode**.
+- If a "This trial has expired" screen appears, start a new one. The project keeps its draft: click **Open the draft to launch it again**.
+
+## Results from simulation
+
+All numbers below are **SYNTHETIC** (simulated trials and applicants, no real patients).
+
+| What | Result (SYNTHETIC) |
 |---|---|
-| A confidently wrong extraction gives a confidently wrong correction | Verbatim quote audit. Unsupported claims become unknown. Imputed values are labelled and widen the interval |
-| An LLM reads a dramatic result and shades the design facts | Results firewall on the Design extractor |
-| Prompt injection inside a fetched PDF or paper | Documents are passed as delimited data, the output must match a JSON schema, enums are checked in code, every claim is quote-checked, and injection phrasing is flagged in the report |
-| An agent is steered to fetch arbitrary URLs | Host allowlist in `unblind/net.py` |
-| Reverse causation and confounding | Stated on every report. The output is a bound with an interval, not a verdict. The synthetic evaluation shows the failure size |
-| Garbage or out-of-domain input | Never crashes (tested). Out-of-domain trials get a loud warning |
-| Bad rows poisoning the calibration | Only rows a named reviewer approves enter `data/calibration_real.csv`. Fixtures and out-of-domain trials are refused |
-| Output treated as a regulatory answer | Every report is "AWAITING HUMAN SIGN-OFF" until a named person approves. Decisions are logged with a report fingerprint |
+| Screening 500 simulated applicants | About 89% decided automatically; 56 sent to a clinician; all 29 hidden free-text exclusions caught |
+| Psilocybin draft after design fixes | FDA checklist from 0/8 to 4/8; predicted unblinding from 0.79 to 0.55 |
+| Drift detection | Planted drift caught in 18 of 20 simulated trials, a median of 13.5 days after onset, vs 62 days with an end-of-trial check |
 
-## Who it is for
+## Honest limits
 
-A clinical development lead writing a Phase 2b or 3 psychedelic protocol, before the design is locked. Next step: run it on a sponsor's draft protocol, and produce a blinding section for an FDA meeting package aligned with the July 2026 guidance *Psychedelic Drugs: Considerations for Clinical Investigations*.
+- Synthetic data only. No real patients.
+- The bias-adjusted effect is a conservative estimate under stated assumptions, not "the true effect".
+- Parallax lowers the risk of a rejection on blinding grounds. It does not guarantee approval.
+- Clinicians stay in the loop: a clinician confirms the shortlist and every flagged case.
+- Prior work exists (Szigeti et al. [4]). Our contribution is making blinding measurement standard and live inside the trial.
 
-## Limitations
+## How it works
 
-- **Reverse causation.** Improvement can cause correct guessing, so the correction can remove real effect.
-- **Cross-trial confounding.** Drug, dose, population and era all differ between trials.
-- **A low-dose comparator is also pharmacology.**
-- **Few dots near zero unblinding.** Non-hallucinogenic compounds sit exactly where data are sparsest.
-- **It estimates contamination, not efficacy.** It cannot predict what a trial will show.
-- **Live APIs have not been exercised from the build sandbox,** whose network blocks them. All network branches are covered by offline fixtures. Run on a normal connection before the demo.
+**Stack:** FastAPI backend (`backend/main.py`, served on Vercel through `api/index.py`), React + Vite + TypeScript frontend (`frontend/`), Postgres on Neon when `DATABASE_URL` is set (`unblind/platform/store.py`), deployed on Vercel (`vercel.json`), Gemini called server-side only.
 
-## Building the real corpus
+```
+backend/main.py                API: /api/health, /api/protocols, /api/trials/... (state, step, record,
+                               approvals, kpis, modules), /api/evidence/run
+api/index.py                   Vercel entry point for the API
+frontend/                      React app (Home, Evidence studio, Trials, project workspace)
+unblind/platform/              core.py (record, approvals, vault), store.py, world.py (SYNTHETIC simulator)
+  master/                      master agent (orchestrator)
+  predose/ dosing/ postdose/   the three modules
+unblind/                       evidence pipeline used by the Evidence studio
+data/ eval/ tests/             data, evaluations, tests
+```
+
+**Owners:** Danny: pre-dosing, master agent, API, frontend. Izzy: dosing. Callum: post-dosing.
+
+**Module contract:** see [MODULE_CONTRACT.md](MODULE_CONTRACT.md).
+
+The project was first called UNBLIND, so the Python package is still `unblind` and environment variables start with `UNBLIND_`.
+
+## Run it locally
+
+Python 3.12 (what the team develops and tests with; the repo does not pin a version) and Node.
 
 ```bash
-python -m unblind build-corpus data/psychedelic_trials.txt   # 17 real trial IDs from the candidate gold set
-streamlit run app/app.py   # sidebar: load each reports/NCT*.json, review, approve "add to calibration corpus"
+pip install -r requirements-dev.txt
+uvicorn backend.main:app --port 8000
+
+npm ci --prefix frontend
+npm run dev --prefix frontend      # Vite on 5173, proxies /api to 8000 (override with VITE_API_TARGET)
 ```
 
-Once at least 6 approved trials have observed blinding, the app switches from the synthetic calibration to the real one automatically.
+Environment variables (names only):
 
-## Repo map
+- `DATABASE_URL`: Postgres connection. Without it, trials are kept in a local file store.
+- `GEMINI_API_KEY`: optional. Without it, rule-based mode is used.
 
+Tests:
+
+```bash
+python -m pytest -q
 ```
-unblind/   agents.py  audit.py  ledger.py  llm.py  model.py  net.py  pipeline.py  rules.py  signoff.py  sources.py  synthetic.py
-app/       app.py (Streamlit demo)
-eval/      synthetic_recovery.py  extraction_eval.py  baseline_vs_pipeline.py  results/
-data/      priors.json (assumptions)  calibration_synthetic.csv  gold_candidates.csv (unverified)  psychedelic_trials.txt
-tests/     offline fixtures (invented trials) and tests
+
+Evidence pipeline (command line and the original Streamlit demo):
+
+```bash
+python -m unblind run NCT03866174
+streamlit run app/app.py
 ```
+
+## References
+
+1. ICH. *E9(R1) Addendum on Estimands and Sensitivity Analysis in Clinical Trials.* FDA guidance, May 2021.
+2. FDA. *Psychedelic Drugs: Considerations for Clinical Investigations.* Final guidance, July 2026. [Coverage](https://www.appliedclinicaltrialsonline.com/view/fda-finalizes-guidance-clinical-trial-design-psychedelic-drug-development)
+3. Orsini DK, Wong S, Di Luch S, et al. Blinding integrity in psychedelic randomized clinical trials: a systematic review. *JAMA Psychiatry* 2026;83(7):755–769. [doi:10.1001/jamapsychiatry.2026.0255](https://doi.org/10.1001/jamapsychiatry.2026.0255)
+4. Compass Pathways. COMP005 primary endpoint, 23 Jun 2025 ([release](https://www.biospace.com/press-releases/compass-pathways-successfully-achieves-primary-endpoint-in-first-phase-3-trial-evaluating-comp360-psilocybin-for-treatment-resistant-depression)); COMP006 primary endpoint, 17 Feb 2026 ([release](https://ir.compasspathways.com/News--Events-/news/news-details/2026/Compass-Pathways-Successfully-Achieves-Primary-Endpoint-in-Second-Phase-3-Trial-Evaluating-COMP360-Psilocybin-for-Treatment-Resistant-Depression/default.aspx)).
+5. FDA Psychopharmacologic Drugs Advisory Committee, midomafetamine for PTSD, 4 Jun 2024 ([live coverage](https://www.hcplive.com/view/live-updates-fda-psychopharmacologic-advisory-committee-meeting-mdma-ptsd)); Complete Response Letter to Lykos Therapeutics, Aug 2024 ([coverage](https://www.biospace.com/drug-development/fda-rejects-lykos-mdma-assisted-ptsd-therapy-after-negative-adcomm)).
+6. FDA. *Considerations for the Use of Artificial Intelligence to Support Regulatory Decision-Making for Drug and Biological Products.* Draft guidance, Jan 2025.
+7. Szigeti B, et al., 2026 — reported in UCSF, "Are psychedelics better antidepressants? New study says no," Mar 2026. [ucsf.edu](https://www.ucsf.edu/news/2026/03/431651/are-psychedelics-better-antidepressants-new-study-says-no)
+
+## Data sources
+
+| Source | Licence |
+|---|---|
+| [ClinicalTrials.gov API v2](https://clinicaltrials.gov/data-api/api) (US NLM) | Public domain |
+| [Europe PMC](https://europepmc.org/) | Per-article, recorded with each record |
+| [JulesCan/clinicaltrial-protocol-corpus](https://huggingface.co/datasets/JulesCan/clinicaltrial-protocol-corpus) | CC0-1.0 |
+
+No patient data is used. All performance figures in this repository are generated from synthetic simulations with planted ground truth and are not evidence of real-world performance.
