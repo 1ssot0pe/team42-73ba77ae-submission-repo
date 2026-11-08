@@ -1,47 +1,68 @@
 /**
  * Draft stage: a quiet document editor. Title (the project name) and the protocol body, autosaved to the
- * projects store after 600 ms. "Launch trial" creates the backend trial from the draft and moves to Design review.
- * After launch the draft is read-only.
+ * projects store after 600 ms. The body is a block editor that renders the markdown as formatting and
+ * stores plain markdown. The title lives only in the name field; Launch sends "# <name>" plus the body,
+ * creates the backend trial and moves to Design review. After launch the draft is read-only.
  */
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api, errorText } from "../../api";
 import { projects, type Project } from "../../store/projects";
 import { useTrial } from "../../trial";
+import { BlockEditor } from "../editor/BlockEditor";
+import { stripLeadingTitle } from "../editor/markdown";
 
 const PLACEHOLDER =
   "Start writing your protocol. Describe the drug, comparator, raters, who you will recruit and your primary outcome.";
 
 type SaveState = "idle" | "saving" | "saved";
 
+/** Older projects kept the template's "# title" line in the body; drop it when it repeats the name. */
+function withoutTitle(p: Project): string {
+  return stripLeadingTitle(p.draft, p.name) ?? p.draft;
+}
+
 export function DraftEditor({ project }: { project: Project }) {
   const navigate = useNavigate();
   const { adopt } = useTrial();
   const [name, setName] = useState(project.name);
-  const [draft, setDraft] = useState(project.draft);
+  const [draft, setDraft] = useState(() => withoutTitle(project));
   const [save, setSave] = useState<SaveState>("idle");
   const [launching, setLaunching] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const body = useRef<HTMLTextAreaElement>(null);
   const timer = useRef<number | null>(null);
+  const titleRef = useRef<HTMLTextAreaElement>(null);
   const pending = useRef<{ name: string; draft: string } | null>(null);
   const launched = !!project.trialId;
 
   // Switching project resets local text.
+  // Also fixes older projects whose body repeats the title, saving the stripped draft once.
   useEffect(() => {
+    const clean = withoutTitle(project);
     setName(project.name);
-    setDraft(project.draft);
+    setDraft(clean);
     setSave("idle");
+    if (clean !== project.draft && !project.trialId) projects.update(project.id, { draft: clean });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project.id]);
 
-  // Auto-grow the body.
-  useLayoutEffect(() => {
-    const el = body.current;
+  // The title wraps rather than clipping long names: grow its height to fit, also when the width changes.
+  const fitTitle = () => {
+    const el = titleRef.current;
     if (!el) return;
     el.style.height = "auto";
     el.style.height = `${el.scrollHeight}px`;
-  }, [draft]);
+  };
+  useLayoutEffect(fitTitle, [name]);
+  useEffect(() => {
+    const el = titleRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    let w = el.clientWidth;
+    const ro = new ResizeObserver(() => { if (el.clientWidth !== w) { w = el.clientWidth; fitTitle(); } });
+    ro.observe(el);
+    void document.fonts?.ready.then(fitTitle);
+    return () => ro.disconnect();
+  }, []);
 
   const flush = () => {
     if (timer.current !== null) { window.clearTimeout(timer.current); timer.current = null; }
@@ -69,8 +90,9 @@ export function DraftEditor({ project }: { project: Project }) {
     setLaunching(true);
     setError(null);
     try {
-      const state = await api.createTrial({ protocol_text: draft });
-      projects.update(project.id, { trialId: state.trial_id, status: "running", draft, name: name.trim() || "Untitled trial" });
+      const title = name.trim() || "Untitled trial";
+      const state = await api.createTrial({ protocol_text: `# ${title}\n\n${draft}` });
+      projects.update(project.id, { trialId: state.trial_id, status: "running", draft, name: title });
       adopt(state);
       navigate(`/trials/${project.id}/design-review`);
     } catch (e) {
@@ -80,7 +102,7 @@ export function DraftEditor({ project }: { project: Project }) {
   };
 
   return (
-    <article className="draft">
+    <article className="draft draft--doc">
       <div className="draft__bar">
         <span className="draft__save" aria-live="polite">
           {launched ? (
@@ -95,11 +117,16 @@ export function DraftEditor({ project }: { project: Project }) {
       </div>
       {error ? <p className="draft__error" role="alert">{error}</p> : null}
 
-      <input className="draft__title" aria-label="Trial name" value={name} readOnly={launched} placeholder="Untitled trial"
-        onChange={(e) => { setName(e.target.value); schedule({ name: e.target.value, draft }); }} />
-      <textarea ref={body} className="draft__body" aria-label="Protocol" value={draft} readOnly={launched} rows={12}
-        placeholder={PLACEHOLDER}
-        onChange={(e) => { setDraft(e.target.value); schedule({ name, draft: e.target.value }); }} />
+      <textarea ref={titleRef} className="draft__title draft__title--wrap" aria-label="Trial name" value={name} readOnly={launched}
+        placeholder="Untitled trial" rows={1}
+        onKeyDown={(e) => { if (e.key === "Enter") e.preventDefault(); }}
+        onChange={(e) => {
+          const v = e.target.value.replace(/[\r\n]+/g, " ");
+          setName(v);
+          schedule({ name: v, draft });
+        }} />
+      <BlockEditor key={project.id} value={draft} readOnly={launched} placeholder={PLACEHOLDER} ariaLabel="Protocol"
+        onChange={(md) => { setDraft(md); schedule({ name, draft: md }); }} />
     </article>
   );
 }

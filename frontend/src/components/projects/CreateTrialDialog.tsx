@@ -1,13 +1,15 @@
 /**
  * Create a trial: a small, flat, accessible modal. Name plus a starting point (blank or a demo template).
  * Templates come from api.protocols(); when the API is down only Blank is offered and the examples are disabled.
- * On create: projects.create, then navigate to /trials/<id>/draft.
+ * On create: projects.create, then navigate to /trials/<id>/draft. A template's first "# " heading becomes the
+ * name (unless one was typed) and is removed from the body, so the title never shows twice.
  */
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { api, errorText } from "../../api";
 import { projects, type ProjectTemplate } from "../../store/projects";
 import type { ProtocolSummary } from "../../types";
+import { takeTitle } from "../editor/markdown";
 
 interface Option {
   id: ProjectTemplate;
@@ -68,12 +70,13 @@ export function CreateTrialDialog({ open, onClose }: { open: boolean; onClose: (
     setError(null);
     try {
       let draft = "";
+      let title: string | null = null;
       if (template !== "blank") {
         const opt = EXAMPLES.find((o) => o.id === template);
         const proto = opt ? findProtocol(protocols, opt.match) : null;
-        if (proto) draft = (await api.protocol(proto.name)).text ?? "";
+        if (proto) ({ title, body: draft } = takeTitle((await api.protocol(proto.name)).text ?? ""));
       }
-      const p = projects.create({ name: name.trim() || "Untitled trial", template, draft });
+      const p = projects.create({ name: name.trim() || title || "Untitled trial", template, draft });
       onClose();
       navigate(`/trials/${p.id}/draft`);
     } catch (err) {
