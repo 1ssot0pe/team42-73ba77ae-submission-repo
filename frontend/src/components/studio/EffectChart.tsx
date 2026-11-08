@@ -1,11 +1,13 @@
 /**
- * EffectChart: a two-row forest plot (reported and bias-adjusted) on a shared Hedges' g axis.
- * Inline SVG keeps it cheap. The viewBox follows the rendered width, so text stays at its real size
- * on a phone instead of shrinking with the drawing. Violet and orange are allowed here because this is a chart.
+ * EffectChart (effect-forest): reported vs bias-adjusted Hedges' g on one axis, as a two-row forest plot.
+ * Hand-written SVG; the viewBox follows the rendered width so text stays at its real size on a phone.
+ * Every number comes from the report: the reported interval is g ± 1.96·se_g (report.ts effect()), the adjusted
+ * interval is the backend's correction lo/hi. Nothing else is drawn (no reference effect, no sensitivity row).
+ * Violet and orange are allowed here because this is a chart; marker shape and row labels carry the same meaning.
  */
-import { useLayoutEffect, useRef, useState } from "react";
 import type { Effect } from "./report";
 import { fmt } from "./report";
+import { TipBubble, usePointTip, useWidth } from "./PointTip";
 
 const VIOLET = "var(--color-spark-violet)";
 const ORANGE = "var(--color-spark-ember)";
@@ -28,90 +30,210 @@ export function niceTicks(lo: number, hi: number, min = 5): { ticks: number[]; s
   return { ticks, step: pick };
 }
 
-function decimals(step: number): number {
+export function decimals(step: number): number {
   for (let d = 0; d <= 4; d++) if (Math.abs(Math.round(step * 10 ** d) - step * 10 ** d) < 1e-9) return d;
   return 2;
 }
 
-export function EffectChart({ e, note }: { e: Effect; note: string }) {
-  const box = useRef<HTMLDivElement>(null);
-  const [W, setW] = useState(560);
-  useLayoutEffect(() => {
-    const el = box.current;
-    if (!el) return;
-    const measure = () => setW(Math.max(240, Math.round(el.clientWidth)));
-    measure();
-    const ro = new ResizeObserver(measure);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
+const has = (v: number | null): v is number => v !== null;
+const bracket = (m: number | null, a: number | null, b: number | null) =>
+  m === null ? "Not available" : has(a) && has(b) ? `${fmt(m)} [${fmt(a)}, ${fmt(b)}]` : fmt(m);
 
-  const vals = [e.reported, e.reportedLo, e.reportedHi, e.adjusted, e.adjustedLo, e.adjustedHi, 0]
-    .filter((v): v is number => v !== null);
-  const rawLo = Math.min(...vals), rawHi = Math.max(...vals);
-  const pad = (rawHi - rawLo) * 0.04 || 0.1;
-  const { ticks, step } = niceTicks(rawLo - pad, rawHi + pad);
+export interface EffectFlags { reportedImputed: boolean; uImputed: boolean; signOff: string }
+
+export function effectFlags(e: Effect, signOff: string): EffectFlags {
+  return { reportedImputed: e.reportedStatus === "imputed", uImputed: e.uStatus === "imputed", signOff };
+}
+
+/** Takeaway title from the data; falls back to a neutral sentence when an input is missing. */
+export function effectTitle(e: Effect): string {
+  if (!has(e.reported) || !has(e.adjusted)) return "Reported and bias-adjusted effect (Hedges' g)";
+  const base = `Reported g ${fmt(e.reported)}; adjusted ${fmt(e.adjusted)}`;
+  if (!has(e.adjustedLo) || !has(e.adjustedHi)) return base;
+  const crosses = e.adjustedLo <= 0 && e.adjustedHi >= 0;
+  return `${base}, interval ${crosses ? "crosses" : "does not cross"} 0`;
+}
+
+export function effectAria(e: Effect, f: EffectFlags): string {
+  const iv = (a: number | null, b: number | null, pre = "") => (has(a) && b !== null ? ` (${pre}${fmt(a)} to ${fmt(b)}` : "");
+  const rep = has(e.reported)
+    ? `Reported ${fmt(e.reported)}${iv(e.reportedLo, e.reportedHi, "95% CI ")}${has(e.reportedLo) ? (f.reportedImputed ? ", imputed)" : ")") : ""}`
+    : "Reported not available";
+  const adj = has(e.adjusted)
+    ? `Bias-adjusted ${fmt(e.adjusted)}${iv(e.adjustedLo, e.adjustedHi)}${has(e.adjustedLo) ? (f.uImputed ? ", u imputed)" : ")") : ""}`
+    : "Bias-adjusted not available";
+  return `Forest plot, Hedges' g. ${rep}. ${adj}. Positive favours the drug.${f.signOff ? ` ${f.signOff}.` : ""}`;
+}
+
+const r3 = (v: number | null) => (v === null ? null : Number(v.toFixed(3)));
+
+export function effectTable(e: Effect, f: EffectFlags) {
+  return {
+    columns: [
+      { key: "row", label: "Row" },
+      { key: "est", label: "Estimate (g)", align: "right" as const },
+      { key: "lo", label: "95% low (g)", align: "right" as const },
+      { key: "hi", label: "95% high (g)", align: "right" as const },
+      { key: "source", label: "Source" },
+      { key: "note", label: "Note" },
+    ],
+    rows: [
+      {
+        row: "Reported", est: e.reported, lo: r3(e.reportedLo), hi: r3(e.reportedHi),
+        source: f.reportedImputed ? "imputed" : e.reportedStatus || "observed",
+        note: has(e.se) ? `Interval computed in the browser: g ± 1.96 × SE, SE ${fmt(e.se, 3)}${e.seStatus === "imputed" ? " (imputed from estimated arm sizes)" : ""}` : "No SE in the report, so no interval",
+      },
+      {
+        row: "Bias-adjusted", est: e.adjusted, lo: e.adjustedLo, hi: e.adjustedHi,
+        source: "model",
+        note: `Reported g minus bias ${has(e.bias) ? fmt(e.bias, 3) : "n/a"}; interval from the correction model${f.uImputed ? ", u imputed from design" : ""}${e.extrapolated ? ", extrapolated" : ""}`,
+      },
+    ],
+    note: "Reported interval is computed in the browser as g ± 1.96 × se_g from the report. Bias-adjusted estimate and interval are the report's correction values. Values rounded to 3 decimals in the report.",
+  };
+}
+
+export function EffectChart({ e, flags }: { e: Effect; flags: EffectFlags }) {
+  const { ref, w: W } = useWidth(620);
+  const { tip, markProps } = usePointTip();
+
+  const vals = [e.reported, e.reportedLo, e.reportedHi, e.adjusted, e.adjustedLo, e.adjustedHi, 0].filter(has);
+  const { ticks, step } = niceTicks(Math.min(...vals), Math.max(...vals), 4);
   const lo = ticks[0], hi = ticks[ticks.length - 1];
-  const dp = decimals(step);
-  const tickText = (v: number) => (Math.abs(v) < 1e-9 ? "0" : fmt(v, dp));
+  const dp = Math.max(1, decimals(step));
+  const tickText = (v: number) => fmt(Math.abs(v) < 1e-9 ? 0 : v, dp);
 
-  // Narrow: row labels sit above each interval so the plot keeps the full width.
-  const narrow = W < 440;
-  const L = narrow ? 18 : 116, R = 18;
-  const rowY = narrow ? [34, 88] : [26, 66];
-  const axisY = rowY[1] + (narrow ? 28 : 30);
-  const H = axisY + 46;
+  // Wide: label column left, estimate column right. Narrow: label above each bar, estimate under it.
+  const narrow = W < 520;
+  const L = narrow ? 8 : 150;
+  const R = narrow ? 8 : 168;
+  const top = 26; // room for the "No effect" label
+  const rowY = narrow ? [top + 30, top + 128] : [top + 22, top + 104];
+  const axisY = rowY[1] + (narrow ? 44 : 30);
+  const H = axisY + 58;
   const x = (v: number) => L + ((v - lo) / (hi - lo)) * (W - L - R);
+  const x0 = x(0);
 
   const rows = [
-    { label: "Reported", c: VIOLET, mid: e.reported, a: e.reportedLo, b: e.reportedHi, y: rowY[0] },
-    { label: "Bias-adjusted", c: ORANGE, mid: e.adjusted, a: e.adjustedLo, b: e.adjustedHi, y: rowY[1] },
+    {
+      key: "rep", label: "Reported", flag: flags.reportedImputed ? "imputed" : "",
+      color: VIOLET, shape: "square" as const, hollow: flags.reportedImputed,
+      mid: e.reported, a: e.reportedLo, b: e.reportedHi, y: rowY[0],
+      sub: has(e.reportedLo) ? (e.seStatus === "imputed" ? "95% CI from imputed SE" : "95% CI") : "No interval reported",
+      tip: has(e.reported)
+        ? `Reported: ${fmt(e.reported)}${has(e.reportedLo) && has(e.reportedHi) ? `, 95% interval ${fmt(e.reportedLo)} to ${fmt(e.reportedHi)}` : ""}, standardised mean difference${flags.reportedImputed ? ", imputed from estimated arm sizes" : ""}`
+        : "",
+    },
+    {
+      key: "adj", label: "Bias-adjusted", flag: flags.uImputed ? "u imputed" : "",
+      color: ORANGE, shape: "circle" as const, hollow: false,
+      mid: e.adjusted, a: e.adjustedLo, b: e.adjustedHi, y: rowY[1],
+      sub: has(e.adjustedLo) ? "95% CI from the correction model" : "No interval",
+      tip: has(e.adjusted)
+        ? `Bias-adjusted: ${fmt(e.adjusted)}${has(e.adjustedLo) && has(e.adjustedHi) ? `, 95% interval ${fmt(e.adjustedLo)} to ${fmt(e.adjustedHi)}` : ""}, standardised mean difference${flags.uImputed ? ", unblinding u imputed" : ""}`
+        : "",
+    },
   ];
-  const range = (a: number | null, b: number | null) => (a !== null && b !== null ? ` (${fmt(a)} to ${fmt(b)})` : "");
-  const summary = `Forest plot of Hedges' g. Reported ${fmt(e.reported)}${range(e.reportedLo, e.reportedHi)}, bias-adjusted ${fmt(e.adjusted)}${range(e.adjustedLo, e.adjustedHi)}.`;
+
+  // Connector: down from the reported point, across by the estimated bias, down into the adjusted point.
+  const conn = has(e.reported) && has(e.adjusted) ? { x1: x(e.reported), x2: x(e.adjusted) } : null;
+  const midY = narrow ? rowY[0] + 50 : (rowY[0] + rowY[1]) / 2;
+  const biasText = has(e.bias) ? `Estimated bias ${fmt(e.bias)}` : "";
+  // Label sits above the horizontal run, ending just short of the reported point's drop line (or starting after it).
+  const leftward = conn ? conn.x2 <= conn.x1 : true;
+  const biasX = conn ? (leftward ? conn.x1 - 6 : conn.x1 + 6) : 0;
 
   return (
-    <figure className="studio-chart">
-      <div ref={box} className="studio-chart__box">
-        <svg viewBox={`0 0 ${W} ${H}`} width="100%" height={H} role="img" aria-label={summary}>
-          {ticks.map((t) => (
-            <line key={`g${t}`} x1={x(t)} x2={x(t)} y1={6} y2={axisY} className="studio-chart__grid" />
-          ))}
-          <line x1={x(0)} x2={x(0)} y1={4} y2={axisY} className="studio-chart__zero" />
-          <line x1={L} x2={W - R} y1={axisY} y2={axisY} className="studio-chart__axis" />
-          {ticks.map((t) => (
-            <g key={`t${t}`}>
-              <line x1={x(t)} x2={x(t)} y1={axisY} y2={axisY + 4} className="studio-chart__axis" />
-              <text x={x(t)} y={axisY + 18} textAnchor="middle" className="studio-chart__tick">{tickText(t)}</text>
-            </g>
-          ))}
-          <text x={L + (W - L - R) / 2} y={H - 4} textAnchor="middle" className="studio-chart__title">
-            Effect size (Hedges&rsquo; g)
-          </text>
-          {rows.map((r) => (
-            <g key={r.label}>
-              <text
-                x={narrow ? L : 0}
-                y={narrow ? r.y - 14 : r.y}
-                dominantBaseline={narrow ? "auto" : "middle"}
-                className="studio-chart__row"
-              >
+    <div ref={ref} className="st-forest">
+      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height={H} focusable="false">
+        <defs>
+          <marker id="st-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0 L8 4 L0 8 z" className="st-arrowhead" />
+          </marker>
+        </defs>
+        {ticks.map((t) => (
+          <line key={`g${t}`} x1={x(t)} x2={x(t)} y1={top} y2={axisY} className="st-grid" />
+        ))}
+        <line x1={x0} x2={x0} y1={top - 6} y2={axisY} className="st-null" />
+        <text x={x0} y={top - 12} textAnchor="middle" className="st-label st-label--ref">No effect</text>
+
+        {conn ? (
+          <g className="st-conn" aria-hidden="true">
+            <polyline
+              points={`${conn.x1},${rowY[0] + 8} ${conn.x1},${midY} ${conn.x2},${midY} ${conn.x2},${rowY[1] - 9}`}
+              fill="none"
+              markerEnd="url(#st-arrow)"
+            />
+            {biasText ? (
+              <text x={biasX} y={midY - 6} textAnchor={leftward ? "end" : "start"} className="st-label st-label--conn st-halo">{biasText}</text>
+            ) : null}
+          </g>
+        ) : null}
+
+        {rows.map((r) => {
+          const labelX = narrow ? L : 0;
+          const labelY = narrow ? r.y - 16 : r.y - 2;
+          return (
+            <g key={r.key}>
+              <text x={labelX} y={labelY} className="st-row st-halo">
                 {r.label}
+                {r.flag && !narrow ? <tspan className="st-flag">{` (${r.flag})`}</tspan> : null}
               </text>
-              {r.a !== null && r.b !== null ? (
-                <line x1={x(r.a)} x2={x(r.b)} y1={r.y} y2={r.y} strokeWidth={2} strokeLinecap="round" style={{ stroke: r.c }} />
+              {!narrow ? (
+                <text x={labelX} y={labelY + 16} className="st-sub">{r.sub}</text>
               ) : null}
-              {r.mid !== null ? <circle cx={x(r.mid)} cy={r.y} r={5} style={{ fill: r.c }} /> : null}
+              {has(r.a) && has(r.b) ? (
+                <g>
+                  <line x1={x(r.a)} x2={x(r.b)} y1={r.y} y2={r.y} strokeWidth={2} style={{ stroke: r.color }} />
+                  <line x1={x(r.a)} x2={x(r.a)} y1={r.y - 5} y2={r.y + 5} strokeWidth={2} style={{ stroke: r.color }} />
+                  <line x1={x(r.b)} x2={x(r.b)} y1={r.y - 5} y2={r.y + 5} strokeWidth={2} style={{ stroke: r.color }} />
+                </g>
+              ) : null}
+              {has(r.mid) ? (
+                <g {...markProps(x(r.mid), r.y, r.tip)}>
+                  <title>{r.tip}</title>
+                  <circle cx={x(r.mid)} cy={r.y} r={14} className="st-hit" />
+                  {r.shape === "square" ? (
+                    <rect
+                      x={x(r.mid) - 6} y={r.y - 6} width={12} height={12}
+                      style={r.hollow ? { fill: "var(--color-eggshell)", stroke: r.color, strokeWidth: 2 } : { fill: r.color }}
+                    />
+                  ) : (
+                    <circle cx={x(r.mid)} cy={r.y} r={6.5} style={{ fill: r.color, stroke: "var(--color-eggshell)", strokeWidth: 1.5 }} />
+                  )}
+                </g>
+              ) : null}
+              {narrow ? (
+                <text x={L} y={r.y + 24} className="st-value st-halo">
+                  {bracket(r.mid, r.a, r.b)}
+                  {r.flag ? <tspan className="st-flag">{`, ${r.flag}`}</tspan> : null}
+                </text>
+              ) : (
+                <>
+                  <text x={W} y={r.y - 2} textAnchor="end" className="st-value">{bracket(r.mid, r.a, r.b)}</text>
+                </>
+              )}
             </g>
-          ))}
-        </svg>
-      </div>
-      <figcaption className="studio-chart__caption">
-        <span><span className="studio-key" style={{ background: VIOLET }} /> Reported</span>
-        <span><span className="studio-key" style={{ background: ORANGE }} /> Bias-adjusted</span>
-        <span className="studio-muted">Dot is the estimate, line the 95% range, dashed line no effect.</span>
-        {note ? <span className="studio-muted">{note}</span> : null}
-      </figcaption>
-    </figure>
+          );
+        })}
+        {!narrow ? (
+          <text x={W} y={top - 12} textAnchor="end" className="st-label">g [95% CI]</text>
+        ) : null}
+
+        <line x1={L} x2={W - R} y1={axisY} y2={axisY} className="st-axis" />
+        {ticks.map((t) => (
+          <g key={`t${t}`}>
+            <line x1={x(t)} x2={x(t)} y1={axisY} y2={axisY + 4} className="st-axis" />
+            <text x={x(t)} y={axisY + 18} textAnchor="middle" className="st-tick">{tickText(t)}</text>
+          </g>
+        ))}
+        <text x={L} y={axisY + 38} textAnchor="start" className="st-label st-label--dir">&larr; Favours control</text>
+        <text x={W - R} y={axisY + 38} textAnchor="end" className="st-label st-label--dir">Favours drug &rarr;</text>
+        <text x={L + (W - L - R) / 2} y={axisY + 56} textAnchor="middle" className="st-label">
+          Hedges&rsquo; g (standardised mean difference)
+        </text>
+      </svg>
+      <TipBubble tip={tip} width={W} />
+    </div>
   );
 }
