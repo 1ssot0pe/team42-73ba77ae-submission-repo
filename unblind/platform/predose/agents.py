@@ -280,6 +280,27 @@ def _set(p: dict, key: str, value: Any) -> None:
         p[key] = value
 
 
+def _get(p: dict, key: str, default: Any = None) -> Any:
+    """Read one structured value; mirrors _set (dotted keys such as design_flags.raters_attend_sessions)."""
+    if "." in key:
+        head, tail = key.split(".", 1)
+        sub = p.get(head)
+        return _get(sub, tail, default) if isinstance(sub, dict) else default
+    return p.get(key, default)
+
+
+def fix_satisfied(p: dict, fid: str) -> bool:
+    """True when every structured change of FIXES[fid] already has that value in the protocol."""
+    return all(_get(p, k) == v for k, v in FIXES[fid][1].items())
+
+
+def _fix_in_flight(rec: TrialRecord, fid: str) -> bool:
+    """An approval for this fix was approved but its approval_decided message has not been handled yet."""
+    return any(m["kind"] == "approval_decided" and not m["delivered"] and m["to"] == M
+               and isinstance(m.get("payload"), dict) and m["payload"].get("status") == "approved"
+               and (m["payload"].get("action") or {}).get("fix") == fid for m in rec["messages"])
+
+
 class ProtocolCoDesigner:
     name = "protocol co-designer"
 
@@ -355,6 +376,8 @@ class ProtocolCoDesigner:
         pending = {a["action"].get("fix") for a in ctx.approvals.pending(M) if a["action"].get("type") == "apply_fix"}
         for fid in proposed:
             if fid in pending or fid in rejected:   # a human already said no: do not ask again
+                continue
+            if fix_satisfied(p, fid) or _fix_in_flight(rec, fid):   # already in the protocol, or approved and about to apply
                 continue
             title, _change, sentence = FIXES[fid]
             ctx.approvals.request(self.name, M, f"Protocol fix: {title}",
@@ -649,3 +672,62 @@ class Enroller:
         ctx.bus.post(M, "master", "enrolment_complete", {"n": len(enrolled), "strata": counts},
                      f"{len(enrolled)} participants enrolled and randomised")
         return enrolled
+
+
+# ---------------------------------------------------------------------------
+# Phase 4: measurement planner (UNBLIND-BLIND-1 instruments and the shared schedule)
+# ---------------------------------------------------------------------------
+INSTRUMENTS = [
+    {"id": "UB1-EXP0", "who": "participant", "questions": ["How much do you expect to improve? (0 to 10)"], "timepoints_days": ["before randomisation"], "purpose": "Baseline expectancy (FDA July 2026)"},
+    {"id": "UB1-PG", "who": "participant", "questions": ["Which group do you think you are in? (drug, control, don't know)", "How sure are you? (0 to 100)", "How much do you expect to improve? (0 to 10)"], "timepoints_days": ["dosing +1", "week 1", "week 3", "week 6"], "purpose": "Participant blinding and expectancy"},
+    {"id": "UB1-RG", "who": "rater", "questions": ["Which group do you think this participant is in?", "How sure are you? (0 to 100)"], "timepoints_days": ["week 1", "week 3", "week 6"], "purpose": "Rater blinding (central raters)"},
+    {"id": "UB1-MD", "who": "monitor", "questions": ["Free-text debrief: effects, adverse events, anything that could reveal the arm"], "timepoints_days": ["dosing day"], "purpose": "Safety and unblinding cues"},
+    {"id": "MADRS", "who": "rater", "questions": ["MADRS total (0 to 60)"], "timepoints_days": ["baseline", "week 1", "week 3", "week 6"], "purpose": "Primary outcome"},
+    {"id": "UB1-FU", "who": "participant", "questions": ["Follow-up check-in and end-of-treatment guess and expectancy"], "timepoints_days": ["week 8", "week 12"], "purpose": "Durability and end-of-treatment blinding"},
+]
+SCHEDULE_KINDS = ("dosing_session", "monitor_debrief", "participant_checkin", "rater_assessment", "followup")
+
+
+def build_schedule(rec):
+    wk = int(rec["protocol"].get("primary_endpoint", {}).get("week", 6))
+    raters = {s: ["R-" + s[5] + "1", "R-" + s[5] + "2"] for s in SITES}       # e.g. R-A1, R-B2
+    sched = []
+    for i, p in enumerate(rec["enrolled"]):
+        d, pid, site = p["dosing_day"], p["id"], p["site"]
+        rid = raters.get(site, ["R-X1"])[i % 2]
+
+        def add(kind, day, owner, instrument, **extra):
+            sched.append({"id": f"{pid}-{kind}-{day}", "participant": pid, "site": site, "day": day, "kind": kind,
+                          "owner": owner, "instrument": instrument, "status": "scheduled", **extra})
+        add("dosing_session", d, "dosing", "session")
+        add("monitor_debrief", d, "dosing", "UB1-MD")
+        add("participant_checkin", d + 1, "dosing", "UB1-PG")
+        for w in sorted({1, 3, wk}):
+            add("rater_assessment", d + 7 * w, "dosing", "MADRS+UB1-RG", rater_id=rid, visit_week=w)
+            add("participant_checkin", d + 7 * w, "dosing", "UB1-PG", visit_week=w)
+        for w in (8, 12):
+            add("followup", d + 7 * w, "postdose", "UB1-FU", visit_week=w)
+    return sched
+
+
+class MeasurementPlanner:
+    name = "measurement planner"
+
+    def run(self, rec: TrialRecord, ctx: Ctx) -> List[dict]:
+        if rec["schedule"]:          # dosing and postdose own the statuses once the schedule exists
+            rec.event(self.name, "schedule already exists; not rebuilt", "info", M)
+            return rec["schedule"]
+        wk = int(rec["protocol"].get("primary_endpoint", {}).get("week", 6))
+        rec["measurement_plan"] = {"standard": "UNBLIND-BLIND-1", "instruments": [dict(i) for i in INSTRUMENTS],
+                                   "primary_week": wk}
+        rec["schedule"] = build_schedule(rec)
+        n = len(rec["enrolled"])
+        by: Dict[str, int] = {}
+        for s in rec["schedule"]:
+            by[s["kind"]] = by.get(s["kind"], 0) + 1
+        guesses = by.get("participant_checkin", 0) + by.get("rater_assessment", 0)
+        rec.event(self.name, f"built the UNBLIND-BLIND-1 plan ({len(INSTRUMENTS)} instruments, primary week {wk}) and "
+                             f"{len(rec['schedule'])} scheduled tasks for {n} participants "
+                             f"({', '.join(f'{k} {v}' for k, v in by.items())}); "
+                             f"{round(guesses / n, 1) if n else 0} blinding check-ins per participant", "decision", M)
+        return rec["schedule"]

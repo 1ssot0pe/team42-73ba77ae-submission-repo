@@ -280,3 +280,182 @@ def test_recruitment_ads_pass_checks_and_targeting_is_parked():
     assert "UK GDPR" in r["parked"] and len(r["channels"]) == 4
     assert any("ethics approval" in e["text"] for e in m.rec["events"])
     assert flesch("") == 0.0 and len(CRITERIA) == 13
+
+
+# ---------------------------------------------------------------- Phase 4: measurement planner, wiring, end to end
+from unblind.platform.predose.agents import INSTRUMENTS, SCHEDULE_KINDS  # noqa: E402
+
+OWNER = {"dosing_session": "dosing", "monitor_debrief": "dosing", "participant_checkin": "dosing",
+         "rater_assessment": "dosing", "followup": "postdose"}
+
+
+def enrolled_master():
+    m = master()
+    m.decide(shortlist(m)["id"], "Dr Clinician", "approved")
+    assert m.rec["enrolled"] and m.rec["schedule"]
+    return m
+
+
+def test_schedule_has_only_the_five_kinds_with_correct_owners():
+    m = enrolled_master()
+    sched = m.rec["schedule"]
+    assert set(SCHEDULE_KINDS) == set(OWNER)
+    assert {s["kind"] for s in sched} == set(OWNER)
+    assert all(s["owner"] == OWNER[s["kind"]] for s in sched)
+    assert all(s["status"] == "scheduled" for s in sched)
+    assert len({s["id"] for s in sched}) == len(sched)
+    assert {s["participant"] for s in sched} == {p["id"] for p in m.rec["enrolled"]}
+    mp = m.rec["measurement_plan"]
+    assert mp["standard"] == "UNBLIND-BLIND-1" and mp["primary_week"] == 6 and mp["instruments"] == INSTRUMENTS
+
+
+def test_schedule_every_rater_assessment_has_rater_and_visit_week():
+    m = enrolled_master()
+    ra = [s for s in m.rec["schedule"] if s["kind"] == "rater_assessment"]
+    assert ra and all(s.get("rater_id") and s.get("visit_week") in (1, 3, 6) for s in ra)
+    assert all(s["rater_id"] == "R-" + s["site"][5] + s["rater_id"][-1] for s in ra)
+    by_p = {p["id"]: p["dosing_day"] for p in m.rec["enrolled"]}
+    assert all(s["day"] == by_p[s["participant"]] + 7 * s["visit_week"] for s in ra)
+
+
+def test_schedule_followups_are_postdose_at_weeks_8_and_12():
+    m = enrolled_master()
+    fu = [s for s in m.rec["schedule"] if s["kind"] == "followup"]
+    assert fu and all(s["owner"] == "postdose" and s["instrument"] == "UB1-FU" for s in fu)
+    by_p = {}
+    for s in fu:
+        by_p.setdefault(s["participant"], []).append(s["visit_week"])
+    assert all(sorted(w) == [8, 12] for w in by_p.values()) and len(by_p) == len(m.rec["enrolled"])
+
+
+def test_full_master_run_with_auto_approve_reaches_close():
+    m = Master("TEST-" + uuid.uuid4().hex[:6], auto_approve=True)
+    m.setup()
+    assert m.module_status["predose"] == "real"
+    assert m.rec["enrolled"] and m.rec["schedule"]
+    m.run_to(95)
+    assert m.rec["day"] == 90 and m.rec["phase"] == "closed"
+    assert m.rec.get("primary_lock_day") is not None
+
+
+def test_kpis_label_the_assumption_and_synthetic_evaluation():
+    m = enrolled_master()
+    k = m.kpis()["predose"]
+    assert all(set(x) == {"label", "value", "baseline", "unit", "note", "bottleneck_id"} for x in k)
+    by = {x["label"]: x for x in k}
+    assert "ASSUMPTION" in by["Staff hours saved"]["note"]
+    hid = by["Hidden free-text exclusions caught"]
+    assert "evaluation vs synthetic truth" in hid["note"] and hid["value"] == hid["baseline"] > 0
+    assert "SYNTHETIC" in by["Predicted unblinding u"]["note"]
+    assert by["FDA checklist items met"]["baseline"] == 0
+    assert by["Clinician reviews needed"]["baseline"] == len(m.rec["applicants"])
+
+
+def test_recheck_returns_a_diff_and_creates_a_new_version():
+    m = master()
+    old = m.rec["protocol"]["text"]
+    n0 = len(m.rec["protocol_versions"])
+    new = old + "\nAt the end of treatment participants and raters are asked to guess allocation.\n"
+    out = m.module_action("predose", "recheck", {"text": new, "editor": "Judge"})
+    assert out["ok"] is True
+    assert out["diff"] and all(ln[0] in "+-" for ln in out["diff"]) and len(out["diff"]) <= 40
+    assert any("guess allocation" in ln for ln in out["diff"])
+    assert len(m.rec["protocol_versions"]) == n0 + 1
+    assert m.rec["protocol_versions"][-1]["why"] == "edited by Judge"
+    assert next(c for c in out["checklist"] if c["id"] == "blinding_questionnaire")["present"] is True
+    assert "u" in out["risk"]
+
+
+def test_portal_apply_screens_and_appends():
+    m = master()
+    out = m.module_action("predose", "apply", {"applicant": {"age": 30, "phone": "+447700900123",
+                                                             "free_text": "I was diagnosed with bipolar disorder",
+                                                             "_hidden_exclusion": True}})
+    assert out["ok"] and out["applicant"]["source"] == "portal"
+    assert out["applicant"]["screening"]["decision"] == "needs_clinician"
+    assert "_hidden_exclusion" not in out["applicant"]
+    assert m.rec["recruitment"]["funnel"]["applied"] == len(m.rec["applicants"]) == 501
+
+
+def test_rejected_shortlist_asks_again_quoting_the_comment_and_stays_blocked():
+    m = master()
+    first = shortlist(m)
+    m.decide(first["id"], "Dr Clinician", "rejected", "Too few from Site B; widen the search")
+    assert m.rec["enrolled"] == [] and m.rec["schedule"] == []
+    again = [a for a in m.ctx.approvals.pending("predose") if a["action"]["type"] == "shortlist"]
+    assert len(again) == 1 and again[0]["id"] != first["id"]
+    assert '"Too few from Site B; widen the search"' in again[0]["rationale"]
+    out = m.step(1)
+    assert out["advanced"] is False and "Clinician: confirm shortlist" in out["blocked"]
+    assert m.state()["blocked"] and m.rec["day"] == -1
+    m.decide(again[0]["id"], "Dr Clinician", "approved")
+    assert m.rec["enrolled"] and m.step(1)["advanced"] is True
+
+
+def test_drift_asks_for_a_central_rater_amendment_once():
+    m = enrolled_master()
+    for _ in range(2):
+        m.ctx.bus.post("dosing", "master", "rater_drift", {"site": "Site B (Manchester)"}, "raters guessing right")
+        m._deliver()
+    am = [a for a in m.ctx.approvals.pending("predose") if a["action"] == {"type": "amendment", "fix": "central_raters"}]
+    assert len(am) == 1
+    assert am[0]["title"] == "Protocol amendment: central remote raters only (after drift at Site B (Manchester))"
+    n = len(m.rec["protocol_versions"])
+    m.decide(am[0]["id"], "Danny", "approved")
+    assert len(m.rec["protocol_versions"]) == n + 1 and check(m, "central_raters")["present"] is True
+
+
+def test_view_has_screening_criteria_table():
+    m = master()
+    v = m.module_view("predose")
+    t = next(t for t in v["tables"] if t["title"] == "Screening criteria")
+    assert len(t["rows"]) == len(CRITERIA) and v["status"] == "real"
+
+
+# ---------------------------------------------------------------- Phase 4 review fixes
+from unblind.platform.predose.agents import FIXES  # noqa: E402
+
+
+def test_auto_approve_applies_each_fix_once():
+    m = Master("TEST-" + uuid.uuid4().hex[:6], auto_approve=True)
+    m.setup()
+    text = m.rec["protocol"]["text"]
+    for fid, (_t, _c, sentence) in FIXES.items():
+        assert text.count(sentence) <= 1, fid
+    digests = [v["digest"] for v in m.rec["protocol_versions"]]
+    assert all(a != b for a, b in zip(digests, digests[1:]))
+    assert len(m.rec["protocol_versions"]) == 1 + len(FIXES)
+
+
+def test_drift_after_central_raters_does_not_ask_again_and_all_maps_to_all_sites():
+    m = enrolled_master()
+    m.ctx.bus.post("dosing", "master", "participant_unblinding", {"group": "all"}, "expected, no action proposed")
+    m._deliver()
+    am = [a for a in m.ctx.approvals.pending("predose") if a["action"]["type"] == "amendment"]
+    assert len(am) == 1 and am[0]["title"].endswith("(after drift at all sites)")
+    m.decide(am[0]["id"], "Danny", "approved")
+    n = len(m.rec["approvals"])
+    m.ctx.bus.post("dosing", "master", "rater_drift", {"site": "Site B (Manchester)"}, "again")
+    m._deliver()
+    assert len(m.rec["approvals"]) == n
+    assert any("already specifies central raters" in e["text"] for e in m.rec["events"])
+
+
+def test_recheck_posts_protocol_amended():
+    m = master()
+    m.module_action("predose", "recheck", {"text": m.rec["protocol"]["text"] + "\nExpectancy is measured.\n",
+                                           "editor": "Judge"})
+    msg = [x for x in m.rec["messages"] if x["kind"] == "protocol_amended" and (x["payload"] or {}).get("editor") == "Judge"]
+    assert msg and msg[0]["from"] == "predose" and msg[0]["to"] == "master"
+
+
+def test_portal_ignores_client_id_and_rejects_non_numeric_age():
+    m = master()
+    out = m.module_action("predose", "apply", {"applicant": {"id": "APP-0001", "age": "30", "phone": "+447700900123"}})
+    assert out["ok"] and out["applicant"]["id"] == "PORTAL-0001" and out["applicant"]["age"] == 30
+    assert sum(1 for a in m.rec["applicants"] if a["id"] == "APP-0001") == 1
+    n = len(m.rec["applicants"])
+    bad = m.module_action("predose", "apply", {"applicant": {"age": "thirty", "phone": "+447700900123"}})
+    assert bad["ok"] is False and "age" in bad["error"] and len(m.rec["applicants"]) == n
+    blank = m.module_action("predose", "apply", {"applicant": {"age": "", "phone": "+447700900123"}})
+    assert blank["ok"] and blank["applicant"]["screening"]["decision"] == "needs_clinician"
