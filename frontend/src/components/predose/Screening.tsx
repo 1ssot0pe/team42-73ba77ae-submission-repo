@@ -175,7 +175,7 @@ export function ScreeningFunnel({ funnel, applicants = [], enrolled = [], strata
           </div>
           <div className="sf-enrol">
             <div className="sf-enrol__links" aria-hidden="true">
-              <span className="sf-link sf-link--e"><span className="num">{formatNumber(enrE)}</span></span>
+              <span className={`sf-link sf-link--e${enrE === 0 ? " sf-link--zero" : ""}`}><span className="num">{formatNumber(enrE)}</span></span>
               <span className={`sf-link sf-link--f${enrF === 0 ? " sf-link--zero" : ""}`}><span className="num">{formatNumber(enrF)}</span></span>
             </div>
             {box("sf-box--enrolled", "Enrolled", nEnr, null,

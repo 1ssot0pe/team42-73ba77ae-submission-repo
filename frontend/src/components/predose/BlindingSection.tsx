@@ -5,6 +5,7 @@
 import type { ReactNode } from "react";
 import { LedgerTable, formatDay } from "../shared";
 import type { ProtocolVersion } from "../../types";
+import type { DesignHistoryRow } from "./types";
 
 /** Tiny markdown: "## heading", "- bullet" and paragraphs. Enough for blinding_section_md. */
 function renderMd(md: string): ReactNode[] {
@@ -43,7 +44,10 @@ export function DraftedSection({ md }: { md: string | undefined }) {
   );
 }
 
-export function VersionHistory({ versions }: { versions: ProtocolVersion[] }) {
+export function VersionHistory({ versions, history }: { versions: ProtocolVersion[]; history?: DesignHistoryRow[] | null }) {
+  // Optional risk column: predicted unblinding u per version from the predose view's design_history.
+  const uOf = new Map((history ?? []).map((h) => [h.version, h.u]));
+  const withRisk = uOf.size > 0;
   const rows = versions.slice().reverse().map((v) => [
     <span className="num">v{v.version}</span>,
     <span className="num">{formatDay(v.day)}</span>,
@@ -54,9 +58,11 @@ export function VersionHistory({ versions }: { versions: ProtocolVersion[] }) {
         <span className="vhist__first" title={v.changes.join("\n")}>{v.changes[0].replace(/^[+-]/, "")}</span>
       </span>
     ),
+    ...(withRisk ? [<span className="num">{typeof uOf.get(v.version) === "number" ? (uOf.get(v.version) as number).toFixed(2) : "n/a"}</span>] : []),
   ]);
   return (
-    <LedgerTable title="Version history" columns={[{ label: "Version", mono: true }, { label: "Day", mono: true }, "Why", "Changes"]}
+    <LedgerTable title="Version history" columns={[{ label: "Version", mono: true }, { label: "Day", mono: true }, "Why", "Changes",
+      ...(withRisk ? [{ label: "Predicted u", align: "right" as const, mono: true }] : [])]}
       rows={rows} empty="No versions yet." maxHeight={360} />
   );
 }

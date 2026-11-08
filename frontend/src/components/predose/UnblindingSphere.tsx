@@ -10,7 +10,7 @@
  * Styles: styles/risk.css (classes rk-). The file keeps its old name so imports stay stable.
  */
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { ChartFrame, formatDay, formatNumber, toneForStatus } from "../shared";
+import { ChartFrame, formatDay, formatNumber, formatSigned, toneForStatus } from "../shared";
 import type { Risk } from "../../types";
 import { versionChange, type DesignHistoryRow } from "./types";
 import "../../styles/risk.css";
@@ -27,8 +27,6 @@ const clamp = (x: number) => Math.max(0, Math.min(1, x));
 const isNum = (v: unknown): v is number => typeof v === "number" && Number.isFinite(v);
 const f2 = (v: number) => v.toFixed(2);
 const f3 = (v: number) => v.toFixed(3);
-/** Signed with a Unicode minus. */
-const signed = (v: number, d = 2) => `${v < 0 ? "−" : v > 0 ? "+" : ""}${Math.abs(v).toFixed(d)}`;
 
 function bandWord(b: string | null | undefined): string {
   if (!b) return "unknown";
@@ -239,7 +237,7 @@ export function RiskCard({ risk, baseline, atEnrolment, history, latestVersion =
   }
   const band = bandWord(now.band);
   const title = points.length > 1 && biggest
-    ? `Predicted unblinding ${f2(first.u)} to ${f2(now.u)}; ${biggest.p.change} moved it most (${signed(biggest.d)})`
+    ? `Predicted unblinding ${f2(first.u)} to ${f2(now.u)}; ${biggest.p.change} moved it most (${formatSigned(biggest.d, 2)})`
     : points.length > 1
       ? `Predicted unblinding u ${f2(now.u)}, ${band}; no version has changed it yet`
       : `Predicted unblinding u ${f2(now.u)}, ${band}`;
@@ -261,7 +259,7 @@ export function RiskCard({ risk, baseline, atEnrolment, history, latestVersion =
   const trailForList = points.filter((p, i) => i === 0 || Math.abs(p.u - points[i - 1].u) >= MOVE_MIN || i === points.length - 1);
   const aria = `Predicted unblinding by protocol version: ${points.map((p) => `v${p.version} ${f2(p.u)}`).join(", ")}; `
     + `now ${f2(now.u)}${now.sd !== null ? ` plus or minus ${f2(now.sd)} (1 SD)` : ""}, ${band} band. `
-    + (biggest ? `Largest change: ${biggest.p.change} (${signed(biggest.d)}).` : "No version changed it.");
+    + (biggest ? `Largest change: ${biggest.p.change} (${formatSigned(biggest.d, 2)}).` : "No version changed it.");
 
   const synthetic = /synthetic/i.test(risk.calibration ?? "");
   const anyRescored = points.some((p) => p.source === "rescored");
