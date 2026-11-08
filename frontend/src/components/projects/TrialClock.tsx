@@ -4,7 +4,7 @@
  *
  * Advancing time never freezes the page. While a step runs, only the step controls are disabled and a status
  * line reads "Advancing day N…" with an elapsed-seconds counter; after 20 s it adds "This is taking longer
- * than usual". The step uses stepTrial (one POST, 120 s, no automatic retry). On failure the line offers
+ * than usual". The step uses stepTrial (120 s; resent only on 502/503, which mean it never ran). On failure the line offers
  * Retry, which first reads the trial's day: if the day already moved past the day the step started from,
  * the step did run, so that state is adopted instead of stepping again.
  *
