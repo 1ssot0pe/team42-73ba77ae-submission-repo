@@ -1,0 +1,63 @@
+{
+  "id": "J12",
+  "title": "Dark mode and 390 px width on every page",
+  "env": "verify-j1115",
+  "base_url": "http://127.0.0.1:5331",
+  "passed": false,
+  "error": null,
+  "duration_s": 15.0,
+  "timings": {
+    "create_trial": 0.06,
+    "decide:confirm shortlist": 0.06
+  },
+  "failures": [
+    {
+      "t": 4.31,
+      "msg": "[/ 390 dark] stray 'UNBLIND' in UI text: ['Waiting for a human: Protocol fix: Move outcome raters to central, remote, blinded assessment; Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters; Protocol fix: Measure expectancy before randomisation and at end of treatment; Protocol fix: Use a low dose of the same drug as comparator; Protocol fix: Stratify randomisation by prior psychedelic use; Clinician: confirm shortlist of 49 eligible applicants and review 56 flagged', 'BLINDING ROWS EXPORTED IN UNBLIND-BLIND-1', 'Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters', 'asked a human to approve: Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters']",
+      "shot": "",
+      "url": "http://127.0.0.1:5331/"
+    },
+    {
+      "t": 4.62,
+      "msg": "[/ 390 dark] 1 low-contrast text items on glass: 'Play' 3.95:1 in .mc-dock.glass--float",
+      "shot": "docs/testing/screenshots/verify-J12-1.png",
+      "url": "http://127.0.0.1:5331/"
+    },
+    {
+      "t": 6.57,
+      "msg": "[/predose 390 dark] stray 'UNBLIND' in UI text: ['Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters', \"Blinding integrity: participants and raters complete the UNBLIND-BLIND-1 guess item (drug, control, don't know) with confidence (0 to 100) after dosing and at weeks 1, 3 and 6. Blinding indices (Bang) are monitored per site and per rater during the trial, and a drift alert triggers a documented human decision.\", 'The measurement planner builds the UNBLIND-BLIND-1 schedule once a clinician approves the shortlist.', 'asked a human to approve: Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters']",
+      "shot": "",
+      "url": "http://127.0.0.1:5331/predose"
+    },
+    {
+      "t": 10.67,
+      "msg": "[/dosing 390 dark] stray 'UNBLIND' in UI text: ['Day -1 of 90, phase recruitment. Blocked: Waiting for a human: Protocol fix: Move outcome raters to central, remote, blinded assessment; Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters; Protocol fix: Measure expectancy before randomisation and at end of treatment; Protocol fix: Use a low dose of the same drug as comparator; Protocol fix: Stratify randomisation by prior psychedelic use; Clinician: confirm shortlist of 49 eligible applicants and review 56 flagged']",
+      "shot": "",
+      "url": "http://127.0.0.1:5331/dosing"
+    },
+    {
+      "t": 12.71,
+      "msg": "[/postdose 390 dark] stray 'UNBLIND' in UI text: ['Day -1 of 90, phase recruitment. Blocked: Waiting for a human: Protocol fix: Move outcome raters to central, remote, blinded assessment; Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters; Protocol fix: Measure expectancy before randomisation and at end of treatment; Protocol fix: Use a low dose of the same drug as comparator; Protocol fix: Stratify randomisation by prior psychedelic use; Clinician: confirm shortlist of 49 eligible applicants and review 56 flagged', 'One standard instrument set (UNBLIND-BLIND-1) at fixed timepoints for every trial, exported in one harmonised schema.', 'BLINDING ROWS EXPORTED IN UNBLIND-BLIND-1', 'Blinding rows exported in UNBLIND-BLIND-1']",
+      "shot": "",
+      "url": "http://127.0.0.1:5331/postdose"
+    }
+  ],
+  "notes": [],
+  "console_errors": [],
+  "console_error_count": 0,
+  "network_failures": [],
+  "network_failure_count": 0,
+  "api_calls": 106,
+  "toasts": [
+    "APPROVED \u00b7 CLINICIAN: CONFIRM SHORTLIST OF 49 ELIGIBLE APPLICANTS AND REVIEW 56 FLAGGED"
+  ],
+  "shots": [
+    "docs/testing/screenshots/verify-J12-1.png ([/ 390 dark] 1 low-contrast text items o)",
+    "docs/testing/screenshots/verify-J12-2.png (/ at 390 dark)",
+    "docs/testing/screenshots/verify-J12-3.png (/predose at 390 dark)",
+    "docs/testing/screenshots/verify-J12-4.png (/portal at 390 dark)",
+    "docs/testing/screenshots/verify-J12-5.png (/dosing at 390 dark)",
+    "docs/testing/screenshots/verify-J12-6.png (/postdose at 390 dark)",
+    "docs/testing/screenshots/verify-J12-7.png (390 dark bottom of mission control)"
+  ]
+}

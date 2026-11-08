@@ -1,0 +1,100 @@
+{
+  "base_url": "http://127.0.0.1:5321",
+  "results": [
+    {
+      "id": "J7x",
+      "title": "Approval double-submit (locked mutation)",
+      "env": "verify-j610-extras",
+      "base_url": "http://127.0.0.1:5321",
+      "passed": true,
+      "error": null,
+      "duration_s": 6.1,
+      "timings": {
+        "create_trial": 0.1
+      },
+      "failures": [],
+      "notes": [
+        "triple-click Approve: approved toasts=['APPROVED \u00b7 CLINICIAN: CONFIRM SHORTLIST OF 49 ELIGIBLE APPLICANTS AND REVIEW 56 FLAGGED'], slip errors=[], open shortlist slips=0",
+        "state mentions 'confirm shortlist' 0 times"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 29,
+      "toasts": [
+        "TRIAL T-130942-2651 CREATED",
+        "APPROVED \u00b7 CLINICIAN: CONFIRM SHORTLIST OF 49 ELIGIBLE APPLICANTS AND REVIEW 56 FLAGGED"
+      ],
+      "shots": []
+    },
+    {
+      "id": "J8x",
+      "title": "BP-2 transient 404 + TrialLost",
+      "env": "verify-j610-extras",
+      "base_url": "http://127.0.0.1:5321",
+      "passed": true,
+      "error": null,
+      "duration_s": 9.8,
+      "timings": {
+        "create_trial": 0.07
+      },
+      "failures": [],
+      "notes": [
+        "injected 404s: 1; start page: False; lost: 0",
+        "TrialLost shown after 1.3s: Trial T-000000-DEAD has expired This trial is no longer on the server. Simulated trials are kept for a limited time. Start a new trial. Start a new trial",
+        "toasts: []"
+      ],
+      "console_errors": [
+        {
+          "t": 2.42,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5321/"
+        },
+        {
+          "t": 7.48,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5321/"
+        },
+        {
+          "t": 8.49,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5321/"
+        }
+      ],
+      "console_error_count": 3,
+      "network_failures": [
+        {
+          "t": 2.42,
+          "method": "GET",
+          "url": "http://127.0.0.1:5321/api/trials/T-130948-dcc9/state",
+          "status": 404,
+          "backend": null,
+          "body": "{\"detail\":\"Trial not found (injected)\"}"
+        },
+        {
+          "t": 7.48,
+          "method": "GET",
+          "url": "http://127.0.0.1:5321/api/trials/T-000000-DEAD/state",
+          "status": 404,
+          "backend": "127.0.0.1:8322",
+          "body": "{\"detail\":\"trial not found\"}"
+        },
+        {
+          "t": 8.5,
+          "method": "GET",
+          "url": "http://127.0.0.1:5321/api/trials/T-000000-DEAD/state",
+          "status": 404,
+          "backend": "127.0.0.1:8321",
+          "body": "{\"detail\":\"trial not found\"}"
+        }
+      ],
+      "network_failure_count": 3,
+      "api_calls": 39,
+      "toasts": [],
+      "shots": [
+        "docs/testing/screenshots/verify-J8x-1.png (TrialLost for unknown id)"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,199 @@
+{
+  "base_url": "http://127.0.0.1:5321",
+  "env": "verify-j610-local",
+  "at": "2026-11-08 13:07:19",
+  "results": [
+    {
+      "id": "J6",
+      "title": "Volunteer portal: valid, bipolar free text, age 17, non-UK phone, lithium, recent use, non-numeric age",
+      "env": "verify-j610-local",
+      "base_url": "http://127.0.0.1:5321",
+      "passed": true,
+      "error": null,
+      "duration_s": 3.9,
+      "timings": {
+        "create_trial": 0.11,
+        "apply:valid": 0.06,
+        "apply:bipolar in free text": 0.06,
+        "apply:age 17": 0.06,
+        "apply:non-UK phone": 0.06,
+        "apply:lithium": 0.06,
+        "apply:psychedelic use 3 months ago": 0.06
+      },
+      "failures": [],
+      "notes": [
+        "valid: PRE-SCREENING AGENT Result ELIGIBLE PORTAL-0001 \u00b7 D\u22121 Every criterion the agent checks is met. Final eligibility is always confirmed by a clinician.",
+        "bipolar in free text: PRE-SCREENING AGENT Result NEEDS CLINICIAN PORTAL-0002 \u00b7 D\u22121 REASONS Free text discloses a possible safety risk QUOTED DISCLOSURE \u201cI was diagnosed with bipolar disorder last year\u201d your free text Final eligibility is always confirmed by a clinician.",
+        "age 17: PRE-SCREENING AGENT Result EXCLUDED PORTAL-0003 \u00b7 D\u22121 REASONS Age 17 is outside 18 to 65 Final eligibility is always confirmed by a clinician.",
+        "non-UK phone: PRE-SCREENING AGENT Result EXCLUDED PORTAL-0004 \u00b7 D\u22121 REASONS Not a UK mobile (+44 7) number; check-ins run through the UK chatbot Final eligibility is always confirmed by a clinician.",
+        "lithium: PRE-SCREENING AGENT Result EXCLUDED PORTAL-0005 \u00b7 D\u22121 REASONS Currently taking lithium Final eligibility is always confirmed by a clinician.",
+        "psychedelic use 3 months ago: PRE-SCREENING AGENT Result EXCLUDED PORTAL-0006 \u00b7 D\u22121 REASONS Psychedelic use 3 months ago (within 12 months) Final eligibility is always confirmed by a clinician."
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 27,
+      "toasts": [
+        "TRIAL T-130557-44D6 CREATED",
+        "SCREENED \u00b7 PORTAL-0001 \u00b7 ELIGIBLE",
+        "SCREENED \u00b7 PORTAL-0002 \u00b7 NEEDS CLINICIAN",
+        "SCREENED \u00b7 PORTAL-0003 \u00b7 EXCLUDED",
+        "SCREENED \u00b7 PORTAL-0004 \u00b7 EXCLUDED",
+        "SCREENED \u00b7 PORTAL-0005 \u00b7 EXCLUDED",
+        "SCREENED \u00b7 PORTAL-0006 \u00b7 EXCLUDED"
+      ],
+      "shots": []
+    },
+    {
+      "id": "J7",
+      "title": "Protocol edit before enrolment and after enrolment (approve one, reject one)",
+      "env": "verify-j610-local",
+      "base_url": "http://127.0.0.1:5321",
+      "passed": true,
+      "error": null,
+      "duration_s": 11.3,
+      "timings": {
+        "create_trial": 0.06,
+        "save:Participants complet": 0.05,
+        "decide:confirm shortlist": 0.06,
+        "save:Amendment A: add a w": 0.07,
+        "save:Amendment B: add a w": 0.05,
+        "decide:mendment": 0.06
+      },
+      "failures": [],
+      "notes": [
+        "before enrolment: toasts ['SAVED PROTOCOL V2 \u00b7 U 0.79 (HIGH) \u00b7 1 / 8 FDA ITEMS']; versions ['v1 initial draft'] -> ['v1 initial draft', 'v2 edited by QA Tester']",
+        "after enrolment edit A: ['SENT FOR APPROVAL \u00b7 1 CHANGED LINES']",
+        "after enrolment edit B: ['SENT FOR APPROVAL \u00b7 2 CHANGED LINES']",
+        "amendment slips pending: 2: ['Protocol amendment: edit by QA Tester (1 changed lines)', 'Protocol amendment: edit by QA Tester (2 changed lines)']",
+        "final versions: ['v1 initial draft', 'v2 edited by QA Tester', 'v3 amended by QA Tester, approve\u2026']; week 9 in text: True; week 10 in text: False"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 68,
+      "toasts": [
+        "SAVED PROTOCOL V2 \u00b7 U 0.79 (HIGH) \u00b7 1 / 8 FDA ITEMS",
+        "APPROVED \u00b7 CLINICIAN: CONFIRM SHORTLIST OF 49 ELIGIBLE APPLICANTS AND REVIEW 56 FLAGGED",
+        "SENT FOR APPROVAL \u00b7 1 CHANGED LINES",
+        "SENT FOR APPROVAL \u00b7 2 CHANGED LINES",
+        "APPROVED \u00b7 PROTOCOL AMENDMENT: EDIT BY QA TESTER (1 CHANGED LINES)",
+        "REJECTED \u00b7 PROTOCOL AMENDMENT: EDIT BY QA TESTER (2 CHANGED LINES)"
+      ],
+      "shots": []
+    },
+    {
+      "id": "J8",
+      "title": "Reject the clinician shortlist, then approve the re-request",
+      "env": "verify-j610-local",
+      "base_url": "http://127.0.0.1:5321",
+      "passed": true,
+      "error": null,
+      "duration_s": 7.1,
+      "timings": {
+        "create_trial": 0.06,
+        "decide:confirm shortlist": 0.06,
+        "decide:shortlist": 0.06
+      },
+      "failures": [],
+      "notes": [
+        "header after reject: 'WAITING\\nWaiting for a human: 6 decisions to sign.'; slips: ['Protocol fix: Move outcome raters to central, remote, blinded assessment', 'Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters', 'Protocol fix: Measure expectancy before randomisation and at end of treatment', 'Protocol fix: Use a low dose of the same drug as comparator', 'Protocol fix: Stratify randomisation by prior psychedelic use', 'Clinician: confirm shortlist of 49 eligible applicants and review 56 flagged']"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 48,
+      "toasts": [],
+      "shots": []
+    },
+    {
+      "id": "J9",
+      "title": "Drift action approved vs rejected",
+      "env": "verify-j610-local",
+      "base_url": "http://127.0.0.1:5321",
+      "passed": true,
+      "error": null,
+      "duration_s": 36.2,
+      "timings": {
+        "create_trial": 0.11,
+        "decide:confirm shortlist": 0.06,
+        "play_to_drift:approved": 9.07,
+        "decide:raters to remote": 0.06,
+        "play_to_drift:rejected": 9.1
+      },
+      "failures": [],
+      "notes": [
+        "[approved] drift decided at day 47; pending slips after +20 days: ['Add to reference data: MAPP1 (Mitchell 2021)', 'Site C: add SMS reminders and a coordinator call']",
+        "[rejected] drift decided at day 47; pending slips after +20 days: ['Add to reference data: MAPP1 (Mitchell 2021)', 'Site C: add SMS reminders and a coordinator call']"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 502,
+      "toasts": [],
+      "shots": []
+    },
+    {
+      "id": "J10",
+      "title": "Researcher questions (neutral, leading, unblinding, identifying) before and after the primary lock",
+      "env": "verify-j610-local",
+      "base_url": "http://127.0.0.1:5321",
+      "passed": false,
+      "error": null,
+      "duration_s": 23.5,
+      "timings": {
+        "create_trial": 0.06,
+        "decide:confirm shortlist": 0.06,
+        "ask:neutral": 0.06,
+        "ask:leading": 0.05,
+        "ask:unblinding": 0.06,
+        "ask:identifying": 0.05
+      },
+      "failures": [
+        {
+          "t": 12.07,
+          "msg": "[before lock] neutral question not accepted: ACCEPTED No unblinding cues, leading wording, personal data, safety or consent issues found. Waiting for an ethics reviewer.",
+          "shot": "docs/testing/screenshots/verify-J10-1.png",
+          "url": "http://127.0.0.1:5321/postdose"
+        },
+        {
+          "t": 23.48,
+          "msg": "[after lock] neutral question not accepted: ACCEPTED No unblinding cues, leading wording, personal data, safety or consent issues found. Waiting for an ethics reviewer.",
+          "shot": "docs/testing/screenshots/verify-J10-2.png",
+          "url": "http://127.0.0.1:5321/postdose"
+        }
+      ],
+      "notes": [
+        "before lock at day 31",
+        "[before lock] neutral: ACCEPTED No unblinding cues, leading wording, personal data, safety or consent issues found. Waiting for an ethics reviewer.",
+        "[before lock] leading: ACCEPTED Rejected: leading cannot be fixed by rewording.",
+        "[before lock] unblinding: ACCEPTED Rewrite proposed: Do you think you received the study session or the study session capsule? Waiting for an ethics reviewer.",
+        "[before lock] identifying: ACCEPTED Rejected: personal cannot be fixed by rewording.",
+        "after lock at day 73",
+        "[after lock] neutral: ACCEPTED No unblinding cues, leading wording, personal data, safety or consent issues found. Waiting for an ethics reviewer.",
+        "[after lock] leading: ACCEPTED Rejected: leading cannot be fixed by rewording.",
+        "[after lock] unblinding: ACCEPTED Rewrite proposed: Do you think you received the study session or the study session capsule? Waiting for an ethics reviewer.",
+        "[after lock] identifying: ACCEPTED Rejected: personal cannot be fixed by rewording."
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 316,
+      "toasts": [
+        "NO UNBLINDING CUES, LEADING WORDING, PERSONAL DATA, SAFETY OR CONSENT ISSUES FOUND. WAITING FOR AN ETHICS REVIEWER.",
+        "REJECTED: LEADING CANNOT BE FIXED BY REWORDING.",
+        "REWRITE PROPOSED: DO YOU THINK YOU RECEIVED THE STUDY SESSION OR THE STUDY SESSION CAPSULE? WAITING FOR AN ETHICS REVIEWER.",
+        "REJECTED: PERSONAL CANNOT BE FIXED BY REWORDING."
+      ],
+      "shots": [
+        "docs/testing/screenshots/verify-J10-1.png ([before lock] neutral question not accep)",
+        "docs/testing/screenshots/verify-J10-2.png ([after lock] neutral question not accept)"
+      ]
+    }
+  ]
+}

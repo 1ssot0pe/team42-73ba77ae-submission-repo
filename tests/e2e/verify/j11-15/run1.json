@@ -1,0 +1,394 @@
+{
+  "base_url": "http://127.0.0.1:5331",
+  "env": "verify-j1115",
+  "at": "2026-11-08 13:08:09",
+  "results": [
+    {
+      "id": "J11",
+      "title": "Refresh mid-trial on each page; second tab; deep links",
+      "env": "verify-j1115",
+      "base_url": "http://127.0.0.1:5331",
+      "passed": true,
+      "error": null,
+      "duration_s": 31.7,
+      "timings": {
+        "create_trial": 0.11,
+        "decide:confirm shortlist": 0.06,
+        "reload:/": 1.36,
+        "reload:/predose": 1.39,
+        "reload:/portal": 1.35,
+        "reload:/dosing": 1.36,
+        "reload:/postdose": 1.35
+      },
+      "failures": [],
+      "notes": [
+        "trial T-130607-aa7e at D+13 / 90"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 198,
+      "toasts": [],
+      "shots": []
+    },
+    {
+      "id": "J12",
+      "title": "Dark mode and 390 px width on every page",
+      "env": "verify-j1115",
+      "base_url": "http://127.0.0.1:5331",
+      "passed": false,
+      "error": "TimeoutError: Locator.click: Timeout 20000ms exceeded.",
+      "duration_s": 22.7,
+      "timings": {
+        "create_trial": 0.07
+      },
+      "failures": [
+        {
+          "t": 22.72,
+          "msg": "exception: TimeoutError: Locator.click: Timeout 20000ms exceeded.",
+          "shot": "docs/testing/screenshots/verify-J12-1.png",
+          "url": "http://127.0.0.1:5331/"
+        }
+      ],
+      "notes": [
+        "n.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/dannybud/Desktop/unblind/.claude/worktrees/parallax-e2e/.venv/lib/python3.12/site-packages/playwright/_impl/_connection.py\", line 636, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Locator.click: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\".mc-dock\").get_by_role(\"button\", name=re.compile(r\"^\\+1 week$\"))\n    - locator resolved to <button disabled type=\"button\" class=\"btn btn--outline btn--dock\" title=\"Waiting for a human: Protocol fix: Move outcome raters to central, remote, blinded assessment; Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters; Protocol fix: Measure expectancy before randomisation and at end of treatment; Protocol fix: Use a low dose of the same drug as comparator; Protocol fix: Stratify randomisation by prior psychedelic use; Clinician: confirm shortlist of 49 eligible appl\u2026>+1 week</button>\n  - attempting click action\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not enabled\n    - retrying click action\n    - waiting 20ms\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not enabled\n    - retrying click action\n      - waiting 100ms\n    39 \u00d7 waiting for element to be visible, enabled and stable\n       - element is not enabled\n     - retrying click action\n       - waiting 500ms\n\n"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 22,
+      "toasts": [
+        "TRIAL T-130639-CB6C CREATED"
+      ],
+      "shots": [
+        "docs/testing/screenshots/verify-J12-1.png (exception: TimeoutError: Locator.click: )"
+      ]
+    },
+    {
+      "id": "J14",
+      "title": "Gemini off (local) / on (production): dock pill matches /api/health",
+      "env": "verify-j1115",
+      "base_url": "http://127.0.0.1:5331",
+      "passed": true,
+      "error": null,
+      "duration_s": 5.0,
+      "timings": {
+        "create_trial": 0.07
+      },
+      "failures": [],
+      "notes": [
+        "health gemini=False",
+        "dock pill: 'GEMINI OFF'"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 24,
+      "toasts": [
+        "SCREENED \u00b7 PORTAL-0001 \u00b7 ELIGIBLE"
+      ],
+      "shots": []
+    },
+    {
+      "id": "J15",
+      "title": "Every nav link, including Evidence engine",
+      "env": "verify-j1115",
+      "base_url": "http://127.0.0.1:5331",
+      "passed": false,
+      "error": null,
+      "duration_s": 7.0,
+      "timings": {
+        "create_trial": 0.06
+      },
+      "failures": [
+        {
+          "t": 6.9,
+          "msg": "Evidence engine link points at http://localhost:8501, which only works on the developer's machine",
+          "shot": "docs/testing/screenshots/verify-J15-1.png",
+          "url": "http://127.0.0.1:5331/dosing"
+        },
+        {
+          "t": 6.97,
+          "msg": "Evidence engine tab did not load (url chrome-error://chromewebdata/, title '')",
+          "shot": "docs/testing/screenshots/verify-J15-2.png",
+          "url": "chrome-error://chromewebdata/"
+        }
+      ],
+      "notes": [
+        "Evidence engine href: http://localhost:8501",
+        "Evidence engine tab url after click: chrome-error://chromewebdata/"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 75,
+      "toasts": [],
+      "shots": [
+        "docs/testing/screenshots/verify-J15-1.png (Evidence engine link points at http://lo)",
+        "docs/testing/screenshots/verify-J15-2.png (Evidence engine tab did not load (url ch)"
+      ]
+    },
+    {
+      "id": "F",
+      "title": "Design and copy: SYNTHETIC, em dashes, naming, glass contrast, 390 px",
+      "env": "verify-j1115",
+      "base_url": "http://127.0.0.1:5331",
+      "passed": false,
+      "error": null,
+      "duration_s": 47.0,
+      "timings": {
+        "create_trial": 0.07,
+        "decide:^Protocol fix.*questionnaire": 0.06,
+        "decide:confirm shortlist": 0.06
+      },
+      "failures": [
+        {
+          "t": 1.37,
+          "msg": "[start page light] 1 low-contrast text items on glass: '\u2197' 2.57:1 in .nav.glass--float",
+          "shot": "docs/testing/screenshots/verify-F-1.png",
+          "url": "http://127.0.0.1:5331/"
+        },
+        {
+          "t": 2.48,
+          "msg": "[start page dark] 1 low-contrast text items on glass: '\u2197' 4.05:1 in .nav.glass--float",
+          "shot": "docs/testing/screenshots/verify-F-2.png",
+          "url": "http://127.0.0.1:5331/"
+        },
+        {
+          "t": 11.22,
+          "msg": "[/ light 1440] stray 'UNBLIND' in UI text: ['BLINDING ROWS EXPORTED IN UNBLIND-BLIND-1', 'Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters', 'built the UNBLIND-BLIND-1 plan (6 instruments, outcome MADRS at primary week 6) and 539 scheduled tasks for 49 participants (dosing_session 49, monitor_debrief 49, participant_checkin 196, rater_assessment 147, followup 98); 7.0 blinding check-ins per participant', 'Protocol version 2: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters; predicted unblinding now high (0.79). Monitoring continues against the amended protocol.']",
+          "shot": "",
+          "url": "http://127.0.0.1:5331/"
+        },
+        {
+          "t": 11.62,
+          "msg": "[/ light 1440] 3 low-contrast text items on glass: '\u2197' 2.57:1 in .nav.glass--float; 'W12' 4.43:1 in .mc-track.glass--enter; 'D90' 4.43:1 in .mc-track.glass--enter",
+          "shot": "docs/testing/screenshots/verify-F-3.png",
+          "url": "http://127.0.0.1:5331/"
+        },
+        {
+          "t": 13.42,
+          "msg": "[/predose light 1440] stray 'UNBLIND' in UI text: ['Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters', 'v2 Add the UNBLIND-BLIND-1 guess\u2026', \"Blinding integrity: participants and raters complete the UNBLIND-BLIND-1 guess item (drug, control, don't know) with confidence (0 to 100) after dosing and at weeks 1, 3 and 6. Blinding indices (Bang) are monitored per site and per rater during the trial, and a drift alert triggers a documented human decision.\", 'v2\\tD\u22121\\tfix approved by QA Tester: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters']",
+          "shot": "",
+          "url": "http://127.0.0.1:5331/predose"
+        },
+        {
+          "t": 13.91,
+          "msg": "[/predose light 1440] 1 low-contrast text items on glass: '\u2197' 2.57:1 in .nav.glass--float",
+          "shot": "docs/testing/screenshots/verify-F-4.png",
+          "url": "http://127.0.0.1:5331/predose"
+        },
+        {
+          "t": 15.95,
+          "msg": "[/portal light 1440] 1 low-contrast text items on glass: '\u2197' 2.57:1 in .nav.glass--float",
+          "shot": "docs/testing/screenshots/verify-F-5.png",
+          "url": "http://127.0.0.1:5331/portal"
+        },
+        {
+          "t": 18.26,
+          "msg": "[/portal light 1440 with a result] 2 low-contrast text items on glass: '\u2197' 2.57:1 in .nav.glass--float; 'PORTAL-0001 \u00b7 D+34' 2.56:1 in .portal__result.glass--strong.glass--enter",
+          "shot": "docs/testing/screenshots/verify-F-6.png",
+          "url": "http://127.0.0.1:5331/portal"
+        },
+        {
+          "t": 20.02,
+          "msg": "[/dosing light 1440] stray 'UNBLIND' in UI text: ['Protocol version 2: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters; predicted unblinding now high (0.79). Monitoring continues against the amended protocol.']",
+          "shot": "",
+          "url": "http://127.0.0.1:5331/dosing"
+        },
+        {
+          "t": 20.52,
+          "msg": "[/dosing light 1440] 1 low-contrast text items on glass: '\u2197' 2.57:1 in .nav.glass--float",
+          "shot": "docs/testing/screenshots/verify-F-7.png",
+          "url": "http://127.0.0.1:5331/dosing"
+        },
+        {
+          "t": 22.28,
+          "msg": "[/postdose light 1440] stray 'UNBLIND' in UI text: ['One standard instrument set (UNBLIND-BLIND-1) at fixed timepoints for every trial, exported in one harmonised schema.', 'BLINDING ROWS EXPORTED IN UNBLIND-BLIND-1', 'Blinding rows exported in UNBLIND-BLIND-1']",
+          "shot": "",
+          "url": "http://127.0.0.1:5331/postdose"
+        },
+        {
+          "t": 22.62,
+          "msg": "[/postdose light 1440] 1 low-contrast text items on glass: '\u2197' 2.57:1 in .nav.glass--float",
+          "shot": "docs/testing/screenshots/verify-F-8.png",
+          "url": "http://127.0.0.1:5331/postdose"
+        },
+        {
+          "t": 24.4,
+          "msg": "[/ dark 1440] stray 'UNBLIND' in UI text: ['BLINDING ROWS EXPORTED IN UNBLIND-BLIND-1', 'Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters', 'built the UNBLIND-BLIND-1 plan (6 instruments, outcome MADRS at primary week 6) and 539 scheduled tasks for 49 participants (dosing_session 49, monitor_debrief 49, participant_checkin 196, rater_assessment 147, followup 98); 7.0 blinding check-ins per participant', 'Protocol version 2: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters; predicted unblinding now high (0.79). Monitoring continues against the amended protocol.']",
+          "shot": "",
+          "url": "http://127.0.0.1:5331/"
+        },
+        {
+          "t": 24.83,
+          "msg": "[/ dark 1440] 1 low-contrast text items on glass: '\u2197' 4.05:1 in .nav.glass--float",
+          "shot": "docs/testing/screenshots/verify-F-9.png",
+          "url": "http://127.0.0.1:5331/"
+        },
+        {
+          "t": 26.63,
+          "msg": "[/predose dark 1440] stray 'UNBLIND' in UI text: ['Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters', 'v2 Add the UNBLIND-BLIND-1 guess\u2026', \"Blinding integrity: participants and raters complete the UNBLIND-BLIND-1 guess item (drug, control, don't know) with confidence (0 to 100) after dosing and at weeks 1, 3 and 6. Blinding indices (Bang) are monitored per site and per rater during the trial, and a drift alert triggers a documented human decision.\", 'v2\\tD\u22121\\tfix approved by QA Tester: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters']",
+          "shot": "",
+          "url": "http://127.0.0.1:5331/predose"
+        },
+        {
+          "t": 27.14,
+          "msg": "[/predose dark 1440] 1 low-contrast text items on glass: '\u2197' 4.05:1 in .nav.glass--float",
+          "shot": "docs/testing/screenshots/verify-F-10.png",
+          "url": "http://127.0.0.1:5331/predose"
+        },
+        {
+          "t": 29.2,
+          "msg": "[/portal dark 1440] 1 low-contrast text items on glass: '\u2197' 4.05:1 in .nav.glass--float",
+          "shot": "docs/testing/screenshots/verify-F-11.png",
+          "url": "http://127.0.0.1:5331/portal"
+        },
+        {
+          "t": 31.51,
+          "msg": "[/portal dark 1440 with a result] 2 low-contrast text items on glass: '\u2197' 4.05:1 in .nav.glass--float; 'PORTAL-0002 \u00b7 D+34' 3.97:1 in .portal__result.glass--strong.glass--enter",
+          "shot": "docs/testing/screenshots/verify-F-12.png",
+          "url": "http://127.0.0.1:5331/portal"
+        },
+        {
+          "t": 33.27,
+          "msg": "[/dosing dark 1440] stray 'UNBLIND' in UI text: ['Protocol version 2: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters; predicted unblinding now high (0.79). Monitoring continues against the amended protocol.']",
+          "shot": "",
+          "url": "http://127.0.0.1:5331/dosing"
+        },
+        {
+          "t": 33.73,
+          "msg": "[/dosing dark 1440] 1 low-contrast text items on glass: '\u2197' 4.05:1 in .nav.glass--float",
+          "shot": "docs/testing/screenshots/verify-F-13.png",
+          "url": "http://127.0.0.1:5331/dosing"
+        },
+        {
+          "t": 35.48,
+          "msg": "[/postdose dark 1440] stray 'UNBLIND' in UI text: ['One standard instrument set (UNBLIND-BLIND-1) at fixed timepoints for every trial, exported in one harmonised schema.', 'BLINDING ROWS EXPORTED IN UNBLIND-BLIND-1', 'Blinding rows exported in UNBLIND-BLIND-1']",
+          "shot": "",
+          "url": "http://127.0.0.1:5331/postdose"
+        },
+        {
+          "t": 35.82,
+          "msg": "[/postdose dark 1440] 1 low-contrast text items on glass: '\u2197' 4.05:1 in .nav.glass--float",
+          "shot": "docs/testing/screenshots/verify-F-14.png",
+          "url": "http://127.0.0.1:5331/postdose"
+        },
+        {
+          "t": 37.59,
+          "msg": "[/ light 390] stray 'UNBLIND' in UI text: ['BLINDING ROWS EXPORTED IN UNBLIND-BLIND-1', 'Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters', 'built the UNBLIND-BLIND-1 plan (6 instruments, outcome MADRS at primary week 6) and 539 scheduled tasks for 49 participants (dosing_session 49, monitor_debrief 49, participant_checkin 196, rater_assessment 147, followup 98); 7.0 blinding check-ins per participant', 'Protocol version 2: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters; predicted unblinding now high (0.79). Monitoring continues against the amended protocol.']",
+          "shot": "",
+          "url": "http://127.0.0.1:5331/"
+        },
+        {
+          "t": 39.41,
+          "msg": "[/predose light 390] stray 'UNBLIND' in UI text: ['Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters', 'v2 Add the UNBLIND-BLIND-1 guess\u2026', \"Blinding integrity: participants and raters complete the UNBLIND-BLIND-1 guess item (drug, control, don't know) with confidence (0 to 100) after dosing and at weeks 1, 3 and 6. Blinding indices (Bang) are monitored per site and per rater during the trial, and a drift alert triggers a documented human decision.\", 'v2\\tD\u22121\\tfix approved by QA Tester: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters']",
+          "shot": "",
+          "url": "http://127.0.0.1:5331/predose"
+        },
+        {
+          "t": 43.44,
+          "msg": "[/portal light 390 with a result] 1 low-contrast text items on glass: 'PORTAL-0003 \u00b7 D+34' 2.56:1 in .portal__result.glass--strong.glass--enter",
+          "shot": "docs/testing/screenshots/verify-F-15.png",
+          "url": "http://127.0.0.1:5331/portal"
+        },
+        {
+          "t": 45.19,
+          "msg": "[/dosing light 390] stray 'UNBLIND' in UI text: ['Protocol version 2: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters; predicted unblinding now high (0.79). Monitoring continues against the amended protocol.']",
+          "shot": "",
+          "url": "http://127.0.0.1:5331/dosing"
+        },
+        {
+          "t": 46.95,
+          "msg": "[/postdose light 390] stray 'UNBLIND' in UI text: ['One standard instrument set (UNBLIND-BLIND-1) at fixed timepoints for every trial, exported in one harmonised schema.', 'BLINDING ROWS EXPORTED IN UNBLIND-BLIND-1', 'Blinding rows exported in UNBLIND-BLIND-1']",
+          "shot": "",
+          "url": "http://127.0.0.1:5331/postdose"
+        }
+      ],
+      "notes": [],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 216,
+      "toasts": [],
+      "shots": [
+        "docs/testing/screenshots/verify-F-1.png ([start page light] 1 low-contrast text i)",
+        "docs/testing/screenshots/verify-F-2.png ([start page dark] 1 low-contrast text it)",
+        "docs/testing/screenshots/verify-F-3.png ([/ light 1440] 3 low-contrast text items)",
+        "docs/testing/screenshots/verify-F-4.png ([/predose light 1440] 1 low-contrast tex)",
+        "docs/testing/screenshots/verify-F-5.png ([/portal light 1440] 1 low-contrast text)",
+        "docs/testing/screenshots/verify-F-6.png ([/portal light 1440 with a result] 2 low)",
+        "docs/testing/screenshots/verify-F-7.png ([/dosing light 1440] 1 low-contrast text)",
+        "docs/testing/screenshots/verify-F-8.png ([/postdose light 1440] 1 low-contrast te)",
+        "docs/testing/screenshots/verify-F-9.png ([/ dark 1440] 1 low-contrast text items )",
+        "docs/testing/screenshots/verify-F-10.png ([/predose dark 1440] 1 low-contrast text)",
+        "docs/testing/screenshots/verify-F-11.png ([/portal dark 1440] 1 low-contrast text )",
+        "docs/testing/screenshots/verify-F-12.png ([/portal dark 1440 with a result] 2 low-)",
+        "docs/testing/screenshots/verify-F-13.png ([/dosing dark 1440] 1 low-contrast text )",
+        "docs/testing/screenshots/verify-F-14.png ([/postdose dark 1440] 1 low-contrast tex)",
+        "docs/testing/screenshots/verify-F-15.png ([/portal light 390 with a result] 1 low-)"
+      ]
+    },
+    {
+      "id": "G",
+      "title": "Keyboard through nav, dock, approvals and forms; visible focus",
+      "env": "verify-j1115",
+      "base_url": "http://127.0.0.1:5331",
+      "passed": false,
+      "error": null,
+      "duration_s": 9.1,
+      "timings": {},
+      "failures": [
+        {
+          "t": 0.61,
+          "msg": "[start page] focus not visible on: ['TEXTAREA:mc-protocol']",
+          "shot": "docs/testing/screenshots/verify-G-1.png",
+          "url": "http://127.0.0.1:5331/"
+        },
+        {
+          "t": 0.68,
+          "msg": "Tab does not reach both the nav and Create trial",
+          "shot": "docs/testing/screenshots/verify-G-2.png",
+          "url": "http://127.0.0.1:5331/"
+        },
+        {
+          "t": 1.99,
+          "msg": "[mission control] focus not visible on: ['INPUT:slip-509ce2bf-comment', 'INPUT:slip-509ce2bf-reviewer', 'INPUT:slip-68edf78e-comment', 'INPUT:slip-68edf78e-reviewer', 'INPUT:slip-78f441ab-comment', 'INPUT:slip-78f441ab-reviewer', 'INPUT:slip-a45dafad-comment', 'INPUT:slip-a45dafad-reviewer']",
+          "shot": "docs/testing/screenshots/verify-G-3.png",
+          "url": "http://127.0.0.1:5331/"
+        },
+        {
+          "t": 2.19,
+          "msg": "Tab never reaches the dock (Next day)",
+          "shot": "docs/testing/screenshots/verify-G-4.png",
+          "url": "http://127.0.0.1:5331/"
+        }
+      ],
+      "notes": [
+        "start page tab order: ['Parallax, mission control', 'Mission control', 'Pre-dosing', 'Volunteer portal', 'Dosing', 'Post-dosing', 'Evidence engine', 'Theme: follows system. Change theme', 'Blank page', 'mc-protocol', 'on', 'Parallax, mission control', 'Mission control', 'Pre-dosing', 'Volunteer portal']",
+        "mission control tab order (first 60): ['A:All 6 readouts', 'BUTTON:All modules', 'BUTTON:Pre-dosing', 'BUTTON:Dosing', 'BUTTON:Post-dosing', 'SUMMARY:View evidence', 'INPUT:slip-68edf78e-reviewer', 'INPUT:slip-68edf78e-comment', 'BUTTON:Approve', 'BUTTON:Reject', 'SUMMARY:View evidence', 'INPUT:slip-a45dafad-reviewer', 'INPUT:slip-a45dafad-comment', 'BUTTON:Approve', 'BUTTON:Reject', 'SUMMARY:View evidence', 'INPUT:slip-cab0bc37-reviewer', 'INPUT:slip-cab0bc37-comment', 'BUTTON:Approve', 'BUTTON:Reject', 'SUMMARY:View evidence', 'INPUT:slip-509ce2bf-reviewer', 'INPUT:slip-509ce2bf-comment', 'BUTTON:Approve', 'BUTTON:Reject', 'SUMMARY:View evidence', 'INPUT:slip-78f441ab-reviewer', 'INPUT:slip-78f441ab-comment', 'BUTTON:Approve', 'BUTTON:Reject', 'SUMMARY:View evidence', 'INPUT:slip-c0a74324-reviewer', 'INPUT:slip-c0a74324-comment', 'BUTTON:Approve', 'BUTTON:Reject', 'BUTTON:All', 'BUTTON:Decisions', 'BUTTON:Warnings', 'BUTTON:Human', 'BUTTON:All modules', 'BUTTON:Master', 'BUTTON:Pre-dosing', 'BUTTON:Dosing', 'BUTTON:Post-dosing', 'DIV:Agent log entries, newest first', 'INPUT:on', 'BUTTON:New trial', 'A:Parallax, mission control', 'A:Mission control', 'A:Pre-dosing', 'A:Volunteer portal', 'A:Dosing', 'A:Post-dosing', 'A:Evidence engine', 'A:6 TO SIGN', 'BUTTON:Theme: follows system. Change theme', 'A:All 6 readouts', 'BUTTON:All modules', 'BUTTON:Pre-dosing']",
+        "after reviewer + 2 Tabs focus is on {'tag': 'BUTTON', 'id': '', 'cls': 'btn btn--filled', 'label': 'Approve', 'ring': True, 'outline': 'solid 2px rgb(0, 0, 0)', 'shadow': 'none', 'onscreen': True}",
+        "portal tab order: ['Parallax, mission control', 'Mission control', 'Pre-dosing', 'Volunteer portal', 'Dosing', 'Post-dosing', 'Evidence engine', 'Theme: follows system. Change theme', 'Sam Taylor', '34', '+44 7700 900123', 'Treatment-resistant depression', '2', 'none', 'Never', 'on', 'on', 'on', 'on', 'on', 'on', 'on', 'TEXTAREA', 'Apply', 'Reset form', 'Parallax, mission control', 'Mission control', 'Pre-dosing', 'Volunteer portal']"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 36,
+      "toasts": [
+        "SCREENED \u00b7 PORTAL-0001 \u00b7 EXCLUDED"
+      ],
+      "shots": [
+        "docs/testing/screenshots/verify-G-1.png ([start page] focus not visible on: ['TEX)",
+        "docs/testing/screenshots/verify-G-2.png (Tab does not reach both the nav and Crea)",
+        "docs/testing/screenshots/verify-G-3.png ([mission control] focus not visible on: )",
+        "docs/testing/screenshots/verify-G-4.png (Tab never reaches the dock (Next day))"
+      ]
+    }
+  ]
+}
