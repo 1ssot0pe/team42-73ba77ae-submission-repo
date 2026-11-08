@@ -43,6 +43,13 @@
   box-shadow: none;
 }
 .chart-tooltip__text { margin: 0; }
+.chart__body, .chart-svgwrap { position: relative; }
+.chart-pointtip {
+  position: absolute; z-index: 2; pointer-events: none; width: max-content; max-width: min(260px, 70vw);
+  transform: translate(-50%, calc(-100% - 10px));
+}
+[data-pointtip]:focus { outline: none; }
+[data-pointtip]:focus-visible { outline: 2px solid var(--color-graphite); outline-offset: 2px; }
 
 /* Legacy legend (only for charts with more than 4 series that cannot be labelled directly) */
 .chart-legend { list-style: none; margin: 0; padding: 0; }

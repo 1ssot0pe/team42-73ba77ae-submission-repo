@@ -21,6 +21,8 @@ const num = (v: unknown): number | null => {
   return null;
 };
 const arr = (v: unknown): unknown[] => (Array.isArray(v) ? v : []);
+/** Number as text with the Unicode minus for negatives. */
+const signed = (n: number): string => (n < 0 ? `\u2212${String(-n)}` : String(n));
 
 /** Any cell value as something React can print. Objects and lists become compact text. */
 export function toScalar(v: unknown): Scalar {
@@ -185,14 +187,14 @@ export function readCharts(v: unknown): Chart[] {
 
     const refs: RefLine[] = [];
     const t = num(c.threshold);
-    if (t !== null) refs.push({ y: t, label: `Threshold ${t}` });
+    if (t !== null) refs.push({ y: t, label: `Threshold ${signed(t)}` });
     for (const r of [...arr(c.thresholds), ...arr(c.reference_lines), ...arr(c.refs)]) {
       if (isObj(r)) {
         const y = num(r.y ?? r.value);
-        if (y !== null) refs.push({ y, label: str(r.label) || `Threshold ${y}` });
+        if (y !== null) refs.push({ y, label: str(r.label) || `Threshold ${signed(y)}` });
       } else {
         const y = num(r);
-        if (y !== null) refs.push({ y, label: `Threshold ${y}` });
+        if (y !== null) refs.push({ y, label: `Threshold ${signed(y)}` });
       }
     }
     // Constant "reference" series (the dosing view sends its expected and alarm lines this way).
@@ -201,7 +203,7 @@ export function readCharts(v: unknown): Chart[] {
         if (!REF_LABEL.test(s.label) && !REF_LABEL.test(s.key)) return true;
         const y = constantValue(data, s.key);
         if (y === null) return true;
-        refs.push({ y, label: `${s.label} ${Number.isInteger(y) ? y : Number(y.toFixed(3))}` });
+        refs.push({ y, label: `${s.label} ${signed(Number.isInteger(y) ? y : Number(y.toFixed(3)))}` });
         return false;
       });
     }

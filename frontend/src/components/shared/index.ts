@@ -33,8 +33,10 @@ export {
 export type { SeriesStyle } from "./chartTheme";
 export { ChartFrame, ChartLegend, ChartDataTable } from "./ChartFrame";
 export type { ChartFrameProps, ChartEmpty, ChartStatus, DataColumn, DataTable, Cell, LegendItem } from "./ChartFrame";
-export { ChartTooltip, EndLabel, EventMarkers, ChartNotes, endpointDot } from "./ChartParts";
-export type { ChartTooltipProps, EndLabelProps, EventMarkersProps, ChartEvent } from "./ChartParts";
+export {
+  ChartTooltip, EndLabel, EventMarkers, ChartNotes, endpointDot, eventsTopMargin, usePointTip, pointTipHandlers, PointTip,
+} from "./ChartParts";
+export type { ChartTooltipProps, EndLabelProps, EventMarkersProps, ChartEvent, PointTipApi, PointTipState } from "./ChartParts";
 export {
   formatPct, formatSigned, formatInterval, formatBracket, formatDayTick, dayTicks, niceDomain, wilson,
   WILSON_MIN_N, VAULT_MIN_N, ROLLING_BATCHES,

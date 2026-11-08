@@ -70,6 +70,8 @@ export interface ChartFrameProps {
   /** when set, replaces children (no axes) */
   empty?: ChartEmpty | null;
   children: ReactNode;
+  /** heading element for the title (default 3); use 4 when the chart sits under its own section h3 */
+  headingLevel?: 3 | 4;
   /** @deprecated legacy: rendered as a footnote */
   caption?: string;
   /** @deprecated legacy: a small swatch legend; prefer direct labels */
@@ -146,8 +148,9 @@ export function ChartDataTable({ table, caption }: { table: DataTable; caption: 
 
 export function ChartFrame({
   id, title, subtitle, synthetic = true, status, ariaLabel, dataTable, dataTitle, footnotes, empty,
-  children, caption, legend, tag,
+  children, caption, legend, tag, headingLevel = 3,
 }: ChartFrameProps) {
+  const Heading = headingLevel === 4 ? "h4" : "h3";
   const [open, setOpen] = useState(false);
   const close = useCallback(() => setOpen(false), []);
   const titleId = useId();
@@ -160,7 +163,7 @@ export function ChartFrame({
     <figure className="chart" data-chart={id} aria-labelledby={titleId}>
       <div className="chart__head">
         <div className="chart__heading">
-          <h3 className="chart__title" id={titleId}>{title}</h3>
+          <Heading className="chart__title" id={titleId}>{title}</Heading>
           {subtitle ? <p className="chart__subtitle">{subtitle}</p> : null}
         </div>
         {synthetic ? <span className="chart__synthetic">{noteText}</span> : null}
