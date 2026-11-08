@@ -109,9 +109,13 @@ def test_charts_are_complete(drift_approved):
         assert all(set(keys) <= set(d) for d in c["data"]), c["title"]
         assert any(d[k] is not None for d in c["data"] for k in keys), c["title"]
     rater = next(c for c in v["charts"] if "by site, last 3" in c["title"])
-    labels = [mk["label"] for mk in rater["markers"]]
-    assert any("onset" in x for x in labels) and any("Alert" in x for x in labels)
+    labels = [mk["label"].lower() for mk in rater["markers"]]
+    assert any("onset" in x for x in labels) and any("alert" in x for x in labels)
+    assert all(len(x) <= 20 for x in labels), "marker labels must stay short so they do not pile up on the chart"
+    by_rater = next(c for c in v["charts"] if "by rater" in c["title"])
+    assert "Site B" in by_rater["title"] and len(by_rater["series"]) <= 4, "per-rater chart focuses on the drift site"
     cus = next(c for c in v["charts"] if "CUSUM" in c["title"])
+    assert cus["y_domain"][1] > stats.H, "headroom above the alarm line so its label is not clipped"
     alert = drift_alerts(m, DRIFT_SITE)[0]
     peak = next(d for d in cus["data"] if d["day"] == alert["day"])
     assert peak["Site B"] >= stats.H, "the alarm crossing must stay visible on the alert day"
@@ -187,6 +191,21 @@ def test_rejection_dismisses_and_changes_nothing():
 
 
 # ------------------------------------------------------------------ data flow
+def test_literature_never_floods_the_inbox(drift_pending):
+    pending = [a for a in drift_pending.ctx.approvals.pending() if (a.get("action") or {}).get("type") == "literature_addition"]
+    assert len(pending) <= 1, "one literature proposal at a time so trial decisions stay visible"
+
+
+def test_amendment_log_is_plain_text():
+    m = Master("TEST-DOS-AMEND", use_stub_predose=True)
+    m.setup()
+    mod = m.modules["dosing"]
+    mod.on_message(m.rec, {"kind": "protocol_amended", "text": "Protocol version 6: Stratify randomisation",
+                           "payload": {"fix": "x", "version": 6, "risk": {"u": 0.55, "band": "medium"}}}, m.ctx)
+    last = [e for e in m.rec["events"] if e["module"] == "dosing"][-1]["text"]
+    assert "{" not in last and "Protocol version 6" in last and "medium (0.55)" in last
+
+
 def test_primary_lock_posts_once(drift_approved):
     msgs = [x for x in drift_approved.rec["messages"] if x["kind"] == "primary_locked"]
     assert len(msgs) == 1 and msgs[0]["to"] == "master"

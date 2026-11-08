@@ -320,6 +320,9 @@ class LiteratureAgent:
     def run(self, rec: TrialRecord, day: int, ctx: Ctx) -> None:
         if day <= 0 or day % 7:
             return
+        # One proposal at a time, so weekly reference data never buries trial decisions in the approval inbox.
+        if any(x["status"] == "proposed" for x in rec["literature"]):
+            return
         cands = self.candidates()
         i = len(rec["literature"])
         if i >= len(cands):

@@ -36,6 +36,7 @@ adverse_event, literature_update, primary_locked.  Received: approval_decided, p
 from __future__ import annotations
 
 import json
+import math
 from pathlib import Path
 from typing import Optional
 
@@ -90,8 +91,10 @@ class Module(BaseModule):
         if kind == "approval_decided":
             self._decided(rec, p, ctx)
         elif kind == "protocol_amended":
-            log(rec, "dosing_module", f"Protocol amendment received ({str(p.get('summary') or p.get('changes') or p)[:160]}); "
-                                      "monitoring continues against the amended protocol.")
+            what = str(msg.get("text") or (f"Protocol version {p['version']}" if p.get("version") else "Protocol amended"))
+            risk = p.get("risk") if isinstance(p.get("risk"), dict) else {}
+            band = f"; predicted unblinding now {risk['band']} ({float(risk['u']):.2f})" if {"band", "u"} <= set(risk) else ""
+            log(rec, "dosing_module", f"{what[:160]}{band}. Monitoring continues against the amended protocol.")
         elif kind == "enrolment_complete":
             log(rec, "dosing_module", f"Enrolment complete ({len(rec['enrolled'])} participants); dosing agents standing by.")
 
@@ -149,7 +152,10 @@ class Module(BaseModule):
             out.append({"label": "False drift alarms per trial", "value": ev["cusum"]["false_alarms_per_trial_no_drift"],
                         "baseline": ev["end_of_trial_baseline"]["false_alarms_per_trial_no_drift"], "unit": "per trial",
                         "bottleneck_id": "blinding_failure",
-                        "note": f"SYNTHETIC, {ev['n_seeds']} simulated trials with no drift. Baseline: one end-of-trial check."})
+                        "note": f"The price of catching drift weeks earlier: about {ev['cusum']['false_alarms_per_trial_no_drift']} "
+                                f"extra human reviews per trial ({ev['n_seeds']} SYNTHETIC trials with no drift). "
+                                "Baseline: one end-of-trial check raises none, but finds drift about "
+                                f"{ev['end_of_trial_baseline']['delay_days_if_detected']} days late."})
         out.append({"label": "Blinding check-ins completed", "value": round(100 * done / len(due), 1) if due else None,
                     "baseline": 29.5, "unit": "%", "bottleneck_id": "blinding_unmeasured",
                     "note": "Baseline: share of randomised psychedelic trials that assessed blinding at all (JAMA Psychiatry 2026)."})
@@ -186,16 +192,23 @@ class Module(BaseModule):
         sites = sorted({s.get("site", "") for s in rec["schedule"] if s.get("owner") == MODULE and s.get("site")})
         rater_ids = sorted({s["rater_id"] for s in rec["schedule"] if s.get("owner") == MODULE and s.get("rater_id")})
         timeline = self._drift_timeline(rec)
-        markers = [{"x": t["day"], "label": t["label"]} for t in timeline]
+        one_site = len({t["site"] for t in timeline}) <= 1
+        markers = [{"x": t["day"], "label": t["short"] if one_site else f"{t['short']} {t['site']}"} for t in timeline]
+        focus = self._focus_site(rec)
+        focus_raters = [r for r in rater_ids if rater_sites(rec).get(r) == focus] if focus else []
+        cusum_peak = max((m.get("cusum") or 0 for m in rec["blinding_metrics"]
+                          if m.get("module") == MODULE and m["who"] == "rater" and m["by"] == "site"), default=0)
         charts = [
             self._chart(rec, "rater", "site", sites, "rolling_accuracy",
                         "Rater guess accuracy by site, last 3 vault batches (SYNTHETIC)",
                         ref=("Expected with working blinding", stats.P0), markers=markers, y_domain=[0, 1]),
-            self._chart(rec, "rater", "rater", rater_ids, "rolling_accuracy",
-                        "Rater guess accuracy by rater, last 3 vault batches (SYNTHETIC)",
+            self._chart(rec, "rater", "rater", focus_raters or rater_ids, "rolling_accuracy",
+                        (f"Rater guess accuracy at {short_site(focus)}, by rater, last 3 vault batches (SYNTHETIC)" if focus_raters
+                         else "Rater guess accuracy by rater, last 3 vault batches (SYNTHETIC)"),
                         ref=("Expected with working blinding", stats.P0), markers=markers, y_domain=[0, 1]),
             self._chart(rec, "rater", "site", sites, "cusum", "Drift score (CUSUM) by site (SYNTHETIC)",
-                        ref=("Alarm line", stats.H), markers=markers),
+                        ref=("Alarm line", stats.H), markers=markers,
+                        y_domain=[0, math.ceil(max(stats.H * 1.4, cusum_peak * 1.1))]),
             self._chart(rec, "participant", "site", sites, "accuracy",
                         "Participant guess accuracy by site, cumulative (SYNTHETIC, information only)", y_domain=[0, 1]),
         ]
@@ -247,27 +260,42 @@ class Module(BaseModule):
         }
 
     @staticmethod
+    def _focus_site(rec) -> Optional[str]:
+        """The site the per-rater chart shows: the latest drift alert's site, else the highest current drift score."""
+        drift = [a for a in rec["alerts"] if a.get("kind") == "rater_drift"]
+        if drift:
+            return drift[-1]["site"]
+        last: dict = {}
+        for m in rec["blinding_metrics"]:
+            if m.get("module") == MODULE and m["who"] == "rater" and m["by"] == "site" and m.get("site"):
+                last[m["site"]] = m.get("cusum") or 0
+        return max(last, key=last.get) if last else None
+
+    @staticmethod
     def _drift_timeline(rec) -> list:
-        """Onset estimate, alert, action and resolution for every rater-drift alert, in day order."""
+        """Onset estimate, alert, action and resolution for every rater-drift alert, in day order.
+        label is for the table; short is the chart marker (the site is added when more than one site drifts)."""
         out = []
         for a in rec["alerts"]:
             if a.get("kind") != "rater_drift":
                 continue
             s = short_site(a["site"])
             ev = a.get("evidence") or {}
+
+            def add(day, label, short, detail):
+                out.append({"day": day, "site": s, "label": f"{label} {s}", "short": short, "detail": detail})
             if ev.get("onset_day_estimate") is not None:
-                out.append({"day": ev["onset_day_estimate"], "label": f"Drift onset {s} (estimated)",
-                            "detail": "Change point from the CUSUM: first batch after the score last sat at 0."})
-            out.append({"day": a["day"], "label": f"Alert {s}",
-                        "detail": f"{ev.get('correct_since_onset')} of {ev.get('n_since_onset')} rater guesses correct since onset."})
+                add(ev["onset_day_estimate"], "Drift onset (estimated)", "Onset (est.)",
+                    "Change point from the CUSUM: first batch after the score last sat at 0.")
+            add(a["day"], "Alert", "Alert",
+                f"{ev.get('correct_since_onset')} of {ev.get('n_since_onset')} rater guesses correct since onset.")
             if a.get("action_day") is not None:
-                out.append({"day": a["action_day"], "label": f"Remote raters {s}", "detail": "Approved by a named human."})
+                add(a["action_day"], "Remote raters approved", "Remote raters", "Approved by a named human.")
             if a.get("resolved_day") is not None:
                 pa = a.get("post_action") or {}
-                out.append({"day": a["resolved_day"], "label": f"Drift stopped {s}",
-                            "detail": f"{pa.get('correct')} of {pa.get('n')} correct since the action."})
+                add(a["resolved_day"], "Drift stopped", "Stopped", f"{pa.get('correct')} of {pa.get('n')} correct since the action.")
             if a.get("status") == "dismissed":
-                out.append({"day": a.get("decided_day") or a["day"], "label": f"Action rejected {s}", "detail": "Monitoring continues."})
+                add(a.get("decided_day") or a["day"], "Action rejected", "Rejected", "Monitoring continues.")
         return sorted(out, key=lambda t: t["day"])
 
     def _chart(self, rec, who, by, groups, field, title, ref=None, markers=None, y_domain=None) -> dict:
