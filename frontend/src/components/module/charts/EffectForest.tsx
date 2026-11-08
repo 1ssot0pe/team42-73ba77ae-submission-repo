@@ -213,7 +213,7 @@ export function EffectForest({ chart, trialId }: ModuleChartComponentProps): JSX
     }
   }
   for (const [why, labels] of byWhy) {
-    const names = labels.map((l, i) => (i === 0 ? l : lower(l))).join(" and ");
+    const names = labels.map(lower).join(" and ");
     notes.push(`Not drawn: ${names}, not estimable${why ? ` because ${why}` : ""}.`);
   }
   if (truth !== null) {
@@ -271,6 +271,7 @@ export function EffectForest({ chart, trialId }: ModuleChartComponentProps): JSX
 
   return (
     <ChartFrame
+      interactive
       id="effect-estimates"
       title={title}
       subtitle={subtitle}
@@ -338,6 +339,7 @@ export function EffectForest({ chart, trialId }: ModuleChartComponentProps): JSX
                     <line x1={sx(r.lo)} x2={sx(r.hi)} y1={cy} y2={cy} stroke={color} strokeWidth={2} />
                     <line x1={sx(r.lo)} x2={sx(r.lo)} y1={cy - 5} y2={cy + 5} stroke={color} strokeWidth={2} />
                     <line x1={sx(r.hi)} x2={sx(r.hi)} y1={cy - 5} y2={cy + 5} stroke={color} strokeWidth={2} />
+                    <circle className="pd-ring" cx={sx(r.md)} cy={cy} r={10.5} />
                     {r.reported ? (
                       <rect x={sx(r.md) - 6} y={cy - 6} width={12} height={12} fill={color} stroke={chartTokens.halo} strokeWidth={2} />
                     ) : (

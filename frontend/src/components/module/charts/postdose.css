@@ -16,8 +16,10 @@
 .pd-panel-title--flag { fill: var(--color-ink); }
 .pd-too-few { font-size: 12px; fill: var(--color-smoke); }
 .pd-point, .pd-hit { cursor: pointer; outline: none; }
-.pd-point:focus-visible > rect:first-child,
-.pd-hit:focus-visible { stroke: var(--color-graphite); stroke-width: 1px; stroke-dasharray: 2 2; }
+.pd-ring { fill: none; stroke: none; pointer-events: none; }
+/* Keyboard focus on a data mark: a 2px graphite ring (matches [data-pointtip]:focus-visible in charts.css). */
+.pd-point:focus-visible .pd-ring { stroke: var(--color-graphite); stroke-width: 2px; }
+.pd-hit:focus-visible { stroke: var(--color-graphite); stroke-width: 2px; }
 .pd-tip {
   position: absolute; z-index: 5; pointer-events: none;
   padding: 8px 12px; border-radius: 10px;

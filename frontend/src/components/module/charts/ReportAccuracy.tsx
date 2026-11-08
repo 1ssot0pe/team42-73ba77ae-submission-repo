@@ -198,6 +198,7 @@ export function ReportAccuracy({ chart, trialId, height }: ModuleChartComponentP
 
   return (
     <ChartFrame
+      interactive
       id="report-rater-accuracy-site"
       title={title}
       subtitle={subtitle}
@@ -318,7 +319,10 @@ export function ReportAccuracy({ chart, trialId, height }: ModuleChartComponentP
                     <text className="pd-too-few" x={(x0 + x1) / 2} y={sy(0.75)} textAnchor="middle">Too few to show</text>
                   )}
                   {fi !== undefined && pts[fi] ? (
-                    <circle cx={sx(pts[fi].day)} cy={sy(pts[fi].acc)} r={5} fill={color} stroke={chartTokens.halo} strokeWidth={2} />
+<g>
+                      <circle cx={sx(pts[fi].day)} cy={sy(pts[fi].acc)} r={5} fill={color} stroke={chartTokens.halo} strokeWidth={2} />
+                      <circle cx={sx(pts[fi].day)} cy={sy(pts[fi].acc)} r={9} fill="none" stroke={chartTokens.reference} strokeWidth={2} />
+                    </g>
                   ) : null}
                   {/* hit area: hover, tap and arrow keys move through releases */}
                   {pts.length ? (
