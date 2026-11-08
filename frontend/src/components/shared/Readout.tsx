@@ -72,7 +72,7 @@ export function ReadoutTile({ kpi, lowerIsBetter, baselineLabel = "before" }: Re
           {isEval ? <StatusPill tone="watch">Eval vs synthetic truth</StatusPill> : null}
         </div>
       ) : null}
-      {note ? <p className="readout__note" title={note}>{note}</p> : null}
+      {note ? <p className="readout__note">{note.replace(/\bSYNTHETIC\b/g, "synthetic")}</p> : null}
     </article>
   );
 }

@@ -101,7 +101,7 @@ export const driftMarker = {
 
 /** Mono label for reference lines, e.g. refLabel("DRIFT ONSET D+28"). */
 export function refLabel(value: string, position: "insideTopRight" | "insideTopLeft" | "insideBottomRight" | "top" | "right" = "insideTopRight") {
-  return { value, position, fill: chartColors.label, fontSize: 10, fontFamily: chartFont, letterSpacing: "0.08em" };
+  return { value, position, fill: chartColors.label, fontSize: 11, fontFamily: chartFont };
 }
 
 export const chartMargin = { top: 8, right: 12, bottom: 0, left: -12 };
