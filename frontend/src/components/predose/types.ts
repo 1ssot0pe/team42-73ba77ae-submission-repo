@@ -67,3 +67,38 @@ export function parkedText(parked: unknown): string {
   }
   return String(parked);
 }
+
+/**
+ * One row of the predose view's design_history (module.py _design_history): predicted unblinding per
+ * protocol version. The first and latest values are stored in the record; versions in between are
+ * rescored on the fly from their stored text with the rule-based parser. Nothing is stored.
+ */
+export interface DesignHistoryRow {
+  version: number;
+  day: number;
+  why: string;
+  /** Fix id (FIXES in agents.py) when the version came from an approved fix, else null. */
+  fix: string | null;
+  u: number | null;
+  u_sd: number | null;
+  expected_bias_g: number | null;
+  band: string | null;
+  source: "stored" | "rescored" | "unavailable";
+}
+
+/** Short names for the approved fixes, for chart labels. The full title stays in the "why" text. */
+export const FIX_SHORT: Record<string, string> = {
+  central_raters: "central remote raters",
+  blinding_questionnaire: "guess questionnaire",
+  expectancy_measure: "expectancy measure",
+  alternative_control: "low-dose comparator",
+  stratify_prior_use: "stratified by prior use",
+};
+
+/** A short label for what changed in a version: the fix name, "initial draft", or the edit reason. */
+export function versionChange(row: Pick<DesignHistoryRow, "fix" | "why" | "version">): string {
+  if (row.fix && FIX_SHORT[row.fix]) return FIX_SHORT[row.fix];
+  if (row.version === 1) return "initial draft";
+  const why = (row.why || "").replace(/^.*?approved by [^:]+:\s*/i, "").trim();
+  return why ? why.charAt(0).toLowerCase() + why.slice(1) : "edit";
+}

@@ -408,4 +408,29 @@ class Module(BaseModule):
         v = super().view(rec)
         v["tables"].append({"title": "Screening criteria", "columns": ["Criterion", "Rule", "Why"],
                             "rows": [[label, rule, why] for _cid, label, rule, why in CRITERIA]})
+        v["design_history"] = self._design_history(rec)
         return v
+
+    def _design_history(self, rec: TrialRecord) -> List[dict]:
+        """Predicted unblinding per protocol version, for the risk chart. Read only: nothing is stored.
+
+        The record keeps the risk for the first version (baseline_risk) and the latest (risk) only.
+        Versions in between are rescored here from their stored text with the rule-based parser (no
+        LLM, no events) and the current risk function. Stored values win where they exist."""
+        versions = rec.get("protocol_versions") or []
+        dr = rec.get("design_review") or {}
+        out: List[dict] = []
+        for i, pv in enumerate(versions):
+            last = i == len(versions) - 1   # the latest version is the current risk, even when it is also v1
+            stored = dr.get("risk") if last else dr.get("baseline_risk") if i == 0 else None
+            if stored:
+                r, source = stored, "stored"
+            else:
+                try:
+                    r, source = self.codesigner.risk(self.parser._rules(pv.get("text") or "")), "rescored"
+                except Exception:  # odd stored text must never break the view
+                    r, source = {}, "unavailable"
+            out.append({"version": pv.get("version"), "day": pv.get("day"), "why": pv.get("why", ""),
+                        "fix": pv.get("fix"), "u": r.get("u"), "u_sd": r.get("u_sd"),
+                        "expected_bias_g": r.get("expected_bias_g"), "band": r.get("band"), "source": source})
+        return out

@@ -24,6 +24,7 @@ import { MeasurementPlanLedger, RecruitmentAds, measurementPlanSummary } from ".
 import { DetailsDrawer, DetailsRow } from "../components/projects/Drawer";
 import { RiskCard } from "../components/predose/UnblindingSphere";
 import { PredoseApprovals } from "../components/review/PredoseApprovals";
+import type { DesignHistoryRow } from "../components/predose/types";
 import "../styles/module.css";
 import "../styles/predose.css";
 
@@ -48,6 +49,7 @@ export default function Predose({ only }: { only?: PredoseSlice } = {}) {
   const { trialId, tick } = useTrial();
   const [data, setData] = useState<Sections | null>(null);
   const [kpis, setKpis] = useState<Kpi[] | null>(null);
+  const [history, setHistory] = useState<DesignHistoryRow[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -55,11 +57,17 @@ export default function Predose({ only }: { only?: PredoseSlice } = {}) {
     if (!trialId) { setData(null); setKpis(null); return; }
     let live = true;
     setLoading(true);
-    Promise.all([api.record(trialId, [...SECTIONS]), api.kpis(trialId)])
-      .then(([rec, k]) => {
+    // The predose view carries design_history (risk per protocol version). It is optional: an older backend or
+    // a failed view only removes the trail from the risk chart.
+    const view = api.view(trialId, "predose")
+      .then((v) => ((v as unknown as { design_history?: DesignHistoryRow[] }).design_history ?? null))
+      .catch(() => null);
+    Promise.all([api.record(trialId, [...SECTIONS]), api.kpis(trialId), view])
+      .then(([rec, k, h]) => {
         if (!live) return;
         setData(rec);
         setKpis(k.predose ?? []);
+        setHistory(h);
         setError(null);
       })
       .catch((e) => live && setError(errorText(e)))
@@ -136,7 +144,8 @@ export default function Predose({ only }: { only?: PredoseSlice } = {}) {
                   <section className="st-section">
                     <SectionHead label="Design review" title="Blinding risk and the FDA checklist" />
                     <div className="grid-pd">
-                      <RiskCard risk={dr?.risk} baseline={dr?.baseline_risk} atEnrolment={dr?.risk_at_enrolment} />
+                      <RiskCard risk={dr?.risk} baseline={dr?.baseline_risk} atEnrolment={dr?.risk_at_enrolment}
+                        history={history} latestVersion={latest} />
                       <FdaChecklist items={dr?.checklist ?? []} baselineOk={dr?.baseline_checklist_ok} windowNote={dr?.window_note}
                         source={latest ? `protocol v${latest}` : "protocol"} />
                     </div>
@@ -146,7 +155,7 @@ export default function Predose({ only }: { only?: PredoseSlice } = {}) {
                     <SectionHead label="Protocol co-designer" title="Edit, save and re-check" />
                     <ProtocolEditor protocol={data.protocol} versions={versions} enrolled={enrolledN > 0} />
                     <DraftedSection md={dr?.blinding_section_md} />
-                    <VersionHistory versions={versions} />
+                    <VersionHistory versions={versions} history={history} />
                   </section>
                   {only === "design" ? <DetailsRow>{agentLog}</DetailsRow> : null}
                 </>
@@ -155,7 +164,8 @@ export default function Predose({ only }: { only?: PredoseSlice } = {}) {
               {show("screening") ? (
                 <section className="st-section">
                   <SectionHead label="Pre-screening agent" title="Screening" />
-                  <ScreeningFunnel funnel={funnel} />
+                  <ScreeningFunnel funnel={funnel} applicants={data.applicants ?? []} enrolled={data.enrolled ?? []}
+                    strata={data.recruitment?.strata} />
                   {fairness ? (
                     <p className="st-status">
                       <span className={`st-dot st-dot--${fairness.flagged ? "watch" : "good"}`} aria-hidden="true" />
