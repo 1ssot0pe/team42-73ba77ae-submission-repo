@@ -191,7 +191,7 @@ export function ReportView({ report, input, onUseFixes }: {
           ariaLabel={fixes.length ? fixesAria(fixes) : "No design changes proposed"}
           dataTable={fixes.length ? fixesTable(fixes) : undefined}
           empty={fixes.length ? null : { title: "No design changes proposed" }}
-          footnotes={fixes.length ? fixesFootnote(fixes) : undefined}
+          footnotes={fixes.length ? fixesFootnote(fixes, fit.slope) : undefined}
         >
           <FixesChart fx={fixes} />
         </ChartFrame>
