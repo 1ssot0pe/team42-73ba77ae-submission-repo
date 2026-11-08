@@ -1,4 +1,4 @@
-# UNBLIND evaluation
+# Parallax evaluation
 
 Three questions, three scripts. Each one says what it measures, what would count as success, and where it can mislead.
 
@@ -20,12 +20,12 @@ python eval/baseline_vs_pipeline.py --selftest    # offline plumbing test with a
 
 ## 1. Synthetic recovery (statistics only)
 
-Simulates meta-analyses with a planted truth using `unblind.synthetic.make_trials`: three scenarios, k = 15, 30 and 60 trials, 300 replicates each, 35% of trials reporting blinding. It compares the UNBLIND intercept (primary fit on observed blinding, and the sensitivity fit with imputed blinding) against the **baseline a standard meta-analysis would report**: the DerSimonian-Laird random-effects pooled mean of the reported effects, ignoring blinding. Metrics: mean and median bias against the truth, RMSE, 95% CI coverage, CI width, share of fits that fail, each with Monte Carlo error.
+Simulates meta-analyses with a planted truth using `unblind.synthetic.make_trials`: three scenarios, k = 15, 30 and 60 trials, 300 replicates each, 35% of trials reporting blinding. It compares the Parallax intercept (primary fit on observed blinding, and the sensitivity fit with imputed blinding) against the **baseline a standard meta-analysis would report**: the DerSimonian-Laird random-effects pooled mean of the reported effects, ignoring blinding. Metrics: mean and median bias against the truth, RMSE, 95% CI coverage, CI width, share of fits that fail, each with Monte Carlo error.
 
 | Scenario | What is planted | Success looks like |
 |---|---|---|
-| `expectancy` | bias = 0.6 x unblinding. The model's assumptions hold. | UNBLIND bias near 0 and coverage near 95%, naive clearly biased |
-| `reverse_causation` | no expectancy bias. Patients who improve guess "drug" more often. | Nothing can succeed here for UNBLIND. The point is to measure how much it over-subtracts |
+| `expectancy` | bias = 0.6 x unblinding. The model's assumptions hold. | Parallax bias near 0 and coverage near 95%, naive clearly biased |
+| `reverse_causation` | no expectancy bias. Patients who improve guess "drug" more often. | Nothing can succeed here for Parallax. The point is to measure how much it over-subtracts |
 | `confounded` | better-blinded trials also had lower true effects | Same. Shows that cross-trial confounding is not fixed by the correction |
 
 Two stress tests use small wrappers in the script (not edits to `make_trials`): `noisy_guess` measures unblinding from binomial guess counts instead of handing the model the true value, and `mixed` combines reverse causation with a real expectancy bias.
@@ -79,4 +79,4 @@ Both systems are scored with the same scorer as (2), plus **quote verifiability*
 
 * The extraction gold set will be small. Report intervals, not just percentages.
 * The synthetic study tests the statistics under assumptions we chose. A method that passes it can still fail on real data for reasons we did not simulate.
-* Coverage above 95% for the UNBLIND intervals partly reflects a conservative Knapp-Hartung floor in `fit_metareg`. Under reverse causation, high coverage comes from wide intervals around a biased centre.
+* Coverage above 95% for the Parallax intervals partly reflects a conservative Knapp-Hartung floor in `fit_metareg`. Under reverse causation, high coverage comes from wide intervals around a biased centre.

@@ -1,6 +1,6 @@
 # DRAFT protocol (FICTIONAL EXAMPLE): Single-dose psilocybin for treatment-resistant depression
 
-This is a fictional draft written for the UNBLIND demo. It is not a real protocol.
+This is a fictional draft written for the Parallax demo. It is not a real protocol.
 
 ## Design
 A randomised, double-blind, placebo-controlled phase 2 trial in 60 adults with treatment-resistant depression at three sites: Site A (London), Site B (Manchester) and Site C (Bristol).

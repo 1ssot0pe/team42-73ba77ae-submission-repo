@@ -1,4 +1,4 @@
-# UNBLIND demo app
+# Parallax demo app
 
 Run from the repo root:
 

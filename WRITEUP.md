@@ -1,4 +1,6 @@
-# UNBLIND: one-page write-up
+# Parallax: one-page write-up
+
+*Parallax is the shift in what you see when you look from a different place. The person who has tripped, and the rater who sat in the room, see a different trial from everyone else. Parallax measures that shift and corrects for it.*
 
 **The problem.** Psychedelic trials cannot stay blinded, because patients and clinicians can tell who tripped. A 2026 review of 112 randomised psychedelic trials found only 29.5% assessed blinding at all. Those that did often reported failure above 90%. Every reported effect is therefore drug plus expectation, measured on the same people at the same moment, so no single trial can separate the two. The FDA's July 2026 final guidance names this functional unblinding as the central threat to validity. It was central to the 2024 rejection of the MDMA application. And it hangs over the current psilocybin filings: Compass reported a 3.6-point MADRS difference against placebo (COMP005) and 3.8 points against 1 mg psilocybin (COMP006).
 
@@ -22,8 +24,8 @@ A named human signs off every output and every row added to the calibration corp
 **Evaluation.**
 
 1. **Planted-truth simulation** (synthetic; 60 trials, 300 runs per scenario).
-   - **When expectancy is the only bias:** a standard meta-analysis overstates the effect by 0.43 g and almost never contains the truth. UNBLIND is within 0.01 g, with 98% coverage, but with intervals several times wider.
-   - **When improvement causes correct guessing (reverse causation):** UNBLIND over-subtracts by 0.15 g.
+   - **When expectancy is the only bias:** a standard meta-analysis overstates the effect by 0.43 g and almost never contains the truth. Parallax is within 0.01 g, with 98% coverage, but with intervals several times wider.
+   - **When improvement causes correct guessing (reverse causation):** Parallax over-subtracts by 0.15 g.
    - **Under cross-trial confounding:** it does worse than doing nothing.
 2. **Extraction accuracy against a hand-verified gold set,** with honest abstention scored separately from misses.
 3. **Baseline:** single-shot Gemini versus the pipeline, run on masked and unmasked text to measure how much the model "remembers" from the news rather than reads.

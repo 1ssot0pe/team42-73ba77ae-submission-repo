@@ -1,4 +1,4 @@
-# UNBLIND platform: module contract
+# Parallax platform: module contract
 
 Three modules, one owner each, never import each other. They share only:
 

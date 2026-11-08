@@ -75,7 +75,7 @@ against the dosing module on `origin/Issy-argon-4`: all tests pass and the repor
 ## Draft for the write-up: what is new compared with Szigeti et al. 2026
 
 Szigeti and colleagues' 2026 meta-analysis corrects psychedelic trial results for unequal unblinding after the
-trials have ended, using whatever blinding data each trial happened to report. UNBLIND does not claim the idea
+trials have ended, using whatever blinding data each trial happened to report. Parallax does not claim the idea
 that blinding matters. What is new is running the measurement as a living, standard, agent-operated process inside
 each trial, so that every trial collects the same guesses at the same timepoints and can report an
 expectancy-adjusted effect with its limits at close-out.

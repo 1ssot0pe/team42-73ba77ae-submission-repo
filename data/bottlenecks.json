@@ -56,7 +56,7 @@
       "module": "postdose",
       "title": "Blinding data that is collected is not comparable",
       "number": "Of 18 real trials our research agent examined, only 4 reported clean per-arm participant guess data; timing ranged from the dosing day to day 365, and respondents varied (participants, therapists, raters)",
-      "source": "UNBLIND candidate gold set, data/gold_candidates.csv (unverified, needs human check)",
+      "source": "Parallax candidate gold set, data/gold_candidates.csv (unverified, needs human check)",
       "url": "",
       "how_we_tackle": "One standard instrument set (UNBLIND-BLIND-1) at fixed timepoints for every trial, exported in one harmonised schema.",
       "metric": "share of trials exporting in the standard schema"

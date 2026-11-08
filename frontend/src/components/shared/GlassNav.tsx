@@ -1,7 +1,7 @@
 /**
  * GlassNav (design.md 8.1). Floating liquid-glass pill nav, sticky 12px from the top. No required props.
  * Props: evidenceUrl (default "http://localhost:8501", the Streamlit evidence engine, opened in a new tab).
- * Left: UNBLIND wordmark. Centre: ghost-pill links (active link gets ink text and a 6px dot).
+ * Left: Parallax wordmark. Centre: ghost-pill links (active link gets ink text and a 6px dot).
  * Right: trial chip, day counter "D+23 / 90" and an amber "3 to sign" pill (hidden until a trial exists),
  * then a theme toggle (Auto, Bench, Darkroom). Reads the trial from useTrial().
  * At 720px and below the links collapse into a "Menu" pill (last control in the nav) that opens a glass list.
@@ -116,7 +116,7 @@ export function GlassNav({ evidenceUrl = "http://localhost:8501" }: GlassNavProp
   return (
     <div className="nav-wrap">
       <nav className="nav glass glass--float" aria-label="Main">
-        <NavLink to="/" className="nav__mark" aria-label="UNBLIND, mission control">UNBLIND</NavLink>
+        <NavLink to="/" className="nav__mark" aria-label="Parallax, mission control">PARALLAX</NavLink>
         <div className="nav__links" ref={linksRef}>
           {LINKS.map((l) => (
             <NavLink key={l.to} to={l.to} end={l.end}

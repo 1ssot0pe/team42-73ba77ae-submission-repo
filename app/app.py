@@ -1,4 +1,4 @@
-"""UNBLIND live demo UI.
+"""Parallax live demo UI.
 
     streamlit run app/app.py
 
@@ -642,7 +642,7 @@ def panel_signoff(rep) -> None:
             st.warning(msg)
     else:
         st.html('<span class="ub-pill await">AWAITING HUMAN SIGN-OFF</span>')
-        st.caption("Nothing leaves UNBLIND as a recommendation, and nothing joins the calibration corpus, "
+        st.caption("Nothing leaves Parallax as a recommendation, and nothing joins the calibration corpus, "
                    "until a named person signs here. Decisions are logged to data/signoffs.jsonl with the fingerprint.")
         c1, c2 = st.columns([1, 1])
         with c1:
@@ -702,7 +702,7 @@ def report_from_json(raw: bytes):
 # ---------------------------------------------------------------------------
 # page
 # ---------------------------------------------------------------------------
-st.set_page_config(page_title="UNBLIND", page_icon="🔬", layout="wide")
+st.set_page_config(page_title="Parallax", page_icon="🔬", layout="wide")
 st.html(CSS)
 ss = st.session_state
 for k, v in (("report", None), ("trace", []), ("run_error", None), ("signoffs", {}), ("loaded_id", None),
@@ -728,7 +728,7 @@ def _fixture_demo():
 with st.sidebar:
     st.markdown("### Mode")
     st.toggle("Offline mode (cached responses only)", key="offline",
-              help="When on, UNBLIND replays only responses already in its cache and makes no network calls.")
+              help="When on, Parallax replays only responses already in its cache and makes no network calls.")
     if ss.offline:
         os.environ["UNBLIND_OFFLINE"] = "1"
     else:
@@ -769,7 +769,7 @@ with st.sidebar:
                 st.success(f"Loaded {up.name}.")
             except Exception as e:
                 ss.loaded_id = fid
-                st.error(f"That file is not a valid UNBLIND report ({type(e).__name__}: {e}).")
+                st.error(f"That file is not a valid Parallax report ({type(e).__name__}: {e}).")
 
     st.markdown("### How it works")
     st.caption("Resolver, paper hunter, outcome extractor, results-blind design extractor and blinding hunter collect "
@@ -777,9 +777,9 @@ with st.sidebar:
                "calibration and corrects the effect. A design advisor ranks fixes. A human signs off.")
 
 # ---- header -----------------------------------------------------------------
-st.title("UNBLIND")
+st.title("Parallax")
 st.html('<div class="ub-tagline">How much of a psychedelic trial\'s result is expectation?</div>'
-        '<div class="ub-lede">Patients in psychedelic trials usually know whether they got the drug. UNBLIND reads a '
+        '<div class="ub-lede">Patients in psychedelic trials usually know whether they got the drug. Parallax reads a '
         "trial, measures how badly blinding failed, and estimates how much of the reported effect is expectation. "
         "A person signs off every result.</div>")
 

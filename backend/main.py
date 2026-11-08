@@ -1,4 +1,4 @@
-"""UNBLIND platform API (FastAPI). Thin glue over the Master agent. No business logic here.
+"""Parallax platform API (FastAPI). Thin glue over the Master agent. No business logic here.
 
 Run:  uvicorn backend.main:app --reload --port 8000     (from the repo root)
 The React app (frontend/) calls these endpoints. Everything returned is JSON.
@@ -17,7 +17,7 @@ from pydantic import BaseModel, Field
 from unblind.platform.core import DATA
 from unblind.platform.master.orchestrator import Master
 
-app = FastAPI(title="UNBLIND platform API", version="0.1")
+app = FastAPI(title="Parallax platform API", version="0.1")
 app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
                    allow_methods=["*"], allow_headers=["*"])
 
@@ -216,7 +216,7 @@ def module_action(tid: str, module: str, action: str, body: Action):
         return {"result": _strip_private(res), "state": m.state()}
 
 
-# ---------------------------------------------------------------- evidence engine (existing UNBLIND pipeline)
+# ---------------------------------------------------------------- evidence engine (existing Parallax pipeline)
 class EvidenceIn(BaseModel):
     input: str
 

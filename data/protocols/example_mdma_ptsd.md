@@ -1,6 +1,6 @@
 # DRAFT protocol (FICTIONAL EXAMPLE): MDMA-assisted therapy for PTSD with an active control
 
-This is a fictional draft written for the UNBLIND demo. It is not a real protocol.
+This is a fictional draft written for the Parallax demo. It is not a real protocol.
 
 ## Design
 A randomised, double-blind phase 2 trial in 80 adults with chronic PTSD at Site A (London) and Site C (Bristol).

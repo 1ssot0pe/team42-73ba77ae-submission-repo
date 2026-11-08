@@ -1,12 +1,14 @@
 # team42-73ba77ae-submission-repo
 
-## UNBLIND
+## Parallax
+
+*Parallax is the shift in what you see when you look from a different place. A rater sitting in the dosing room sees a different trial from one who never enters it, and a patient who has tripped sees a different trial from one who has not. Parallax measures that shift and corrects for it.*
 
 **How much of a psychedelic trial's result is expectation?**
 
 Patients in psychedelic trials usually know whether they got the drug. A 2026 systematic review of 112 randomised psychedelic trials found only 29.5% even assessed blinding, and psilocybin, LSD and ayahuasca studies frequently reported blinding failure above 90%. So every reported effect is drug plus expectation, and one trial cannot separate the two.
 
-Many trials can. They were built differently (inert placebo or low active dose, on-site or central raters, experienced or naive participants), so their unblinding varies. UNBLIND fits effect against unblinding across trials, reads off the effect at zero unblinding, and ranks the design changes that would shrink the bias in the next trial.
+Many trials can. They were built differently (inert placebo or low active dose, on-site or central raters, experienced or naive participants), so their unblinding varies. Parallax fits effect against unblinding across trials, reads off the effect at zero unblinding, and ranks the design changes that would shrink the bias in the next trial.
 
 The maths is a short meta-regression. The hard part is collecting about eight facts per trial from registries, papers, supplements and protocol PDFs, where they are scattered or missing. That is the agents' job.
 
@@ -21,6 +23,8 @@ streamlit run app/app.py             # the demo
 python -m unblind run NCT03866174    # command line, live agent trace
 pytest -q                            # 14 offline tests
 ```
+
+The project was first called UNBLIND, so the Python package is still `unblind` (as in `python -m unblind`), the environment variables still start with `UNBLIND_`, and the shared blinding instrument set keeps its ID `UNBLIND-BLIND-1`.
 
 No internet? Press **Load fixture demo** in the app sidebar. It replays two INVENTED test trials (NCT99999901, NCT99999902) from cache.
 
@@ -61,8 +65,8 @@ The reference design is zero unblinding with central blinded raters (`a + c`). T
 ## Evaluation (see `eval/README.md`)
 
 1. **Planted-truth simulation** (`eval/synthetic_recovery.py`, SYNTHETIC). The truth is 0.35 g, with 60 trials and 300 replicates per scenario.
-   - **Expectancy bias only (assumptions hold):** a standard meta-analysis overstates the effect by +0.43 g and its interval contains the truth 0% of the time. UNBLIND's bias is −0.005 g, with 98% coverage, at the cost of intervals several times wider.
-   - **Reverse causation (people guess "drug" because they improved):** UNBLIND over-subtracts by about 0.15 g. This is the method's key failure mode, and why every report calls the corrected value a conservative bound.
+   - **Expectancy bias only (assumptions hold):** a standard meta-analysis overstates the effect by +0.43 g and its interval contains the truth 0% of the time. Parallax's bias is −0.005 g, with 98% coverage, at the cost of intervals several times wider.
+   - **Reverse causation (people guess "drug" because they improved):** Parallax over-subtracts by about 0.15 g. This is the method's key failure mode, and why every report calls the corrected value a conservative bound.
    - **Cross-trial confounding:** the correction is worse than doing nothing. We report it.
    - **With only 15 trials:** the primary fit fails about a third of the time.
 2. **Extraction accuracy against a hand-verified gold set** (`eval/extraction_eval.py`). It reports field accuracy, coverage, honest abstention and audit pass rate. `data/gold_candidates.csv` holds 18 real trials with quotes and URLs, all marked **NOT VERIFIED**. A person must check each row before it becomes `data/gold.csv`.
