@@ -101,7 +101,9 @@ export function GenericLineChart({ chart, height = 260 }: { chart: Chart; height
   ];
   const dataTable: DataTable = {
     columns,
-    rows: data.map((r) => Object.fromEntries(columns.map((c) => [c.key, r[c.key] ?? null]))),
+    // Only rows where something is plotted; days before the first release carry no value.
+    rows: data.filter((r) => drawn.some((sr) => isNum(r[sr.key])))
+      .map((r) => Object.fromEntries(columns.map((c) => [c.key, r[c.key] ?? null]))),
     note: refs.length ? `Reference lines: ${refs.map((r) => r.label).join("; ")}.` : undefined,
   };
 
