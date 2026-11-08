@@ -139,3 +139,39 @@
     font-size: 12px;
   }
 }
+
+/* event ticks above the plot, and the reference key under the panels */
+.dchart-evtick {
+  stroke: var(--color-graphite);
+  stroke-width: 1;
+}
+.dchart-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--color-smoke);
+  font-variant-numeric: tabular-nums;
+}
+.dchart-key span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.dchart-key line {
+  stroke: var(--color-graphite);
+  stroke-width: 1.5;
+}
+.dchart-key__band {
+  fill: var(--color-spark-violet);
+  fill-opacity: 0.12;
+  stroke: none;
+  width: 10px;
+  height: 8px;
+}
+.dchart-key__hollow {
+  fill: var(--color-eggshell);
+  stroke: var(--color-spark-violet);
+  stroke-width: 1.5;
+}

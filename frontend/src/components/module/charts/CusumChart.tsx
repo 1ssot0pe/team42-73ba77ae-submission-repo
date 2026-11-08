@@ -16,7 +16,7 @@ import {
 } from "../../shared";
 import type { DataTable } from "../../shared";
 import type { Chart } from "../normalise";
-import { driftAlerts, resetDay, shortSite, stackRows, useWidth } from "./SiteSmallMultiples";
+import { driftAlerts, resetDay, shortSite, stackRows, useTooltipDismiss, useWidth } from "./SiteSmallMultiples";
 import type { DriftAlert, RecordBits } from "./SiteSmallMultiples";
 import "./dosing.css";
 
@@ -111,20 +111,20 @@ function Overlay(props: Record<string, unknown>) {
   const xs = xAxisMap ? Object.values(xAxisMap)[0]?.scale : undefined;
   const ys = yAxisMap ? Object.values(yAxisMap)[0]?.scale : undefined;
   if (!xs || !ys || !offset) return null;
-  const stacked = stackRows(events, compact ? 40 : 4);
-  // end labels: nudge apart so they never overlap
-  const ends = lines.map((l) => ({ ...l, py: ys(l.y) })).sort((a, b) => a.py - b.py);
-  for (let i = 1; i < ends.length; i++) if (ends[i].py - ends[i - 1].py < 13) ends[i].py = ends[i - 1].py + 13;
+  const stacked = stackRows(events, Infinity);
+  // end labels: nudge upwards apart so they never overlap each other or the axis
+  const ends = lines.map((l) => ({ ...l, py: ys(l.y) })).sort((a, b) => b.py - a.py);
+  for (let i = 1; i < ends.length; i++) if (ends[i - 1].py - ends[i].py < 13) ends[i].py = ends[i - 1].py - 13;
   const bottom = offset.top + offset.height;
   return (
     <g>
       {stacked.map((e) => {
         const x = xs(e.day);
         const right = x > offset.left + offset.width * 0.55;
-        const y = offset.top - 6 - e.row * 14;
+        const y = offset.top - 6 - (stacked.length - 1 - e.row) * 14;
         const tx = compact ? offset.left + 2 : right ? x - 4 : x + 4;
         return (
-          <text key={`${e.kind}-${e.day}`} x={tx} y={compact ? offset.top - 6 - (stacked.length - 1 - e.row) * 14 : y}
+          <text key={`${e.kind}-${e.day}`} x={tx} y={y}
             textAnchor={compact ? "start" : right ? "end" : "start"}
             className={`dchart-evlabel${e.kind === "detect" ? " dchart-evlabel--alert" : ""}`}>
             {compact ? e.short : e.label}
@@ -137,11 +137,11 @@ function Overlay(props: Record<string, unknown>) {
       {delay && !compact && (() => {
         const x1 = xs(delay.from);
         const x2 = xs(delay.to);
-        const y = bottom - 22;
+        const y = offset.top + 20;
         return (
           <g className="dchart-callout">
-            <path d={`M${x1},${y - 5} V${y} H${x2} V${y - 5}`} fill="none" />
-            <text x={(x1 + x2) / 2} y={y + 13} textAnchor="middle">{delay.text}</text>
+            <path d={`M${x1},${y + 5} V${y} H${x2} V${y + 5}`} fill="none" />
+            <text x={(x1 + x2) / 2} y={y - 5} textAnchor="middle">{delay.text}</text>
           </g>
         );
       })()}
@@ -158,6 +158,7 @@ export function CusumChart({ chart, trialId, height }: ModuleChartComponentProps
   const truth = ((state as unknown as { simulated_truth?: SimTruth | null } | null)?.simulated_truth) ?? null;
   const [ref, width] = useWidth<HTMLDivElement>();
   const compact = width > 0 && width < 560;
+  const [tipRef, tipClosed] = useTooltipDismiss<HTMLDivElement>();
 
   const today = chart.data.reduce((m, r) => Math.max(m, typeof r.day === "number" ? r.day : 0), 0);
   const sites = chart.series.map((s) => s.key);
@@ -184,6 +185,16 @@ export function CusumChart({ chart, trialId, height }: ModuleChartComponentProps
   if (alert?.resolvedDay != null) events.push({ day: alert.resolvedDay, label: `Drift stopped ${formatDayTick(alert.resolvedDay)}`, short: `Stopped ${formatDayTick(alert.resolvedDay)}`, kind: "resolved" });
   if (alert?.dismissedDay != null) events.push({ day: alert.dismissedDay, label: `Rejected ${formatDayTick(alert.dismissedDay)}`, short: `Rejected ${formatDayTick(alert.dismissedDay)}`, kind: "rejected" });
 
+  // events on the same day share one label
+  for (let i = events.length - 1; i > 0; i--) {
+    const j = events.findIndex((e) => e.day === events[i].day);
+    if (j < i) {
+      const tick = formatDayTick(events[i].day);
+      events[j] = { ...events[j], label: `${events[j].label.replace(` ${tick}`, "")}; ${events[i].label}`, short: `${events[j].short.replace(` ${tick}`, "")}; ${events[i].short}`,
+        kind: events[i].kind === "detect" ? "detect" : events[j].kind };
+      events.splice(i, 1);
+    }
+  }
   const delayFrom = simDay ?? alert?.onset ?? null;
   const delay = detect && delayFrom !== null && detect.day > delayFrom ? {
     from: delayFrom, to: detect.day,
@@ -273,14 +284,14 @@ export function CusumChart({ chart, trialId, height }: ModuleChartComponentProps
     : null;
   const ticks = dayTicks(Math.max(today, 1), 14);
   const plotH = height ?? (compact ? 240 : 300);
-  const labelRows = stackRows(events, compact ? 40 : 4).reduce((m, e) => Math.max(m, e.row + 1), 0);
+  const labelRows = events.length;
 
   return (
     <ChartFrame id={chart.id} title={title} subtitle={subtitle} ariaLabel={ariaLabel} dataTable={dataTable}
       footnotes={footnotes} empty={empty}>
-      <div ref={ref} className="dchart-cusum" style={{ height: plotH + labelRows * 14 }}>
+      <div ref={ref} className="dchart-cusum-wrap"><div ref={tipRef} className="dchart-cusum" style={{ height: plotH + labelRows * 14 }}>
         <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart data={rows} margin={{ top: 12 + labelRows * 14, right: compact ? 52 : 64, bottom: 4, left: 0 }}>
+          <ComposedChart data={rows} margin={{ top: 12 + labelRows * 14, right: compact ? 52 : 60, bottom: 4, left: 0 }}>
             <CartesianGrid {...gridProps} />
             <XAxis {...axisProps} dataKey="day" type="number" domain={[1, Math.max(today, 2)]} ticks={ticks}
               tickFormatter={(d: number) => formatDayTick(d)} allowDecimals={false} />
@@ -298,7 +309,7 @@ export function CusumChart({ chart, trialId, height }: ModuleChartComponentProps
             {styled.map(({ l, s }) => (
               <Line key={l.site} dataKey={l.site} type="stepAfter" stroke={s.stroke} strokeDasharray={s.dash}
                 strokeWidth={l.site === flaggedSite ? 2.5 : 1.5} dot={false} isAnimationActive={false} connectNulls={false}
-                activeDot={{ r: 3.5, stroke: chartTokens.halo, strokeWidth: 2, fill: s.stroke }} />
+                activeDot={tipClosed ? false : { r: 3.5, stroke: chartTokens.halo, strokeWidth: 2, fill: s.stroke }} />
             ))}
             {styled.filter(({ l }) => l.reset !== null).map(({ l, s }) => (
               <Line key={`${l.site}-reset`} dataKey={`${l.site}__reset`} type="stepAfter" stroke={s.stroke}
@@ -314,10 +325,11 @@ export function CusumChart({ chart, trialId, height }: ModuleChartComponentProps
               <ReferenceDot x={detect.day} y={detect.score} r={5} fill={chartTokens.flag} stroke={chartTokens.halo} strokeWidth={2} />
             )}
             <Customized component={<Overlay events={events} lines={endLabels} compact={compact} delay={delay} />} />
-            <Tooltip content={<TooltipBox lines={lines} threshold={H ?? Infinity} />} cursor={{ stroke: chartTokens.grid }} />
+            <Tooltip content={<TooltipBox lines={lines} threshold={H ?? Infinity} />} cursor={{ stroke: chartTokens.grid }}
+              active={tipClosed ? false : undefined} />
           </ComposedChart>
         </ResponsiveContainer>
-      </div>
+      </div></div>
       {delay && compact && <p className="dchart-callout-text">{delay.text}</p>}
     </ChartFrame>
   );

@@ -10,7 +10,7 @@
  * started after the site's last reset) and used only where they reproduce the record's `rolling_accuracy`.
  * Wilson bands only where n >= 8; released points with fewer are hollow with no band.
  */
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   Area, CartesianGrid, ComposedChart, Customized, Line, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis,
 } from "recharts";
@@ -40,8 +40,9 @@ export interface RecordBits {
   actions?: Array<Record<string, unknown>>;
 }
 
-/** The last day the drift window for a site was reset (approved remote raters, or a rejected alert), as monitor.py. */
-export function resetDay(rec: RecordBits, site: string): number | null {
+/** The last day the drift window for a site was reset (approved remote raters, or a rejected alert), as monitor.py.
+ * With `before`, only resets that had happened before that day count (what the monitor saw when it wrote the row). */
+export function resetDay(rec: RecordBits, site: string, before = Infinity): number | null {
   const days: number[] = [];
   for (const a of rec.actions ?? []) {
     if (a.module === "dosing" && a.type === "remote_raters" && a.site === site && typeof a.day === "number") days.push(a.day);
@@ -52,7 +53,8 @@ export function resetDay(rec: RecordBits, site: string): number | null {
       if (d !== null) days.push(d);
     }
   }
-  return days.length ? Math.max(...days) : null;
+  const seen = days.filter((d) => d < before);
+  return seen.length ? Math.max(...seen) : null;
 }
 
 export interface DriftAlert {
@@ -133,7 +135,7 @@ export function buildPoints(rec: RecordBits, who: string, by: string, mode: Mode
     let sinceReset: number | null = null;
     if (mode === "rolling") {
       value = n0(r.rolling_accuracy);
-      const rd = fullSite ? resetDay(rec, fullSite) : null;
+      const rd = fullSite ? resetDay(rec, fullSite, r.day) : null;
       const eligible = rd === null ? prev : prev.filter((b) => (n0(b.window_from) ?? -Infinity) > rd);
       const tail = [...eligible.slice(-(ROLLING_BATCHES - 1)), r];
       const tk = tail.reduce((s, b) => s + (n0(b.window_correct) ?? NaN), 0);
@@ -181,6 +183,28 @@ export function useWidth<T extends HTMLElement>(): [React.RefObject<T>, number] 
     return () => ro.disconnect();
   }, []);
   return [ref, w];
+}
+
+/** Touch rule (spec 0.10): a tooltip opens on tap and closes on scroll or a tap outside the chart, never sticks.
+ * Returns a ref for the chart wrapper and whether tooltips should be forced closed. */
+export function useTooltipDismiss<T extends HTMLElement>(): [React.RefObject<T>, boolean] {
+  const ref = useRef<T>(null);
+  const [closed, setClosed] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setClosed(true);
+    const inside = (e: PointerEvent) => !!(ref.current && e.target instanceof Node && ref.current.contains(e.target));
+    const onDown = (e: PointerEvent) => setClosed(!inside(e));
+    const onMove = (e: PointerEvent) => { if (e.pointerType === "mouse" && inside(e)) setClosed(false); };
+    window.addEventListener("scroll", onScroll, { capture: true, passive: true });
+    document.addEventListener("pointerdown", onDown, { capture: true });
+    document.addEventListener("pointermove", onMove, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll, { capture: true });
+      document.removeEventListener("pointerdown", onDown, { capture: true });
+      document.removeEventListener("pointermove", onMove);
+    };
+  }, []);
+  return [ref, closed];
 }
 
 export const pct = (v: number | null): string => formatPct(v, 0);
@@ -293,43 +317,47 @@ interface PanelProps {
   alarm: boolean;
   events: PanelEvent[];
   compact: boolean;
-  labelRefs: boolean;
+  labelRows: number;
 }
 
-/** Event labels at the top of the plot, stacked when close, drawn with a halo. */
+/** Event labels above the plot, one row each (panels are narrow), drawn with a halo. */
 function EventLabels({ events, compact, ...rest }: { events: PanelEvent[]; compact: boolean } & Record<string, unknown>) {
   const xAxisMap = rest.xAxisMap as Record<string, { scale: (v: number) => number }> | undefined;
   const offset = rest.offset as { top: number; left: number; width: number } | undefined;
   const xs = xAxisMap ? Object.values(xAxisMap)[0]?.scale : undefined;
   if (!xs || !offset) return null;
-  const stacked = stackRows(events, compact ? 12 : 3);
+  const sorted = [...events].sort((a, b) => a.day - b.day);
   return (
     <g className="dchart-events">
-      {stacked.map((e) => {
+      {sorted.map((e, i) => {
         const x = xs(e.day);
-        const right = x > offset.left + offset.width * 0.6;
-        const y = offset.top + 11 + e.row * 13;
+        const right = x > offset.left + offset.width * 0.5;
+        const y = offset.top - 5 - (sorted.length - 1 - i) * 13;
         return (
-          <text key={`${e.kind}-${e.day}`} x={right ? x - 4 : x + 4} y={y} textAnchor={right ? "end" : "start"}
-            className={`dchart-evlabel${e.kind === "alert" ? " dchart-evlabel--alert" : ""}`}>
-            {compact ? e.short : e.label}
-          </text>
+          <g key={`${e.kind}-${e.day}`}>
+            <line x1={x} x2={x} y1={y + 3} y2={offset.top} className="dchart-evtick" />
+            <text x={right ? x - 3 : x + 3} y={y} textAnchor={right ? "end" : "start"}
+              className={`dchart-evlabel${e.kind === "alert" ? " dchart-evlabel--alert" : ""}`}>
+              {compact ? e.short : e.label}
+            </text>
+          </g>
         );
       })}
     </g>
   );
 }
 
-function Panel({ title, flagged, points, today, height, mode, alarm, events, compact, labelRefs }: PanelProps) {
+function Panel({ title, flagged, points, today, height, mode, alarm, events, compact, labelRows }: PanelProps) {
   const rows = panelRows(points, today);
   const colour = flagged ? chartTokens.flag : chartTokens.primary;
   const ticks = dayTicks(today, compact ? 14 : 14);
   const tooFew = points.length === 0;
-  const topPad = 6 + (events.length ? 13 * Math.min(3, stackRows(events, compact ? 12 : 3).reduce((m, e) => Math.max(m, e.row + 1), 0)) : 0);
+  const topPad = 8 + 13 * labelRows;
+  const [tipRef, tipClosed] = useTooltipDismiss<HTMLDivElement>();
   return (
     <div className={`dchart-panel${flagged ? " dchart-panel--flag" : ""}`}>
       <p className="dchart-panel__title">{title}</p>
-      <div className="dchart-panel__plot" style={{ height }}>
+      <div ref={tipRef} className="dchart-panel__plot" style={{ height: height + topPad }}>
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={rows} margin={{ top: topPad, right: 10, bottom: 0, left: 0 }}>
             <CartesianGrid {...gridProps} />
@@ -337,12 +365,8 @@ function Panel({ title, flagged, points, today, height, mode, alarm, events, com
               tickFormatter={(d: number) => formatDayTick(d)} allowDecimals={false} />
             <YAxis {...axisProps} domain={[0, 1]} ticks={[0, 0.5, 1]} width={38}
               tickFormatter={(v: number) => `${Math.round(v * 100)}%`} />
-            <ReferenceLine y={0.5} stroke={chartTokens.reference} strokeDasharray={lineStyles.reference} strokeWidth={1}
-              label={labelRefs ? { value: "Coin flip 50%", position: "insideBottomRight", className: "dchart-reflabel" } : undefined} />
-            {alarm && (
-              <ReferenceLine y={0.6} stroke={chartTokens.reference} strokeDasharray={lineStyles.threshold} strokeWidth={1}
-                label={labelRefs ? { value: "Alarm reference 60%", position: "insideTopRight", className: "dchart-reflabel" } : undefined} />
-            )}
+            <ReferenceLine y={0.5} stroke={chartTokens.reference} strokeDasharray={lineStyles.reference} strokeWidth={1} />
+            {alarm && <ReferenceLine y={0.6} stroke={chartTokens.reference} strokeDasharray={lineStyles.threshold} strokeWidth={1} />}
             {events.map((e) => (
               <ReferenceLine key={`${e.kind}-${e.day}`} x={e.day} stroke={chartTokens.reference} strokeWidth={1}
                 ifOverflow="hidden" />
@@ -364,10 +388,11 @@ function Panel({ title, flagged, points, today, height, mode, alarm, events, com
                     : <rect key={props.index} x={props.cx - 3} y={props.cy - 3} width={6} height={6} stroke={colour}
                         strokeWidth={1.5} fill={solid ? colour : chartTokens.halo} />;
                 }}
-                activeDot={{ r: 4, stroke: chartTokens.halo, strokeWidth: 2, fill: colour }} />
+                activeDot={tipClosed ? false : { r: 4, stroke: chartTokens.halo, strokeWidth: 2, fill: colour }} />
             )}
             {events.length > 0 && <Customized component={<EventLabels events={events} compact={compact} />} />}
-            {!tooFew && <Tooltip content={<TooltipBox mode={mode} />} cursor={{ stroke: chartTokens.grid }} />}
+            {!tooFew && <Tooltip content={<TooltipBox mode={mode} />} cursor={{ stroke: chartTokens.grid }}
+              active={tipClosed ? false : undefined} />}
           </ComposedChart>
         </ResponsiveContainer>
         {tooFew && <p className="dchart-panel__few">Too few to show (fewer than 5 guesses so far)</p>}
@@ -478,10 +503,10 @@ export function SiteSmallMultiples({ chart, trialId, height }: ModuleChartCompon
 
   const footnotes = (
     <>
-      <p>Shaded band: 95% interval, drawn where {WILSON_MIN_N} or more decisive guesses are behind the value. Hollow points have fewer, too few for an interval. Groups with fewer than 5 guesses are hidden by the vault.</p>
+      <p>Points mark each released vault batch; the line holds that value until the next one. Groups with fewer than 5 guesses are hidden by the vault.</p>
       {cfg.alarm && <p>Alarm reference 60%: the upper end of what raters are expected to reach under working blinding (50% to 60%). The alarm itself is the drift score on the CUSUM chart.</p>}
       {cfg.by === "rater" && <p>Per-rater groups are small; intervals appear once a rater has {WILSON_MIN_N} or more guesses in the window.</p>}
-      {panels.some((p) => p.flagged) && <p>Orange panel with circles: the site or rater named in a drift alert. Violet squares: no alert.</p>}
+      {panels.some((p) => p.flagged) && <p>Orange line with circles and a dot by the name: named in a drift alert. Violet squares: no alert.</p>}
     </>
   );
 
@@ -496,10 +521,17 @@ export function SiteSmallMultiples({ chart, trialId, height }: ModuleChartCompon
       dataTable={anyData ? dataTable : undefined} footnotes={footnotes} empty={empty}>
       <div ref={ref} className={`dchart-grid${compact ? " dchart-grid--stack" : ""}`}
         style={{ ["--dchart-cols" as string]: String(Math.max(1, panels.length)) }}>
-        {panels.map((p, i) => (
+        {panels.map((p) => (
           <Panel key={p.g} title={p.label} flagged={p.flagged} points={p.pts} today={Math.max(today, 1)} height={panelHeight}
-            mode={cfg.mode} alarm={cfg.alarm} events={p.events} compact={compact} labelRefs={i === 0 || compact} />
+            mode={cfg.mode} alarm={cfg.alarm} events={p.events} compact={compact}
+            labelRows={Math.max(0, ...panels.map((x) => x.events.length))} />
         ))}
+      </div>
+      <div className="dchart-key" aria-hidden="true">
+        <span><svg width="28" height="8"><line x1="0" x2="28" y1="4" y2="4" strokeDasharray={lineStyles.reference} /></svg>Coin flip 50%</span>
+        {cfg.alarm && <span><svg width="28" height="8"><line x1="0" x2="28" y1="4" y2="4" strokeDasharray={lineStyles.threshold} /></svg>Alarm reference 60%</span>}
+        <span><svg width="14" height="10"><rect x="2" y="2" width="6" height="6" className="dchart-key__band" /></svg>95% interval (8 or more guesses)</span>
+        <span><svg width="12" height="10"><rect x="2" y="2" width="6" height="6" className="dchart-key__hollow" /></svg>Fewer than 8, no interval</span>
       </div>
     </ChartFrame>
   );
