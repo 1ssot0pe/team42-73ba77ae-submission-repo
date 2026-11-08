@@ -7,7 +7,7 @@
  * - every request has its own timeout (AbortController);
  * - transient failures are retried with exponential backoff and jitter (300 ms, 900 ms, 2.7 s), bounded:
  *   GETs retry on network errors, timeouts, 409, 429, 502, 503 and 504 (at most 4 attempts);
- *   POSTs retry only on network errors before a response and on 502, 503 and 504 (at most 3 attempts);
+ *   POSTs retry only on network errors before a response and on 502 and 503 (at most 3 attempts);
  *   other 4xx are never retried;
  * - at most TRIAL_SLOTS requests to /api/trials/{id}/... are in flight at once; the rest queue;
  * - a 404 meaning "this trial is not on the server" is flagged (ApiError.trialMissing) and reported to
@@ -177,11 +177,11 @@ async function request<T>(path: string, opts: Opts = {}): Promise<T> {
         const id = decodeURIComponent(TRIAL_PATH.exec(path)![1]);
         missingListeners.forEach((fn) => fn(id));
       }
-      // POSTs (step, decide, module actions, create) retry only on 502/503/504: the platform or
-      // gateway failed, the request most likely never ran. This is safe because the server is moving
-      // to locked, versioned mutations, so a repeated mutation cannot apply twice on a stale copy.
-      // GETs also retry 409 (a concurrent write in progress) and 429 (rate limited).
-      retryable = [502, 503, 504].includes(r.status) || (isGet && (r.status === 409 || r.status === 429));
+      // POSTs (step, decide, module actions, create) retry only on 502/503: the platform failed before
+      // the function ran. Not on 504: on Vercel the function may still finish after the gateway gives up,
+      // and the server's locked mutations prevent lost updates but do not de-duplicate a repeated step,
+      // so retrying could advance the trial twice. GETs also retry 504, 409 and 429.
+      retryable = (isGet ? [502, 503, 504, 409, 429] : [502, 503]).includes(r.status);
       const ra = Number(r.headers.get("Retry-After"));
       if (ra > 0 && ra <= 10) retryAfterMs = ra * 1000;
     } catch (e) {
