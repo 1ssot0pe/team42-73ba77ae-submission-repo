@@ -125,7 +125,7 @@ export default function ModulePage({ module }: ModulePageProps) {
               </div>
             </div>
             <div className="mcharts mcharts--key">
-              <ModuleChart chart={keyChart} />
+              <ModuleChart chart={keyChart} trialId={trialId} />
             </div>
           </>
         ) : (
@@ -140,7 +140,7 @@ export default function ModulePage({ module }: ModulePageProps) {
             <DetailsDrawer label="View all charts" title="Charts" subtitle="Synthetic data" width={760}
               meta={<><span className="num">{model.charts.length}</span> charts</>}>
               <div className="mcharts">
-                {model.charts.map((c, i) => <ModuleChart key={`${c.title}-${i}`} chart={c} />)}
+                {model.charts.map((c, i) => <ModuleChart key={`${c.title}-${i}`} chart={c} trialId={trialId} />)}
               </div>
             </DetailsDrawer>
           ) : null}
