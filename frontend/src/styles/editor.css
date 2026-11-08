@@ -1,0 +1,42 @@
+/* ---------- protocol block editor (F4). Scoped with .draft so it wins over workspace.css. */
+.draft.draft--doc { width: 100%; max-width: 680px; margin: 0 auto; }
+
+.ed {
+  position: relative; width: 100%; min-height: 50vh; margin: 0; padding: 0;
+  font: 400 17px/1.7 var(--font-body); color: var(--color-ink); font-variant-numeric: tabular-nums;
+  white-space: pre-wrap; overflow-wrap: anywhere; caret-color: var(--color-ink);
+  border: 0; background: transparent; outline: none;
+}
+.ed--read { min-height: 0; color: var(--color-graphite); }
+
+/* Quiet focus: a short hairline in the left margin, no box. */
+.ed:not(.ed--read):focus-visible { outline: none; box-shadow: -14px 0 0 -12px var(--color-stone); }
+
+.ed[data-empty="true"]::before {
+  content: attr(data-placeholder); position: absolute; inset: 0 0 auto 0; pointer-events: none;
+  color: var(--color-ash); white-space: normal;
+}
+
+.ed h1, .ed h2, .ed p, .ed ul, .ed li { max-width: none; }
+.ed h1 { margin: 1.6em 0 0.35em; font: 300 28px/1.25 var(--font-body); letter-spacing: -0.2px; color: var(--color-ink); }
+.ed h2 { margin: 1.5em 0 0.25em; font: 600 21px/1.35 var(--font-body); color: var(--color-ink); }
+.ed p { margin: 0.45em 0 0; }
+.ed p[data-gap] { margin-top: 1em; }
+.ed ul { margin: 0.45em 0 0; padding: 0 0 0 1.4em; list-style: disc outside; }
+.ed li { margin: 0.2em 0 0; padding-left: 0.2em; }
+.ed li::marker { color: var(--color-smoke); }
+.ed > :first-child { margin-top: 0; }
+.ed--read h1, .ed--read h2 { color: var(--color-graphite); }
+.ed__none { color: var(--color-smoke); }
+
+@media (max-width: 480px) {
+  .ed { font-size: 16px; }
+  .ed h1 { font-size: 25px; }
+  .ed h2 { font-size: 19px; }
+  .ed:not(.ed--read):focus-visible { box-shadow: none; }
+}
+
+/* Title: a one-line textarea that wraps long names instead of clipping them. */
+.draft.draft--doc .draft__title--wrap { display: block; resize: none; overflow: hidden; min-height: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.draft.draft--doc .draft__title--wrap:focus-visible { outline: none; box-shadow: -14px 0 0 -12px var(--color-stone); }
+@media (max-width: 480px) { .draft.draft--doc .draft__title--wrap:focus-visible { box-shadow: none; } }

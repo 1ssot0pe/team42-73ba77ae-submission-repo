@@ -1,4 +1,4 @@
-/* UNBLIND Lab Glass tokens (design.md Section 14). The ONLY place literal colours live,
+/* Parallax tokens (design-v2.md, falling back to design.md Section 14). The ONLY place literal colours live,
    together with the other files in src/styles/. Components use var(--...). */
 :root {
   /* Bench (light) */
@@ -29,24 +29,28 @@
   --sphere-highlight: rgba(255,255,255,0.9);
   --mask-fade: rgba(0,0,0,1);                /* used only inside mask-image */
 
-  --font-display: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-body: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Open Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-body: "Open Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* Mono is only for trial and applicant IDs (.t-id). Nothing else is mono. */
   --font-mono: "Geist Mono", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  /* Type scale (design.md Section 5): weight size/line-height family, plus tracking */
-  --text-display: 300 48px/1.08 var(--font-display);      --track-display: -0.96px;
-  --text-heading: 300 36px/1.17 var(--font-display);      --track-heading: -0.72px;
-  --text-heading-sm: 300 28px/1.15 var(--font-display);   --track-heading-sm: -0.56px;
-  --text-title: 500 18px/1.4 var(--font-body);            --track-title: -0.1px;
+  /* Type scale (design-v2.md Type): weight size/line-height family, plus tracking */
+  --text-display: 300 44px/1.1 var(--font-display);       --track-display: -0.6px;
+  --text-heading: 300 32px/1.2 var(--font-display);       --track-heading: -0.4px;
+  --text-heading-sm: 300 24px/1.25 var(--font-display);   --track-heading-sm: -0.2px;
+  --text-title: 600 18px/1.4 var(--font-body);            --track-title: 0;
   --text-body-lg: 400 18px/1.6 var(--font-body);          --track-body-lg: 0;
-  --text-body: 400 15px/1.6 var(--font-body);             --track-body: 0.15px;
-  --text-body-sm: 400 13px/1.5 var(--font-body);          --track-body-sm: 0.13px;
-  --text-button: 500 14px/1 var(--font-body);             --track-button: 0.14px;
-  --text-readout-xl: 400 40px/1.05 var(--font-mono);      --track-readout-xl: -0.8px;
-  --text-readout: 400 24px/1.1 var(--font-mono);          --track-readout: -0.3px;
-  --text-mono: 400 13px/1.69 var(--font-mono);            --track-mono: 0;
-  --text-label: 500 11px/1.4 var(--font-mono);            --track-label: 0.08em;
-  --text-caption: 400 11px/1.5 var(--font-body);          --track-caption: 0.1px;
+  --text-body: 400 16px/1.6 var(--font-body);             --track-body: 0;
+  --text-body-sm: 400 13px/1.5 var(--font-body);          --track-body-sm: 0;
+  --text-button: 600 14px/1 var(--font-body);             --track-button: 0;
+  --text-readout-xl: 300 40px/1.05 var(--font-body);      --track-readout-xl: -0.4px;
+  --text-readout: 300 24px/1.1 var(--font-body);          --track-readout: -0.2px;
+  --text-mono: 400 13px/1.6 var(--font-body);             --track-mono: 0;
+  --text-id: 400 13px/1.4 var(--font-mono);               --track-id: 0;
+  --text-label: 400 13px/1.5 var(--font-body);            --track-label: 0;
+  --text-caption: 400 12px/1.5 var(--font-body);          --track-caption: 0;
+
+  --nav-h: 56px;
 
   /* Spacing (4px base) */
   --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 20px; --space-6: 24px;

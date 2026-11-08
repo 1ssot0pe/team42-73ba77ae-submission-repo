@@ -81,11 +81,11 @@ export function ModuleChart({ chart, height = 260 }: ModuleChartProps) {
             ))}
             {refs.map((r, i) => (
               <ReferenceLine key={`ref-${i}`} {...thresholdLine} y={r.y}
-                label={{ ...refLabel(r.label.toUpperCase()), position: "insideBottomLeft", offset: 8 + i * 12, ...HALO }} />
+                label={{ ...refLabel(r.label), position: "insideBottomLeft", offset: 8 + i * 12, ...HALO }} />
             ))}
             {markers.map((m, i) => (
               <ReferenceLine key={`mk-${i}`} {...driftMarker} x={m.x} ifOverflow="extendDomain"
-                label={m.label ? { ...refLabel(m.label.toUpperCase(), numericX && typeof m.x === "number" && m.x > mid ? "insideTopRight" : "insideTopLeft"), offset: 6 + (i % 3) * 14, ...HALO } : undefined} />
+                label={m.label ? { ...refLabel(m.label, numericX && typeof m.x === "number" && m.x > mid ? "insideTopRight" : "insideTopLeft"), offset: 6 + (i % 3) * 14, ...HALO } : undefined} />
             ))}
           </LineChart>
         </ResponsiveContainer>

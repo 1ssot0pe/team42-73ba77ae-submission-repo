@@ -1,5 +1,5 @@
 /**
- * The pre-screening agent's answer for one portal applicant, on strong glass (design.md Section 9 Volunteer portal):
+ * The pre-screening agent's answer for one portal applicant, on a flat panel (design.md Section 9 Volunteer portal):
  * decision pill, reasons, quoted disclosure and "Final eligibility is always confirmed by a clinician."
  */
 import { DecisionPill, EvidenceQuote, formatDay } from "../shared";
@@ -8,12 +8,12 @@ import type { Applicant } from "../../types";
 export function ScreeningResult({ applicant, busy, error }: { applicant: Applicant | null; busy: boolean; error?: string | null }) {
   const s = applicant?.screening;
   return (
-    <section className="portal__result glass glass--strong glass--enter" aria-live="polite" aria-labelledby="result-title">
-      <div className="eyebrow">Pre-screening agent</div>
-      <h2 className="t-heading-sm" id="result-title">Result</h2>
+    <section className="portal__result" aria-live="polite" aria-labelledby="result-title">
+      <h3 className="st-subtitle" id="result-title">Result</h3>
+      <p className="st-label">Pre-screening agent</p>
       {error ? (
         <div className="stack stack--tight">
-          <div className="eyebrow">Not screened</div>
+          <div className="st-label">Not screened</div>
           <p className="portal__field-error" role="alert">{error}</p>
           <p className="t-body-sm c-smoke">Correct the form and press Apply again. No decision was made.</p>
         </div>
@@ -25,11 +25,11 @@ export function ScreeningResult({ applicant, busy, error }: { applicant: Applica
         <div className="stack">
           <div className="row">
             <DecisionPill decision={s.decision} size="lg" />
-            <span className="t-caption c-ash num">{applicant.id} · {formatDay(applicant.applied_day)}</span>
+            <span className="st-label"><span className="t-id">{applicant.id}</span> · <span className="num">{formatDay(applicant.applied_day)}</span></span>
           </div>
           {s.reasons.length ? (
             <div className="stack stack--tight">
-              <div className="eyebrow">Reasons</div>
+              <div className="st-label">Reasons</div>
               <ul className="portal__reasons">{s.reasons.map((r, i) => <li key={i}>{r}</li>)}</ul>
             </div>
           ) : (
@@ -37,7 +37,7 @@ export function ScreeningResult({ applicant, busy, error }: { applicant: Applica
           )}
           {s.evidence?.length ? (
             <div className="stack stack--tight">
-              <div className="eyebrow">Quoted disclosure</div>
+              <div className="st-label">Quoted disclosure</div>
               {s.evidence.map((e, i) => <EvidenceQuote key={i} quote={e.quote} source="your free text" />)}
             </div>
           ) : null}

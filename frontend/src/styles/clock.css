@@ -1,0 +1,18 @@
+/* Trial clock (components/projects/TrialClock.tsx). Overrides the base .clock rules in workspace.css. */
+.clock { display: flex; flex-direction: column; gap: var(--space-2); }
+.clock__controls { display: flex; align-items: center; gap: var(--space-5); flex-wrap: wrap; }
+.clock__line { margin: 0; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font: 400 13px/1.5 var(--font-body); color: var(--color-smoke); }
+.clock__line .num { font-family: var(--font-body); font-variant-numeric: tabular-nums; }
+.clock__line .textbtn { font-size: 13px; }
+
+/* In progress: neutral dot plus words, elapsed seconds in tabular figures so the line does not jitter. */
+.clock__progress { color: var(--color-graphite); }
+.clock__elapsed { color: var(--color-smoke); min-width: 4ch; font-variant-numeric: tabular-nums; }
+.clock__slow { color: var(--color-smoke); }
+.clock__pulse .sdot__dot { animation: clock-pulse 1.4s ease-in-out infinite; }
+@keyframes clock-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+@media (prefers-reduced-motion: reduce) { .clock__pulse .sdot__dot { animation: none; } }
+
+.clock__line--watch { color: var(--status-watch-fg); }
+.clock__line--alert { color: var(--status-alert-fg); }
+.clock__line--alert .textbtn { color: var(--color-graphite); }

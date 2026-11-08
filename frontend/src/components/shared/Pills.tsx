@@ -1,9 +1,10 @@
 /**
  * StatusPill and DecisionPill (design.md 8.15, Section 3 status tints).
  * StatusPill props: tone "good" | "watch" | "alert" | "neutral" | "outline" | "ink" (default neutral);
- *                   size "md" | "lg"; children is the word (colour is never the only signal).
+ *                   size "md" | "lg"; attention (filled pill for watch or alert); children is the word
+ *                   (colour is never the only signal). Renders a coloured dot plus the word by default.
  * DecisionPill props: decision "eligible" | "excluded" | "needs_clinician"; size.
- * SpecimenTag props: label (default "SYNTHETIC"): the hatched-specimen tag for charts and cards.
+ * SpecimenTag props: label (default "Synthetic"): a quiet sentence-case note for charts.
  * toneForStatus(word) maps common states (approved, pending, missing, high...) to a tone.
  */
 import type { ReactNode } from "react";
@@ -17,12 +18,17 @@ export interface StatusPillProps {
   children: ReactNode;
   title?: string;
   className?: string;
+  /** Show a filled pill instead of a dot, for a status that needs a human (watch or alert tones only). */
+  attention?: boolean;
 }
 
-/** Pill in label style with a status tint. */
-export function StatusPill({ tone = "neutral", size = "md", children, title, className = "" }: StatusPillProps) {
+/** Status as a small coloured dot plus a word. A filled pill only when `attention` is set on watch or alert. */
+export function StatusPill({ tone = "neutral", size = "md", children, title, className = "", attention = false }: StatusPillProps) {
+  const filled = attention && (tone === "watch" || tone === "alert");
+  const cls = `pill pill--${tone}${size === "lg" ? " pill--lg" : ""}${filled ? " pill--attention" : ""} ${className}`.trim();
   return (
-    <span className={`pill pill--${tone}${size === "lg" ? " pill--lg" : ""} ${className}`.trim()} title={title}>
+    <span className={cls} title={title}>
+      <span className="pill__dot" aria-hidden="true" />
       {children}
     </span>
   );
@@ -39,15 +45,16 @@ export interface DecisionPillProps {
   size?: "md" | "lg";
 }
 
-/** ELIGIBLE (good), NEEDS CLINICIAN (watch), EXCLUDED (alert). Follow it with the reasons. */
+/** Eligible (good), Needs clinician (watch), Excluded (alert). Follow it with the reasons. */
 export function DecisionPill({ decision, size = "md" }: DecisionPillProps) {
   const d = DECISION[decision as ScreeningDecision] ?? { tone: "neutral" as Tone, word: decision.replace(/_/g, " ") };
   return <StatusPill tone={d.tone} size={size}>{d.word}</StatusPill>;
 }
 
-/** The SYNTHETIC specimen tag (top-right of every chart). */
-export function SpecimenTag({ label = "SYNTHETIC" }: { label?: string }) {
-  return <StatusPill tone="outline">{label}</StatusPill>;
+/** The small "Synthetic" note on charts. Sentence case, 12px smoke, no hatching. */
+export function SpecimenTag({ label = "Synthetic" }: { label?: string }) {
+  const text = label === label.toUpperCase() ? label.charAt(0) + label.slice(1).toLowerCase() : label;
+  return <span className="synthetic-note">{text}</span>;
 }
 
 /** Map a status word to a tint. Unknown words are neutral. */

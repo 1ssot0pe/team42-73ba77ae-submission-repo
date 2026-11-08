@@ -1,16 +1,16 @@
 /**
- * Volunteer portal (plan.md 7.2, design.md Section 9). Centred two columns: the application form on paper |
- * the pre-screening result on strong glass. Sends {applicant: {...}} to the predose "apply" action; the keys
+ * Volunteer portal stage (design v2). Two flat columns: the application form | the pre-screening
+ * result, separated by a hairline. Sends {applicant: {...}} to the predose "apply" action; the keys
  * match the World applicant shape that PreScreeningAgent.screen_one reads.
  */
 import { useState, type FormEvent } from "react";
-import { Link } from "react-router-dom";
 import { api, errorText } from "../api";
 import { useTrial } from "../trial";
 import type { Applicant } from "../types";
-import { Button, EmptyState, SpecimenBand, buttonClass, dotJoin, useToast } from "../components/shared";
+import { Button, EmptyState, dotJoin, useToast } from "../components/shared";
 import { ScreeningResult } from "../components/predose/ScreeningResult";
 import type { ApplyResult, PortalApplicant } from "../components/predose/types";
+import "../styles/module.css";
 import "../styles/predose.css";
 
 const DIAGNOSES: Array<{ value: string; label: string }> = [
@@ -159,18 +159,10 @@ export default function Portal() {
 
   if (!trialId) {
     return (
-      <>
-        <SpecimenBand />
-        <main className="page">
-          <header className="section">
-            <div className="eyebrow">Volunteer portal</div>
-            <h1 className="t-display">Apply to the study</h1>
-          </header>
-          <EmptyState title="No trial yet"
-            message="Create a trial in Mission control first. Applications are screened against that trial's protocol."
-            action={<Link className={buttonClass("filled")} to="/">Go to Mission control</Link>} />
-        </main>
-      </>
+      <div className="stage-page portal">
+        <EmptyState title="No trial yet"
+          message="Launch the trial from this project first. Applications are screened against that trial's protocol." />
+      </div>
     );
   }
 
@@ -182,19 +174,18 @@ export default function Portal() {
   );
 
   return (
-    <>
-      <SpecimenBand />
-      <main className="page portal">
-        <header className="section portal__head">
-          <div className="eyebrow">{dotJoin("Volunteer portal", trialId, "Synthetic")}</div>
-          <h1 className="t-display">Apply to the study</h1>
-          <p className="t-body-lg c-smoke">Fill in the form and the pre-screening agent decides at once, with its reasons.</p>
-        </header>
+    <div className="stage-page portal">
+        <div className="st-head">
+          <div className="st-head__text">
+            <h2 className="st-title">Volunteer portal</h2>
+            <p className="st-label">Fill in the form and the pre-screening agent decides at once, with its reasons.</p>
+          </div>
+        </div>
 
         <div className="portal__grid">
-          <form className="paper portal__form" onSubmit={submit} noValidate>
+          <form className="portal__form" onSubmit={submit} noValidate>
             <p className="portal__warning" role="note">
-              <span className="t-label">Synthetic demo.</span> Do not enter real personal or health information.
+              <strong>Synthetic demo.</strong> Do not enter real personal or health information.
             </p>
 
             <label className="field">
@@ -276,7 +267,6 @@ export default function Portal() {
 
           <ScreeningResult applicant={result} busy={busy} error={serverError} />
         </div>
-      </main>
-    </>
+    </div>
   );
 }

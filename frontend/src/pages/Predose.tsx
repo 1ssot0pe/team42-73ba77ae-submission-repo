@@ -1,42 +1,51 @@
 /**
- * Pre-dosing page (plan.md 7.1, design.md Section 9 Pre-dosing).
- * Bottleneck cards → readouts → sphere | FDA checklist → protocol editor | drafted section and versions →
- * screening funnel, flagged ledger, fairness → recruitment ads → measurement plan → agent log.
- * Approval slips for pre-dosing sit in a sticky right column at 1100px and wider.
+ * Pre-dosing stage content (design v2). Embedded inside the project workspace, which supplies the
+ * page heading, trial clock and stepper, so this component draws no page chrome of its own.
+ *
+ * `only` picks one slice of the page for a workspace stage:
+ *   "design"      protocol editor, FDA checklist, blinding risk sphere, drafted section, versions
+ *   "recruitment" recruitment ads and the measurement plan
+ *   "screening"   screening funnel and approvals; the flagged ledger and fairness table open in drawers
+ * Left undefined, everything renders. Data fetching is identical in every case.
+ * Design v2: ledgers, full tables and the agent log open in right-hand drawers ("View ..." buttons).
  */
 import { useEffect, useState, type ReactNode } from "react";
-import { Link } from "react-router-dom";
 import { api, errorText } from "../api";
 import { useTrial } from "../trial";
 import type { Kpi, RecordSections } from "../types";
 import {
-  AgentLog, ApprovalInbox, BottleneckCards, EmptyState, LoadingHairline, ReadoutGrid, SpecimenBand, buttonClass, dotJoin,
+  AgentLog, BottleneckCards, EmptyState, LoadingHairline, ReadoutGrid,
 } from "../components/shared";
 import { FdaChecklist } from "../components/predose/FdaChecklist";
 import { ProtocolEditor } from "../components/predose/ProtocolEditor";
 import { DraftedSection, VersionHistory } from "../components/predose/BlindingSection";
-import { FairnessTable, FlaggedLedger, ScreeningFunnel } from "../components/predose/Screening";
-import { MeasurementPlanLedger, RecruitmentAds } from "../components/predose/RecruitmentAds";
+import { FairnessTable, FlaggedLedger, ScreeningFunnel, fairnessSummary } from "../components/predose/Screening";
+import { MeasurementPlanLedger, RecruitmentAds, measurementPlanSummary } from "../components/predose/RecruitmentAds";
+import { DetailsDrawer, DetailsRow } from "../components/projects/Drawer";
 import { RiskCard } from "../components/predose/UnblindingSphere";
+import { PredoseApprovals } from "../components/review/PredoseApprovals";
+import "../styles/module.css";
 import "../styles/predose.css";
 
 const SECTIONS = ["protocol", "protocol_versions", "design_review", "recruitment", "applicants", "enrolled", "measurement_plan"] as const;
 type Sections = Partial<Pick<RecordSections, (typeof SECTIONS)[number]>>;
 
-function SectionHead({ eyebrow, title, children }: { eyebrow: string; title: string; children?: ReactNode }) {
+export type PredoseSlice = "design" | "recruitment" | "screening";
+
+function SectionHead({ label, title, children }: { label: string; title: string; children?: ReactNode }) {
   return (
-    <div className="section__head">
-      <div className="stack stack--tight">
-        <div className="eyebrow">{eyebrow}</div>
-        <h2 className="t-heading">{title}</h2>
+    <div className="st-head">
+      <div className="st-head__text">
+        <h2 className="st-title">{title}</h2>
+        <p className="st-label">{label}</p>
       </div>
       {children}
     </div>
   );
 }
 
-export default function Predose() {
-  const { trialId, state, tick } = useTrial();
+export default function Predose({ only }: { only?: PredoseSlice } = {}) {
+  const { trialId, tick } = useTrial();
   const [data, setData] = useState<Sections | null>(null);
   const [kpis, setKpis] = useState<Kpi[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -60,18 +69,10 @@ export default function Predose() {
 
   if (!trialId) {
     return (
-      <>
-        <SpecimenBand />
-        <main className="page">
-          <header className="section">
-            <div className="eyebrow">Pre-dosing</div>
-            <h1 className="t-display">Design, recruitment and screening</h1>
-          </header>
-          <EmptyState title="No trial yet"
-            message="Create a trial in Mission control to start the agents. The protocol review, screening funnel and measurement plan appear here."
-            action={<Link className={buttonClass("filled")} to="/">Go to Mission control</Link>} />
-        </main>
-      </>
+      <div className="stage-page pd-page">
+        <EmptyState title="No trial yet"
+          message="Launch the trial from this project to start the agents. The protocol review, screening funnel and measurement plan appear here." />
+      </div>
     );
   }
 
@@ -81,79 +82,126 @@ export default function Predose() {
   const enrolledN = data?.enrolled?.length ?? 0;
   const funnel = data?.recruitment?.funnel;
 
-  return (
-    <>
-      <SpecimenBand />
-      <LoadingHairline active={loading && !data} />
-      <main className="page pd-page">
-        <header className="section">
-          <div className="eyebrow">{dotJoin("Pre-dosing", state?.trial_id ?? trialId, "Synthetic")}</div>
-          <h1 className="t-display">Design, recruitment and screening</h1>
-          <p className="t-body-lg c-smoke">
-            {data?.protocol?.title ? <>Protocol: {data.protocol.title}. </> : null}
-            {enrolledN > 0
-              ? <><span className="num">{enrolledN}</span> participants enrolled. Protocol edits are now amendments that need a named human.</>
-              : funnel?.applied
-                ? <><span className="num">{funnel.applied}</span> applicants screened. The shortlist waits for a clinician.</>
-                : <>The agents are reviewing the protocol.</>}
-          </p>
-          {error ? <p className="pd-error" role="alert">{error}</p> : null}
-        </header>
+  const flaggedN = (data?.applicants ?? []).filter((a) => a.screening?.decision === "needs_clinician").length;
+  const fairness = fairnessSummary(data?.recruitment?.fairness ?? []);
+  const planLine = measurementPlanSummary(data?.measurement_plan);
+  const agentLog = (
+    <DetailsDrawer label="View agent log" title="Agent log" subtitle="Pre-dosing agents, newest first" width={560}>
+      <AgentLog module="predose" title="Agent log" />
+    </DetailsDrawer>
+  );
 
-        <div className="pd-layout">
-          <div className="pd-top stack stack--loose">
+  const show = (slice: PredoseSlice) => !only || only === slice;
+  const full = !only;
+  const lead = enrolledN > 0
+    ? <><span className="num">{enrolledN}</span> participants enrolled. Protocol edits are now amendments that need a named human.</>
+    : funnel?.applied
+      ? <><span className="num">{funnel.applied}</span> applicants screened. The shortlist waits for a clinician.</>
+      : <>The agents are reviewing the protocol.</>;
+
+  return (
+    <div className="stage-page pd-page">
+      <LoadingHairline active={loading && !data} />
+      {full || error ? (
+        <div className="st-intro">
+          {full ? (
+            <p className="st-lead">
+              {data?.protocol?.title ? <>Protocol: {data.protocol.title}. </> : null}
+              {lead}
+            </p>
+          ) : null}
+          {error ? <p className="pd-error" role="alert">{error}</p> : null}
+        </div>
+      ) : null}
+
+      <div className={`pd-layout${full ? "" : " pd-layout--slice"}`}>
+        {full ? (
+          <div className="pd-top">
             <BottleneckCards module="predose" />
             <ReadoutGrid kpis={kpis} />
           </div>
+        ) : null}
 
+        {full || only === "design" || only === "screening" ? (
           <aside className="pd-aside" aria-label="Pre-dosing approvals">
-            <ApprovalInbox module="predose" title="Pre-dosing approvals" signedLimit={4} />
+            <PredoseApprovals only={only} />
           </aside>
+        ) : null}
 
-          <div className="pd-main">
-            {!data ? null : (
-              <>
-                <section className="section">
-                  <SectionHead eyebrow="Design review" title="Blinding risk and the FDA checklist" />
-                  <div className="grid-pd">
-                    <RiskCard risk={dr?.risk} baseline={dr?.baseline_risk} atEnrolment={dr?.risk_at_enrolment} />
-                    <FdaChecklist items={dr?.checklist ?? []} baselineOk={dr?.baseline_checklist_ok} windowNote={dr?.window_note}
-                      source={latest ? `protocol v${latest}` : "protocol"} />
-                  </div>
-                </section>
+        <div className="pd-main">
+          {!data ? null : (
+            <>
+              {show("design") ? (
+                <>
+                  <section className="st-section">
+                    <SectionHead label="Design review" title="Blinding risk and the FDA checklist" />
+                    <div className="grid-pd">
+                      <RiskCard risk={dr?.risk} baseline={dr?.baseline_risk} atEnrolment={dr?.risk_at_enrolment} />
+                      <FdaChecklist items={dr?.checklist ?? []} baselineOk={dr?.baseline_checklist_ok} windowNote={dr?.window_note}
+                        source={latest ? `protocol v${latest}` : "protocol"} />
+                    </div>
+                  </section>
 
-                <section className="section">
-                  <SectionHead eyebrow="Protocol co-designer" title="Edit, save and re-check" />
-                  <div className="grid-pd">
+                  <section className="st-section">
+                    <SectionHead label="Protocol co-designer" title="Edit, save and re-check" />
                     <ProtocolEditor protocol={data.protocol} versions={versions} enrolled={enrolledN > 0} />
                     <DraftedSection md={dr?.blinding_section_md} />
-                  </div>
-                  <VersionHistory versions={versions} />
-                </section>
+                    <VersionHistory versions={versions} />
+                  </section>
+                  {only === "design" ? <DetailsRow>{agentLog}</DetailsRow> : null}
+                </>
+              ) : null}
 
-                <section className="section">
-                  <SectionHead eyebrow="Recruitment and pre-screening" title="Screening" />
+              {show("screening") ? (
+                <section className="st-section">
+                  <SectionHead label="Pre-screening agent" title="Screening" />
                   <ScreeningFunnel funnel={funnel} />
-                  <FlaggedLedger applicants={data.applicants ?? []} />
-                  <FairnessTable groups={data.recruitment?.fairness ?? []} />
+                  {fairness ? (
+                    <p className="st-status">
+                      <span className={`st-dot st-dot--${fairness.flagged ? "watch" : "good"}`} aria-hidden="true" />
+                      {fairness.text}
+                    </p>
+                  ) : null}
+                  <DetailsRow>
+                    <DetailsDrawer label="View screening ledger" title="Screening ledger"
+                      meta={<><span className="num">{flaggedN}</span> flagged</>}
+                      subtitle="Applicants flagged for a clinician, newest first" width={720}>
+                      <FlaggedLedger applicants={data.applicants ?? []} />
+                    </DetailsDrawer>
+                    <DetailsDrawer label="View fairness table" title="Fairness" subtitle="Eligibility by group" width={640}>
+                      <FairnessTable groups={data.recruitment?.fairness ?? []} />
+                    </DetailsDrawer>
+                    {only === "screening" ? agentLog : null}
+                  </DetailsRow>
                 </section>
+              ) : null}
 
-                <section className="section">
-                  <SectionHead eyebrow="Recruitment ad writer" title="Recruitment ads" />
-                  <RecruitmentAds recruitment={data.recruitment} />
-                </section>
+              {show("recruitment") ? (
+                <>
+                  <section className="st-section">
+                    <SectionHead label="Recruitment ad writer" title="Recruitment ads" />
+                    <RecruitmentAds recruitment={data.recruitment} />
+                  </section>
 
-                <section className="section">
-                  <SectionHead eyebrow="Measurement planner" title="Measurement plan" />
-                  <MeasurementPlanLedger plan={data.measurement_plan} />
-                </section>
+                  <section className="st-section">
+                    <SectionHead label="Measurement planner" title="Measurement plan" />
+                    <p className="st-lead">{planLine}</p>
+                    <DetailsRow>
+                      <DetailsDrawer label="View measurement plan" title="Measurement plan" width={760}
+                        subtitle="Instruments, who answers them and when">
+                        <MeasurementPlanLedger plan={data.measurement_plan} />
+                      </DetailsDrawer>
+                      {only === "recruitment" ? agentLog : null}
+                    </DetailsRow>
+                  </section>
+                </>
+              ) : null}
 
-                <AgentLog module="predose" title="Pre-dosing agent log" />
-              </>
-            )}
-          </div>
+              {full ? <DetailsRow>{agentLog}</DetailsRow> : null}
+            </>
+          )}
         </div>
-      </main>
-    </>
+      </div>
+    </div>
   );
 }
