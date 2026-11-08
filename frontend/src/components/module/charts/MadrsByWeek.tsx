@@ -123,7 +123,7 @@ export function MadrsByWeek({ chart, trialId, height }: ModuleChartComponentProp
   // Layout
   const narrow = width > 0 && width < 560;
   const padL = 44;
-  const padR = narrow ? 30 : 48;
+  const padR = narrow ? 42 : 52;
   const top = 30;
   const plotH = Math.max(150, (height ?? 240) - 60);
   const bottom = top + plotH;
@@ -195,12 +195,13 @@ export function MadrsByWeek({ chart, trialId, height }: ModuleChartComponentProp
                 >
                   <rect x={cx - 16} y={top} width={32} height={plotH} fill="transparent" />
                   {w.sd !== null ? (
-                    <g stroke={chartTokens.primary} strokeOpacity={0.45} strokeWidth={1.25}>
+                    <g stroke={chartTokens.primary} strokeOpacity={0.8} strokeWidth={1.25}>
                       <line x1={cx} x2={cx} y1={sy(Math.min(y1, w.mean + w.sd))} y2={sy(Math.max(y0, w.mean - w.sd))} />
                       <line x1={cx - 4} x2={cx + 4} y1={sy(Math.min(y1, w.mean + w.sd))} y2={sy(Math.min(y1, w.mean + w.sd))} />
                       <line x1={cx - 4} x2={cx + 4} y1={sy(Math.max(y0, w.mean - w.sd))} y2={sy(Math.max(y0, w.mean - w.sd))} />
                     </g>
                   ) : null}
+                  <circle className="pd-ring" cx={cx} cy={cy} r={9} />
                   <circle cx={cx} cy={cy} r={5} fill={w.low ? chartTokens.halo : chartTokens.primary}
                     stroke={w.low ? chartTokens.primary : chartTokens.halo} strokeWidth={2} />
                   <text className="pd-val" x={cx + 9} y={cy - 7} textAnchor="start">{f1(w.mean)}</text>
