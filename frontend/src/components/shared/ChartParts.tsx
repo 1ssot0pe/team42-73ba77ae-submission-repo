@@ -6,7 +6,8 @@
  *   "label: name value" pairs (legacy). Flat eggshell surface, tabular figures.
  * EndLabel: a direct label with a halo, for line ends and panel titles (replaces legends).
  *   Use inside an SVG (for example a recharts <Customized> or a LabelList content renderer).
- * EventMarkers: vertical event rules with labels "Alert D47", stacked so labels never overlap.
+ * EventMarkers: vertical event rules with labels "Alert D47" set in rows above the plot area, stacked so labels never
+ *   overlap and never sit on data. Reserve top margin for them: eventsTopMargin(events.length).
  *   Use as <Customized component={(p) => <EventMarkers events={...} {...p} />} /> inside a recharts chart, or
  *   pass xScale/top/bottom yourself in hand-written SVG.
  * endpointDot(lastIndex): a recharts `dot` renderer that draws only the emphasised last point.
@@ -107,7 +108,7 @@ export interface ChartEvent {
 
 export interface EventMarkersProps {
   events: ChartEvent[];
-  /** horizontal px below which two labels are stacked rather than set side by side (default 56) */
+  /** legacy knob: labels closer than this are stacked; the default (56) means "only when they would touch" */
   minGapPx?: number;
   /** recharts Customized passes these; hand-written SVG passes its own */
   xAxisMap?: Record<string, { scale?: (v: number) => number }>;
@@ -133,47 +134,62 @@ export function EventMarkers({
   const placed = [...events]
     .filter((e) => Number.isFinite(e.day))
     .sort((a, b) => a.day - b.day)
-    .map((e) => ({ ...e, px: scale(e.day) }))
+    .map((e) => ({ ...e, px: scale(e.day), text: `${e.label} ${formatDayTick(e.day)}` }))
     .filter((e) => Number.isFinite(e.px));
-
-  // Row assignment: reuse the first row whose last label is at least minGapPx away.
-  const rowsLast: number[] = [];
-  const withRow = placed.map((e) => {
-    let row = rowsLast.findIndex((last) => e.px - last >= minGapPx);
-    if (row === -1) { row = rowsLast.length; rowsLast.push(e.px); } else rowsLast[row] = e.px;
-    return { ...e, row };
-  });
   const mid = Number.isFinite(left) && Number.isFinite(right) ? (left + right) / 2 : Infinity;
+
+  // Each label's horizontal extent (11px Open Sans is about 6.1px a character). A label sits right of its rule in
+  // the left half and left of it in the right half. Labels go in the first row where they overlap nothing, so
+  // same-day and near-day events stack instead of printing on top of each other.
+  const rows: Array<Array<[number, number]>> = [];
+  const pad = Math.max(4, minGapPx > 56 ? minGapPx - 56 : 4);
+  const withRow = placed.map((e) => {
+    const w = e.text.length * 6.1;
+    const anchor: "start" | "end" = e.px > mid ? "end" : "start";
+    let x0 = anchor === "end" ? e.px - 4 - w : e.px + 4;
+    if (Number.isFinite(left)) x0 = Math.max(x0, left);
+    if (Number.isFinite(right)) x0 = Math.min(x0, right - w);
+    const span: [number, number] = [x0 - pad, x0 + w + pad];
+    let row = rows.findIndex((r) => r.every(([a, b]) => span[1] <= a || span[0] >= b));
+    if (row === -1) { row = rows.length; rows.push([]); }
+    rows[row].push(span);
+    return { ...e, row, x0 };
+  });
+  const rules = [...new Map(withRow.map((e) => [Math.round(e.px), e])).values()];
 
   return (
     <g className="chart-events" aria-hidden="true">
-      {withRow.map((e, i) => {
-        const anchor = e.px > mid ? "end" : "start";
-        const ly = y0 + 10 + e.row * lineHeight;
-        return (
-          <g key={`${e.day}-${i}`}>
-            <line x1={e.px} x2={e.px} y1={y0} y2={y1} stroke={chartTokens.reference} strokeWidth={1} />
-            {e.detected ? (
-              <line x1={e.px} x2={e.px} y1={y1 - 4} y2={y1 + 4} stroke={chartTokens.flag} strokeWidth={4} />
-            ) : null}
-            <text
-              x={anchor === "end" ? e.px - 4 : e.px + 4}
-              y={ly}
-              textAnchor={anchor}
-              className="chart-events__label"
-              fill={chartTokens.reference}
-              stroke={chartTokens.halo}
-              strokeWidth={4}
-              strokeLinejoin="round"
-              paintOrder="stroke"
-            >
-              {`${e.label} ${formatDayTick(e.day)}`}
-            </text>
-          </g>
-        );
-      })}
+      {rules.map((e, i) => (
+        <g key={`rule-${e.day}-${i}`}>
+          <line x1={e.px} x2={e.px} y1={y0} y2={y1} stroke={chartTokens.reference} strokeWidth={1} />
+          {withRow.some((o) => o.detected && Math.round(o.px) === Math.round(e.px)) ? (
+            <line x1={e.px} x2={e.px} y1={y1 - 4} y2={y1 + 4} stroke={chartTokens.flag} strokeWidth={4} />
+          ) : null}
+        </g>
+      ))}
+      {withRow.map((e, i) => (
+        <text
+          key={`lbl-${e.day}-${i}`}
+          x={e.x0}
+          y={y0 - 5 - e.row * lineHeight}
+          textAnchor="start"
+          className="chart-events__label"
+          fill={chartTokens.reference}
+          stroke={chartTokens.halo}
+          strokeWidth={4}
+          strokeLinejoin="round"
+          paintOrder="stroke"
+        >
+          {e.text}
+        </text>
+      ))}
     </g>
   );
+}
+
+/** Top margin (px) that leaves room for up to n stacked event label rows above the plot. */
+export function eventsTopMargin(n: number, lineHeight = 13): number {
+  return n > 0 ? 8 + Math.min(n, 4) * lineHeight : 0;
 }
 
 interface DotProps { cx?: number; cy?: number; index?: number; stroke?: string }

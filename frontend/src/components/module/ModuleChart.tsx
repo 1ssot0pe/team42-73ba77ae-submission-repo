@@ -7,7 +7,7 @@
  */
 import { Customized, CartesianGrid, Line, LineChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import {
-  ChartFrame, ChartTooltip, EndLabel, EventMarkers, axisProps, chartMargin, chartTokens, dayTicks, formatDayTick,
+  ChartFrame, ChartTooltip, EndLabel, EventMarkers, eventsTopMargin, axisProps, chartMargin, chartTokens, dayTicks, formatDayTick,
   gridProps, refLabel, seriesStyle, thresholdLine,
 } from "../shared";
 import type { DataColumn, DataTable } from "../shared";
@@ -92,7 +92,7 @@ export function GenericLineChart({ chart, height = 260 }: { chart: Chart; height
   const ticks = isDay ? dayTicks(maxX).filter((t) => t >= minX) : undefined;
   // Room on the right for direct labels at line ends.
   const longest = Math.max(0, ...drawn.map((s) => s.label.length));
-  const margin = { ...chartMargin, right: Math.min(120, 16 + longest * 6.2), top: chartMargin.top + (events.length ? 14 : 0) };
+  const margin = { ...chartMargin, right: Math.min(120, 16 + longest * 6.2), top: chartMargin.top + eventsTopMargin(events.length) };
   const styleFor = (i: number) => seriesStyle(i);
 
   const columns: DataColumn[] = [
@@ -174,6 +174,11 @@ export function GenericLineChart({ chart, height = 260 }: { chart: Chart; height
               return { s, idx, x: xs(data[i][x]) + bw / 2, y: ys(data[i][s.key] as number) };
             }).sort((a, b) => a.y - b.y);
             for (let k = 1; k < ends.length; k++) if (ends[k].y - ends[k - 1].y < 13) ends[k].y = ends[k - 1].y + 13;
+            // Keep the stack inside the plot: if it runs past the bottom, shift it up.
+            const off = p.offset as { top?: number; height?: number } | undefined;
+            const bottom = off ? (off.top ?? 0) + (off.height ?? 0) - 4 : Infinity;
+            const over = ends.length ? ends[ends.length - 1].y - bottom : 0;
+            if (over > 0) for (const e of ends) e.y -= over;
             return (
               <g>
                 {ends.map((e) => (

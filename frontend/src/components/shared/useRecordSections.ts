@@ -53,7 +53,10 @@ export function useRecordSections<K extends RecordSectionName>(
     return () => { alive = false; };
   }, [trialId, tick, sectionKey, reqKey]);
 
-  // Keep showing the previous data while a refetch after a tick is in flight, so charts do not flash empty.
+  // Keep showing the previous data for this trial while a refetch after a tick is in flight, so charts do not
+  // flash empty.
   const loading = !!trialId && state.key !== reqKey;
-  return { data: state.data, loading, error: state.key === reqKey ? state.error : null };
+  // Never show another trial's data (or another section set's).
+  const sameSource = state.key.startsWith(`${trialId}|`) && state.key.endsWith(`|${sectionKey}`);
+  return { data: sameSource ? state.data : null, loading, error: state.key === reqKey ? state.error : null };
 }
