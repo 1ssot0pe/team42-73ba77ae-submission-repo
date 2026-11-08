@@ -126,7 +126,8 @@ function WorkspaceInner({ project }: { project: Project }) {
         <div className="ws__main">
           <header className="ws__head">
             <p className="ws__crumb"><Link to="/trials">Trials</Link> <span aria-hidden="true">/</span> {stageLabel}</p>
-            <h1 className="ws__title">{project.name}</h1>
+            {/* On the Draft stage the editor's title field is the title, so it is not repeated here. */}
+            {stage !== "draft" ? <h1 className="ws__title">{project.name}</h1> : null}
             <p className="ws__meta">
               <ProjectStatusDot status={project.status} />
               {when ? <span className="num">{`${STAGES[curIdx].label} · ${when}`}</span> : null}
