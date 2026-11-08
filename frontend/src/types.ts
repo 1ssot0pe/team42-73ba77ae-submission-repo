@@ -71,6 +71,15 @@ export interface TrialState {
   gemini: boolean;
   /** FDA blinding report sign-off. Optional: older backends do not send it. */
   report_status?: ReportStatus;
+  /** The simulator's planted drift (synthetic truth, display only). Null when there is no drift or no simulator. */
+  simulated_truth?: SimulatedTruth | null;
+}
+
+export interface SimulatedTruth {
+  synthetic: boolean;
+  label: "simulated";
+  drift_site: string;
+  drift_onset_day: number;
 }
 
 export type ReportStatusKind = "none" | "collecting" | "waiting_for_signoff" | "changes_requested" | "signed";
