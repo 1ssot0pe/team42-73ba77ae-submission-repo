@@ -1,6 +1,6 @@
 # Before and after, side by side
 
-Each PNG shows the before shot (left, `../before/`) and the after shot (right, `../after/`) with the same file name, rendered on a canvas matching the theme. All files are under 400 KB.
+Regenerated in review round 2 from the current `../before/` and `../after/` (merged head 08cfee4). Each PNG shows the before shot on the left and the after shot with the same file name on the right, on a canvas that matches the theme. 57 files in 19 groups; largest 319 KB; none over 400 KB.
 
 | Chart | 1440 light | 1440 dark | 390 |
 |---|---|---|---|
@@ -26,8 +26,9 @@ Each PNG shows the before shot (left, `../before/`) and the after shot (right, `
 
 ## New charts with no before shot
 
-- `screening-funnel-preshortlist` (1440 light, 1440 dark, 390): screening flow before the clinician shortlist is approved. See `../after/screening-funnel-preshortlist-*.png`.
+- `cusum-site-predecision` (1440 light, 1440 dark, 390): see `../after/cusum-site-predecision-*.png`.
+- `screening-funnel-preshortlist` (1440 light, 1440 dark, 390): see `../after/screening-funnel-preshortlist-*.png`.
 
-## Before shots with no after counterpart (page or drawer views, not charts)
+## Before shots with no after counterpart (page or drawer context shots, not charts)
 
-dosing-readouts-predecision, drawer-rater-accuracy-site, fact-drawer, fda-checklist, followup-readouts, home-page, progress-steps, report-page, source-facts, studio-mode-badge, studio-report-page. These were context shots in the audit and were not re-shot as charts.
+dosing-readouts-predecision, drawer-rater-accuracy-site, fact-drawer, fda-checklist, followup-readouts, home-page, progress-steps, report-page, source-facts, studio-mode-badge, studio-report-page.

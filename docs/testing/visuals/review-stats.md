@@ -71,3 +71,41 @@ How I checked:
 - **report-rater-accuracy-site:** cumulative values and bounds come from the record and are checked against the view. Bands appear only where n >= 8. The title peak is taken only from points with n >= 8. Coin flip 50% is drawn.
 - **version-history:** a ledger table, not a chart. It has no statistical content to check.
 - **generic fallback:** step lines, threshold lines only from payload values, and the Synthetic note taken from the title (apart from S-10).
+
+## Round 2 (HEAD 08cfee4)
+
+How I re-checked:
+- I read the round-1 fix diff (`git diff 2dbea25..HEAD -- frontend/src unblind`).
+- I ran the live app on ports 8721 and 5721 with a fresh store, `/tmp/vis-stat/store2`.
+- Trial C (seed 42, manual approvals) was walked to day 47 with the drift approval `f80c688d` pending, then approved and walked on to day 62.
+- The Studio charts were re-shot from the stored report.
+- Screenshots are in `/tmp/vis-stat/` (`r2-*.png`, `studio/`).
+- The servers are stopped.
+
+| id | status | evidence |
+|---|---|---|
+| S-1 | fixed | **Pending (day 47, approval pending):** `/state.simulated_truth` is `None`. The CUSUM shows only "Onset est. D28" and "19 days from estimated onset to alert", with no simulated marker or footnote (`r2-cusum-d47-pending.png`). **After the approval:** the `/approvals/{id}` response state carries `{drift_site: Site B, drift_onset_day: 28}`, and the chart shows "Drift began (simulated)" and its footnote (`r2-cusum-d47-approved.png`). **How it is gated:** on the server, `orchestrator.py` `simulated_truth()` returns it only once the trial is closed, or once an alert at the planted site has been decided and no rater-drift alert anywhere is open. The client checks again (`CusumChart.tsx:172`, `alert.status !== "open"`). **No absence oracle:** while any alert is open, it is withheld for every site. |
+| S-2 | fixed | Same server gate. Every route that returns state (`/state`, `/step`, `/trials`, `/approvals/{id}`, `/modules/*/actions`) goes through `Master.state()`. At day 47 with the approval pending I grepped `record` (alerts, actions, blinding_metrics, checkins, events, report), `events`, `messages`, `kpis`, the three module views and `approvals`. None of them contain `simulated_truth` or `drift_onset_day`. `rec` never holds the world config. |
+| S-3 | fixed | Title at day 62: "Site B raters flagged for drift on day 47 (15 of 15 correct since estimated onset); per rater, R-B2 5 of 5 (too few for an interval)". Both rater panels are orange, and R-B2's is labelled "named in alert evidence (n = 5)". New footnote: "a rater missing from it is not cleared" (`r2-byrater.png`). |
+| S-4 | fixed | The meter shows "Synthetic calibration" (`synthetic && !bl.observed`). The footnote says the design model was fitted on the synthetic calibration set (`studio/blinding-meter-1440-light.png`). |
+| S-5 | fixed | Title: "Imputed u 0.67 (± 1 SD 0.36 to 0.98): medium to high unblinding". A single band word is used only when the ± 1 SD range sits inside one band. |
+| S-6 | fixed | `report.ts` `BLINDING_BANDS` is now 0.35 and 0.6, the same as `predose/agents.py:369`, with a comment to keep them in step. The meter draws ticks at 0.35 and 0.6, and the subtitle and footnote say these are the Pre-dose bands. No other consumer of the old words remains in `frontend/src`. |
+| S-7 | fixed | Effect-forest note reads "Synthetic calibration". |
+| S-8 | fixed (see N-1) | "feasibility (assumed)" in the row labels, aria, tooltip and drawer. The qualifier is computed: under 0.01 g "slightly more", under 0.05 g "more", else "much more". The text now gives both figures ("0.086 vs 0.084 g"), and a footnote says the weights are assumptions, not data. |
+| S-9 | fixed | The domain is `niceTicks(min(0, vals), max(0.1, vals))`, with a "No bias" rule when it goes below 0. I checked this in the code; the current data is not negative. |
+| S-10 | fixed | Without a `y_domain`, the fallback axis now always includes 0: `[0, auto]` for non-negative data, and nice-min to `auto`, or to 0, when there are negatives (`ModuleChart.tsx`). I checked this in the code. |
+
+### New findings (round 2)
+
+| id | severity | chart | what is wrong | evidence | exact fix |
+|---|---|---|---|---|---|
+| N-1 | minor | design-fixes | The new footnote compares a gap in **g** (0.002 g difference in bias reduction) with an SD in **u** units ("well inside the uncertainty in predicted u (SD 0.31 and 0.21)"). The conclusion holds, but the two numbers are on different scales. | `FixesChart.tsx` `fixesFootnote`. The report's `fit_primary.u.est` is 0.857, so the SD in g is about 0.857 × 0.31 = 0.27 and 0.857 × 0.21 = 0.18. | Convert to g with the fitted slope: `b × u_sd`, where `b = fit_primary.u.est`. Write: "differ by 0.002 g, against about 0.27 g and 0.18 g of uncertainty in each prediction (slope × SD of u)". Or drop the comparison and say "the ranking rests mainly on the assumed feasibility weights". |
+
+Nothing else new on honesty in the round-1 diff:
+- The new rings in ReportAccuracy and EffectForest are focus or emphasis rings only. They add no data and no thresholds.
+- The MadrsByWeek and risk-scale changes are layout and labels only. The risk-scale band labels ("below 0.35", "0.35 to 0.6", "0.6 and above") match `agents.py:369`.
+
+Not statistical, for the builders:
+- The by-rater legend still shows a violet band swatch and a violet hollow square, though all panels are now orange.
+- At 1440 px the "Coin flip 50%" and "Alarm reference 60%" labels in the R-B2 panel sit on data points.
+- The CUSUM label "Reset after action" is clipped at the right edge on day 47.

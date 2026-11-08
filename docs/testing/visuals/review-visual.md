@@ -40,3 +40,56 @@ Chart surface in light mode is `rgb(245,243,241)`; in dark mode `rgb(23,22,20)`.
 - **Writing.** No em dashes and no US spellings were found in any visible chart text across 14 charts and 3 settings. Unicode minus is used for negatives.
 - **Consistency.** All charts share the flat surface, Open Sans, the title, subtitle and "Synthetic" header, and the quiet "View data" button. Violet and orange appear only inside charts. Glass appears only on the nav.
 - **Earlier problems now fixed.** Before vs after, the rater-accuracy chart moved from one overlaid plot with a legend to labelled small multiples with Wilson bands and hollow small-n markers. The effect plots gained "No effect" and direction words. Curves became step-after, the "Expected with working blinding 0.6" line is relabelled "Alarm reference 60%", and the screening funnel became a CONSORT-style flow.
+
+## Round 2 (merged head 08cfee4)
+
+I re-checked on a fresh stack (API 8722, vite 5722, stopped afterwards) with newly built trials: D62 manual, D90 auto, and the predose baseline and five-fix trials. Studio used the saved report. The same scripts ran as in round 1: computed-colour contrast in both themes, clipping, overlap and scroll at 390, tap and outside-tap on tooltips, a Tab walk, reduced motion, and the colour-blind filters. Evidence is in `docs/testing/visuals/review/r2/`.
+
+### Status of round 1 findings
+
+| id | status | evidence |
+|---|---|---|
+| V-1 risk-scale tip overflow | fixed | Design review `scrollWidth` 390 at 390 (was 434), on both trials. Tapped tips now span x 57 to 357, 64 to 364 and 61 to 361. |
+| V-2 Studio tap tooltips | fixed | effect-forest: the first tap leaves the tip open (`['tip','focus','click'] tip now: 1`), a second tap closes it, and a tap outside closes it. design-fixes behaves the same. Tips sit at x 44 to 354, inside 390. |
+| V-3 grey text contrast | fixed | No text under 4.5:1 on any chart in 1440 light, 1440 dark or 390. The chart text token measures 5.14:1 on the light surface; dark mode is unchanged and passes. |
+| V-4 risk-scale v5 hidden, v1 on the SD cap | fixed | Trail dots now sit on a row below the line with hairline ticks. v5 is visible beside the current dot, and v1 sits clear of the SD cap. At 390 the labels read "v5" and "v1" with a key list below (`r2/full-risk-scale-390.png`, `after/risk-scale-1440-light.png`). |
+| V-5 version-history column off-screen | fixed | Columns are now Version, Predicted u (right edge 179), Day, Why, Changes, so the risk value is on screen at 390. `is-mono` is gone from `BlindingSection.tsx`. |
+| V-6 design-fixes "Before" clipped | fixed | No SVG text clipping at 390. The audit flags a 39x18 box overlap between "Before" and the right-hand value column at 1440, but the screenshot shows about 25 px of clear space (the value `<text>` box spans two lines). Not an issue. |
+| V-7 blinding-meter SD bar contrast | fixed | No meaningful mark under 3:1. The bar is now full violet with end caps (`r2/cb-prot-studio-blinding-meter.png`). |
+| V-8 madrs whiskers and "22.6" clip | fixed | No low-contrast whisker strokes in either theme, and no clipping at 390. |
+| V-9 CUSUM end labels | fixed | "Site A" no longer touches the last x tick, and the three site labels are spaced (`r2/d90-cusum-site-390.png`). The audit still reports a 3 px box overlap, but there is no visible overlap. |
+| V-10 drawer sticky header over a chart title | fixed | After `scrollIntoView({block:'start'})` the CUSUM title top is at 128 px, below the drawer header bottom at 101 px (was 16 px). |
+| V-11 reference lines only in a key | fixed, with a new problem (N-1) | "Coin flip 50%" and "Alarm reference 60%" are now direct labels on the last panel. |
+| V-12 event rules through their labels | not fixed | At D90 on rater-accuracy-by-rater, the D47 rule still runs through the end of "Action D47" and the D56 rule through "Stopped D56" (`r2/d90-rater-accuracy-by-rater-390.png`). The audit still finds the 2 px stacked-label overlaps. |
+| V-13 tabular figures | mostly fixed | Chart titles, subtitles and footnotes are now tabular. Numbers in risk-scale labels ("± 1 SD", "v1 initial draft", "At enrolment (v6)") and in screening-funnel reason rows ("1 failed antidepressant", "and 35 more reasons") are still proportional. Fix: add `font-variant-numeric: tabular-nums` to the `font:` shorthand rules in PREDOSE `styles/risk.css` and `styles/screening.css`. |
+| V-14 focus on data marks | fixed | A visible 2 px graphite ring on the Studio marks (`r2/focus-effect-forest-tab-1440-light.png`), the effect-estimates points (`r2/focus-effect-estimates-1440-light.png`) and the risk-scale dots (outline `rgb(68,64,59) solid 2px`, `r2/focus-risk-scale-tab-1440-light.png`). |
+| V-15 footnote case | fixed | It now reads "Not drawn: within-trial (patient guess) and within-trial (patient and rater guess) ...". |
+
+### New findings
+
+| id | severity | chart | setting | what is wrong | evidence | fix (owner file) |
+|---|---|---|---|---|---|---|
+| N-1 | minor | rater-accuracy-site, rater-accuracy-by-rater (and other `SiteSmallMultiples` charts) | 1440, 390 | The new direct labels "Alarm reference 60%" and "Coin flip 50%" sit inside the last panel's plot, on top of its data. On rater-accuracy-site, Site C's line at about 62% runs through "Alarm reference 60%" and its band sits behind both labels. On by-rater at 390, R-B2's line at 60% runs through "Alarm reference 60%". | `r2/cb-deut-d62-rater-accuracy-site.png`, `r2/d90-rater-accuracy-by-rater-390.png` | DOSING `components/module/charts/SiteSmallMultiples.tsx`: put the two labels in a right margin outside the plot (about 72 px; at 390, a short "50%"/"Alarm 60%" in the y-axis gutter of the first panel), or give them the `EndLabel` halo and place them above the rule on the side with no data. |
+
+### Regression sweep
+
+- **Contrast.** No text below 4.5:1 and no meaningful mark below 3:1 in either theme on any of the 14 charts. Grid lines, hairlines and 12% bands are decorative and stay low by design.
+- **390 scroll.** `scrollWidth == 390` on every page: Studio, Dosing, the Dosing drawer, Follow-up, the Follow-up drawer, Design review and Screening, on all trials.
+- **390 clipping.** No SVG text is clipped on the changed charts. The 4 px left overhang of the "−1.0" tick on Studio effect-forest is unchanged from round 1 and not visible in the screenshot.
+- **Colour-blind.** Deuteranopia and protanopia shots (`r2/cb-*`) of the changed charts all still read: rater accuracy, by-rater, CUSUM, risk-scale with its new trail row, blinding meter, design-fixes and effect plots. Orange shifts to olive and violet stays blue, and shapes and labels carry every distinction.
+- **View data.** Present on every chart. The CUSUM table at 390: caption equals the title, 6 `th scope=col`, 29 rows, derivation note, scrolls inside its own region, and Escape closes it.
+- **Writing.** No em dashes or US spellings found in chart text.
+- **Reduced motion.** No animation runs under `reduce`.
+
+### Functional journeys
+
+| journey | result | console errors | failed requests |
+|---|---|---|---|
+| Psilocybin trial, driven entirely through the UI at 1440: create it from the template on /trials, launch (manual approvals), approve 4 design fixes with "Approve selected" (central raters left out so the drift still happens), approve the clinician shortlist, advance a day at a time to the drift (day 47), approve "Move Site B raters to remote (central) assessment" on the Dosing stage, advance by weeks to day 90 and approve every slip on the way (MAPP and COMP reference-data additions, Site C reminders, the permanent remote raters amendment), then sign "Sign off the FDA blinding report" on the Report stage | pass. Day 90, phase `closed`; Report reads "Report signed by Dr A. Auditor · D+90". The only pending item left is the optional "Release the UNBLIND-BLIND-1 harmonised export". | 0 | 0 |
+| Studio on the saved report (`studio_report_NCT03866174.json`, shoot_studio_after approach) at 1440 light, 1440 dark and 390: all three charts render, each "View data" opens a table and closes | pass. `scrollWidth` 1440, 1440 and 390. | 0 | 0 |
+
+Notes on the journeys:
+- The existing `tests/e2e/browser/j01_psilocybin_manual.py` harness no longer matches the design v2 UI: it waits for a "Start a trial" heading. So the trial journey was driven by a new script that uses the v2 controls ("Create a trial", "Launch trial", "Approve selected", per-slip "Approve", "Advance a day/week"). That J1 harness needs updating separately.
+- Observation outside chart scope: on the closed trial the Report page still shows "Advance a day", "Advance a week" and "Play".
+
+Screenshots: `review/journey-drift-pending.png`, `review/journey-report-before-sign.png`, `review/journey-report-signed.png`.
