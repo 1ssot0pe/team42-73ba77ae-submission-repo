@@ -119,7 +119,15 @@ function useWidth(ref: React.RefObject<HTMLElement>): number {
   return w;
 }
 
-function RiskLine({ points, nowLabel, compact }: { points: Point[]; nowLabel: string; compact: boolean }) {
+function RiskLine({ points, nowLabel, compact, width = 0 }: { points: Point[]; nowLabel: string; compact: boolean; width?: number }) {
+  // Tooltip box: fixed width, its left edge clamped so it stays inside the figure (no page overflow at 390).
+  const track = Math.max(0, width - 16);        // .rk-line has 8px side padding
+  const tipW = track > 0 ? Math.min(300, track) : 300;
+  const tipStyle = (u: number): CSSProperties => {
+    const x = clamp(u) * track;
+    const left = track > 0 ? Math.max(-x, Math.min(-tipW / 2, track - x - tipW)) : -tipW / 2;
+    return { width: `${tipW}px`, left: `${left}px` };
+  };
   const now = points[points.length - 1];
   // Trail: earlier versions that moved u, plus the first version. Same-value versions are footnoted.
   const trail = points.slice(0, -1).filter((p, i) => i === 0 || Math.abs(p.u - points[i - 1].u) >= MOVE_MIN);
@@ -128,7 +136,7 @@ function RiskLine({ points, nowLabel, compact }: { points: Point[]; nowLabel: st
   const maxLane = Math.max(-1, ...lanes);
   const lo = now.sd !== null ? clamp(now.u - now.sd) : null;
   const hi = now.sd !== null ? clamp(now.u + now.sd) : null;
-  const below = trailShown.length ? (maxLane + 1) * LANE_STEP + (compact ? 0 : 16) : 0;
+  const below = trailShown.length ? (compact ? (maxLane + 1) * 22 : (maxLane + 1) * LANE_STEP + 16) : 0;
   const style = { "--rk-below": `${below}px` } as CSSProperties;
   const pct = (u: number) => `${clamp(u) * 100}%`;
   const sdLabelLeft = hi !== null && hi > 0.85;
@@ -137,15 +145,17 @@ function RiskLine({ points, nowLabel, compact }: { points: Point[]; nowLabel: st
     <div className="rk-line" style={style}>
       {/* bands: cut-off ticks and words above the line */}
       <div className="rk-bands" aria-hidden="true">
-        <span className="rk-band" style={{ left: 0, width: pct(CUT_MEDIUM) }}>Low</span>
-        <span className="rk-band" style={{ left: pct(CUT_MEDIUM), width: pct(CUT_HIGH - CUT_MEDIUM) }}>Medium</span>
-        <span className="rk-band" style={{ left: pct(CUT_HIGH), width: pct(1 - CUT_HIGH) }}>High</span>
+        <span className="rk-band" style={{ left: 0, width: pct(CUT_MEDIUM) }}>
+          Low<span className="rk-band__range num">below {formatNumber(CUT_MEDIUM)}</span></span>
+        <span className="rk-band" style={{ left: pct(CUT_MEDIUM), width: pct(CUT_HIGH - CUT_MEDIUM) }}>
+          Medium<span className="rk-band__range num">{formatNumber(CUT_MEDIUM)} to {formatNumber(CUT_HIGH)}</span></span>
+        <span className="rk-band" style={{ left: pct(CUT_HIGH), width: pct(1 - CUT_HIGH) }}>
+          High<span className="rk-band__range num">{formatNumber(CUT_HIGH)} and above</span></span>
       </div>
       <div className="rk-track">
         <span className="rk-axis" />
         {[0, CUT_MEDIUM, CUT_HIGH, 1].map((c) => (
           <span key={c} className={`rk-cut${c === 0 || c === 1 ? " rk-cut--end" : ""}`} style={{ left: pct(c) }} aria-hidden="true">
-            {c !== 0 && c !== 1 ? <span className="rk-cut__num num">{formatNumber(c)}</span> : null}
           </span>
         ))}
         {lo !== null && hi !== null ? (
@@ -156,24 +166,24 @@ function RiskLine({ points, nowLabel, compact }: { points: Point[]; nowLabel: st
           </>
         ) : null}
         {trailShown.map((p, i) => {
-          const n = points.indexOf(p) + 1;
           return (
             <span key={p.version} className="rk-pt" style={{ left: pct(p.u) }} tabIndex={0}
               aria-label={pointSentence(p)}>
               <span className="rk-pt__dot" />
-              {lanes[i] > 0 && !compact ? (
+              <span className="rk-pt__tick" />
+              {lanes[i] > 0 ? (
                 <span className="rk-pt__stem" style={{ height: `${lanes[i] * LANE_STEP + 2}px` }} />
               ) : null}
               <span className={`rk-l rk-l--trail${edge(p.u)}`} aria-hidden="true"
                 style={{ "--rk-off": `${lanes[i] * LANE_STEP}px` } as CSSProperties}>
-                {compact ? <span className="rk-l__num num">{n}</span> : (
+                {compact ? <span className="rk-l__num num">v{p.version}</span> : (
                   <>
                     <span className="rk-l__text">v{p.version} {p.change}</span>
                     <span className="rk-l__val num">{f2(p.u)}</span>
                   </>
                 )}
               </span>
-              <span className="rk-tip" role="tooltip">{pointSentence(p)}</span>
+              <span className="rk-tip" role="tooltip" style={tipStyle(p.u)}>{pointSentence(p)}</span>
             </span>
           );
         })}
@@ -183,7 +193,7 @@ function RiskLine({ points, nowLabel, compact }: { points: Point[]; nowLabel: st
             <span className="rk-l__text">{nowLabel}</span>
             <span className="rk-l__val num">{f2(now.u)}</span>
           </span>
-          <span className="rk-tip" role="tooltip">{pointSentence(now)}</span>
+          <span className="rk-tip" role="tooltip" style={tipStyle(now.u)}>{pointSentence(now)}</span>
         </span>
       </div>
       <div className="rk-ends" aria-hidden="true">
@@ -297,14 +307,14 @@ export function RiskCard({ risk, baseline, atEnrolment, history, latestVersion =
         footnotes={
           <>
             {compact && trailForList.length > 1 ? (
-              <ol className="rk-list">
+              <ul className="rk-list">
                 {trailForList.map((p) => (
-                  <li key={p.version} value={points.indexOf(p) + 1}>
+                  <li key={p.version}>
                     <span>v{p.version} {p.change}{p === now ? ` (${nowLabel.split(" (")[0].toLowerCase()})` : ""}</span>
                     <span className="num">{f2(p.u)}</span>
                   </li>
                 ))}
-              </ol>
+              </ul>
             ) : null}
             {stillText ? <p>{stillText}</p> : null}
             <p>
@@ -326,7 +336,7 @@ export function RiskCard({ risk, baseline, atEnrolment, history, latestVersion =
             </span>
           ) : null}
         </div>
-        <RiskLine points={points} nowLabel={nowLabel} compact={compact} />
+        <RiskLine points={points} nowLabel={nowLabel} compact={compact} width={width} />
         {frozen && Math.abs(frozen.u - now.u) >= MOVE_MIN ? (
           <p className="rk-frozen num">
             At enrolment u was {f2(frozen.u)} ({bandWord(frozen.band)} band); later amendments do not change that value.
