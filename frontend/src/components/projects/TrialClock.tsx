@@ -195,7 +195,8 @@ export function TrialClock({ state }: { state: TrialState }) {
   return (
     <div className="clock">
       <div className="clock__controls">
-        <button type="button" className="btn btn--filled btn--sm" disabled={stepDisabled} onClick={() => advance(1)} title={why}>
+        {/* Filled only when it can be pressed; while the trial waits on sign-offs the page's one filled button is the decision. */}
+        <button type="button" className={`btn ${blocked || closed ? "btn--outline" : "btn--filled"} btn--sm`} disabled={stepDisabled} onClick={() => advance(1)} title={why}>
           Advance a day
         </button>
         <button type="button" className="textbtn" disabled={stepDisabled} onClick={() => advance(7)} title={why}>

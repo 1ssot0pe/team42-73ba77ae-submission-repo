@@ -93,7 +93,7 @@ export function PredoseApprovals({ only }: { only?: Only }) {
               <span className="rv-status rv-status--watch"><span className="rv-status__dot" aria-hidden="true" />Needs sign-off</span>
             </div>
             <p className="rv-lede">{c.text}</p>
-            <ApprovalSlip approval={a} />
+            <ApprovalSlip approval={a} quiet={showFixes} />
           </section>
         );
       })}

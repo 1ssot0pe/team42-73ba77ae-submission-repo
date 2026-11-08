@@ -71,3 +71,23 @@ The rule-based rewrite in `postdose/agents.py` (the rewriting branch after line 
 ## TP-5 (BL-8 / BP-6, minor): "UNBLIND-BLIND-1" shown in the UI after the rename to Parallax (shared contract)
 
 This is a data-standard identifier shared by predose (`predose/agents.py:257,400,890`), postdose (`postdose/agents.py:32`, `STANDARD`) and `MODULE_CONTRACT.md:44`. Renaming it (for example to `PARALLAX-BLIND-1`) changes the module contract and the export format, so it should be one coordinated change by all three owners, not a patch to one module.
+
+## TP-6 (UI review, minor): "1 adverse events" in the dosing readout (dosing, Izzy)
+
+The note on the "Debriefs structured automatically" KPI is built in the backend, so the frontend shows it as is. With one event it reads "1 adverse events" (and "1 unblinding cues"). Found in the UI review of PR #7 on the Dosing stage.
+
+`unblind/platform/dosing/module.py:162-166`:
+
+```diff
+         aes = [a for d in rec["debriefs"] for a in d["adverse_events"]]
++        n_ae = len(aes)
++        n_cues = sum(len(d["unblinding_cues"]) for d in rec["debriefs"])
+         out.append({"label": "Debriefs structured automatically", "value": len(rec["debriefs"]), "baseline": 0,
+                     "unit": "debriefs", "bottleneck_id": "monitoring_burden",
+-                    "note": f"{len(aes)} adverse events and {sum(len(d['unblinding_cues']) for d in rec['debriefs'])} "
+-                            "unblinding cues extracted, each with its quote."})
++                    "note": f"{n_ae} adverse {'event' if n_ae == 1 else 'events'} and {n_cues} unblinding "
++                            f"{'cue' if n_cues == 1 else 'cues'} extracted, each with its quote."})
+```
+
+Test to add (`tests/platform/test_dosing.py`): with one debrief holding one adverse event and one cue, assert the note reads "1 adverse event and 1 unblinding cue extracted, each with its quote."

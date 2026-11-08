@@ -218,3 +218,14 @@
 .portal__clinician { font: var(--text-body-sm); color: var(--color-graphite); border-top: 1px solid var(--color-stone); padding-top: var(--space-3); }
 .portal__field-error { font: var(--text-body-sm); color: var(--status-alert-fg); }
 .portal__form .input[aria-invalid="true"] { border-color: var(--status-alert-fg); }
+
+/* Protocol shown as formatted markdown (read-only BlockView); scrolls inside like the text box it replaces. */
+.editor__doc.ed {
+  max-height: 520px; overflow: auto;
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--color-stone); border-radius: var(--radius-input);
+  font: 400 15px/1.7 var(--font-body); color: var(--color-ink);
+}
+.editor__doc.ed h1 { font-size: 24px; }
+.editor__doc.ed h2 { font-size: 18px; }
+.editor__doc.ed:focus-visible { outline: none; border-color: var(--color-ink); }

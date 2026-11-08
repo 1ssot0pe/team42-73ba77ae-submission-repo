@@ -1,6 +1,7 @@
 /**
- * ProtocolEditor (design.md 8.13). A paper document with version chips above, the protocol text, a slim
- * diff gutter for the returned +/- lines, a signed editor name and "Save version and re-check".
+ * ProtocolEditor (design.md 8.13). Version chips above, the protocol shown as formatted markdown (the draft
+ * editor's read-only renderer) with "Edit text" to switch to the plain text box, a slim diff gutter for the
+ * returned +/- lines, a signed editor name and "Save version and re-check".
  *
  * module.py "recheck":
  *   before enrolment -> {ok, diff, risk, checklist, version}: applied at once, good toast.
@@ -12,6 +13,7 @@ import { api, errorText } from "../../api";
 import { useTrial } from "../../trial";
 import type { Protocol, ProtocolVersion } from "../../types";
 import { Button, StatusPill, dotJoin, formatDay, formatNumber, useReviewer, useToast } from "../shared";
+import { BlockView } from "../editor/BlockEditor";
 import { isPending, type RecheckResult } from "./types";
 
 /** One diff line: "+text" added, "-text" removed, anything else is shown as added (fix sentences). */
@@ -64,7 +66,15 @@ export function ProtocolEditor({ protocol, versions, enrolled }: ProtocolEditorP
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [last, setLast] = useState<LastSave | null>(null);
+  const [editing, setEditing] = useState(false);
+  const textRef = useRef<HTMLTextAreaElement>(null);
   const seen = useRef<number>(-1);
+  // Formatted view unless the person chose to edit or has unsaved changes.
+  const showText = editing || dirty;
+
+  useEffect(() => {
+    if (editing) textRef.current?.focus();
+  }, [editing]);
 
   // Load the newest text when a new version lands, unless the person is mid-edit.
   useEffect(() => {
@@ -118,6 +128,7 @@ export function ProtocolEditor({ protocol, versions, enrolled }: ProtocolEditorP
           `${r.checklist.filter((c) => c.present).length} / ${r.checklist.length} FDA items`), "good");
       }
       setDirty(false);
+      setEditing(false);
       adopt(res.state);
     } catch (e) {
       setError(errorText(e));
@@ -146,9 +157,22 @@ export function ProtocolEditor({ protocol, versions, enrolled }: ProtocolEditorP
           ))}
         </div>
       ) : null}
-      <label className="visually-hidden" htmlFor="protocol-editor-text">Protocol text</label>
-      <textarea id="protocol-editor-text" className="editor__text" value={text} spellCheck
-        onChange={(e) => { setText(e.target.value); setDirty(true); }} rows={18} />
+      {showText ? (
+        <>
+          <label className="visually-hidden" htmlFor="protocol-editor-text">Protocol text</label>
+          <textarea id="protocol-editor-text" ref={textRef} className="editor__text" value={text} spellCheck
+            onChange={(e) => { setText(e.target.value); setDirty(true); }} rows={18} />
+        </>
+      ) : (
+        <BlockView value={text} className="editor__doc" ariaLabel="Protocol text" />
+      )}
+      <div className="row">
+        {showText ? (
+          !dirty ? <button type="button" className="textbtn" onClick={() => setEditing(false)}>Show formatted</button> : null
+        ) : (
+          <button type="button" className="textbtn" onClick={() => setEditing(true)}>Edit text</button>
+        )}
+      </div>
       <div className="editor__meta t-caption c-ash">
         <span className="num">{formatNumber(lineCount)} lines</span>
         <span className="num">{formatNumber(text.length)} characters</span>

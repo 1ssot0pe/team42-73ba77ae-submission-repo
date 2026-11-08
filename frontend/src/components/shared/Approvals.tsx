@@ -86,9 +86,11 @@ export function ExpiredStamp({ approval: a }: { approval: Approval }) {
 export interface ApprovalSlipProps {
   approval: Approval;
   onDecided?: (a: Approval) => void;
+  /** Render Approve as a secondary button, for pages whose one filled button is elsewhere. */
+  quiet?: boolean;
 }
 
-export function ApprovalSlip({ approval, onDecided }: ApprovalSlipProps) {
+export function ApprovalSlip({ approval, onDecided, quiet = false }: ApprovalSlipProps) {
   const { trialId, refresh } = useTrial();
   const toast = useToast();
   const [reviewer, setReviewer] = useReviewer();
@@ -149,7 +151,7 @@ export function ApprovalSlip({ approval, onDecided }: ApprovalSlipProps) {
       </div>
       {error ? <p className="slip__error" role="alert">{error}</p> : null}
       <div className="slip__actions">
-        <Button variant="filled" busy={busy === "approved"} busyLabel="Signing…" disabled={busy !== null}
+        <Button variant={quiet ? "outline" : "filled"} busy={busy === "approved"} busyLabel="Signing…" disabled={busy !== null}
           onClick={() => decide("approved")}>Approve</Button>
         <Button variant="outline" busy={busy === "rejected"} busyLabel="Signing…" disabled={busy !== null}
           onClick={() => decide("rejected")}>Reject</Button>
