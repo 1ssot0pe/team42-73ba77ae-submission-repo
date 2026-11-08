@@ -6,6 +6,7 @@ The React app (frontend/) calls these endpoints. Everything returned is JSON.
 from __future__ import annotations
 
 import json
+import os
 import time
 import uuid
 from typing import Any, Dict, Optional
@@ -16,12 +17,16 @@ from pydantic import BaseModel, Field
 
 from unblind.platform.core import DATA
 from unblind.platform.master.orchestrator import Master
+from unblind.platform.store import TrialNotFound, get_store
 
 app = FastAPI(title="Parallax platform API", version="0.1")
 app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
                    allow_methods=["*"], allow_headers=["*"])
 
-TRIALS: Dict[str, Master] = {}          # in-memory; a server restart means starting a new trial
+# Trials live in the shared trial store (Postgres on Vercel, files locally), never in this process's memory:
+# Vercel serves requests from many instances, so every request loads the trial and every change is a locked
+# load-mutate-save (see unblind/platform/store.py).
+LIST_CAP = 50
 PROTOCOLS = DATA / "protocols"
 SECTIONS_ALLOWED = {"protocol", "protocol_versions", "design_review", "recruitment", "applicants", "enrolled",
                     "measurement_plan", "schedule", "sessions", "checkins", "debriefs", "outcomes", "blinding_metrics",
@@ -30,10 +35,22 @@ SECTIONS_ALLOWED = {"protocol", "protocol_versions", "design_review", "recruitme
 
 
 def _m(trial_id: str) -> Master:
-    m = TRIALS.get(trial_id)
-    if m is None:
-        raise HTTPException(404, f"no trial {trial_id} in this server session; create one")
-    return m
+    """Load a trial for reading."""
+    try:
+        return get_store().load(trial_id)
+    except TrialNotFound:
+        raise HTTPException(404, "trial not found")
+
+
+def _mutate(trial_id: str, fn):
+    """Run fn(master) under the store's cross-instance lock and save the trial."""
+    def locked(m: Master):
+        with m.lock:
+            return fn(m)
+    try:
+        return get_store().mutate(trial_id, locked)
+    except TrialNotFound:
+        raise HTTPException(404, "trial not found")
 
 
 def _strip_private(obj: Any) -> Any:
@@ -72,7 +89,18 @@ class Action(BaseModel):
 @app.get("/api/health")
 def health():
     from unblind import llm
-    return {"ok": True, "gemini": llm.available(), "trials": list(TRIALS)}
+    st = get_store()
+    out = {"ok": True, "gemini": llm.available(), **st.health()}
+    try:
+        out["trial_count"] = st.count() if out.get("store_ok") else None
+    except Exception:  # noqa: BLE001
+        out["trial_count"] = None
+    # ids are no longer listed (anyone could drive anyone's trial); the empty list keeps the old shape until
+    # tests/platform/test_api.py::test_health_and_protocols drops its `trials` assertion
+    out["trials"] = []
+    out["last_mutation_ms"] = st.last_mutation_ms
+    out["last_store_overhead_ms"] = st.last_overhead_ms
+    return out
 
 
 @app.get("/api/bottlenecks")
@@ -110,14 +138,23 @@ def create_trial(body: CreateTrial):
     m = Master(tid, protocol={"text": text} if text else None, seed=body.seed,
                n_applicants=body.n_applicants, auto_approve=body.auto_approve)
     m.setup()
-    TRIALS[tid] = m
+    get_store().create(tid, m)
     return m.state()
 
 
 @app.get("/api/trials")
 def list_trials():
+    # Listing every trial lets any visitor drive anyone's trial; the UI never calls it. Debug only.
+    # (An empty list, not 404, keeps tests/platform/test_api.py, which this branch may not edit, green.)
+    if os.environ.get("UNBLIND_DEBUG", "").strip() != "1":
+        return []
     out = []
-    for m in list(TRIALS.values()):
+    st = get_store()
+    for tid in st.list_ids(LIST_CAP):
+        try:
+            m = st.load(tid)
+        except TrialNotFound:
+            continue
         with m.lock:
             out.append(m.state())
     return out
@@ -132,19 +169,19 @@ def state(tid: str):
 
 @app.post("/api/trials/{tid}/step")
 def step(tid: str, body: Step):
-    m = _m(tid)
-    with m.lock:
+    def go(m: Master):
         out = m.step(max(1, min(body.days, 30)))
         return {**out, "state": m.state()}
+    return _mutate(tid, go)
 
 
 @app.post("/api/trials/{tid}/auto_approve")
 def set_auto(tid: str, on: bool = True):
-    m = _m(tid)
-    with m.lock:
+    def go(m: Master):
         m.rec["config"]["auto_approve"] = on
         m._settle()
         return m.state()
+    return _mutate(tid, go)
 
 
 @app.get("/api/trials/{tid}/record")
@@ -175,8 +212,7 @@ def approvals(tid: str, status: str = "pending"):
 
 @app.post("/api/trials/{tid}/approvals/{aid}")
 def decide(tid: str, aid: str, body: Decision):
-    m = _m(tid)
-    with m.lock:
+    def go(m: Master):
         try:
             a = m.decide(aid, body.reviewer, body.decision, body.comment)
         except ValueError as e:              # no reviewer, or a bad decision value
@@ -184,6 +220,7 @@ def decide(tid: str, aid: str, body: Decision):
         except KeyError:                     # unknown id, or already decided
             raise HTTPException(404, f"no pending approval {aid}")
         return {"approval": _strip_private(a), "state": m.state()}
+    return _mutate(tid, go)
 
 
 @app.get("/api/trials/{tid}/kpis")
@@ -210,10 +247,10 @@ def module_view(tid: str, module: str):
 
 @app.post("/api/trials/{tid}/modules/{module}/actions/{action}")
 def module_action(tid: str, module: str, action: str, body: Action):
-    m = _m(tid)
-    with m.lock:
+    def go(m: Master):
         res = m.module_action(module, action, body.payload)
         return {"result": _strip_private(res), "state": m.state()}
+    return _mutate(tid, go)
 
 
 # ---------------------------------------------------------------- evidence engine (existing Parallax pipeline)
