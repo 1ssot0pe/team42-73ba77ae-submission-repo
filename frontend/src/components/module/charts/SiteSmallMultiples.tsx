@@ -371,10 +371,10 @@ function Panel({ title, flagged, points, today, height, mode, alarm, events, com
             <YAxis {...axisProps} domain={[0, 1]} ticks={[0, 0.5, 1]} width={38}
               tickFormatter={(v: number) => `${Math.round(v * 100)}%`} />
             <ReferenceLine y={0.5} stroke={chartTokens.reference} strokeDasharray={lineStyles.reference} strokeWidth={1}
-              label={labelRefs ? { value: "Coin flip 50%", position: "insideBottomRight", className: "dchart-reflabel" } : undefined} />
+              label={labelRefs ? { value: "Coin flip 50%", position: "insideTopRight", className: "dchart-reflabel" } : undefined} />
             {alarm && (
               <ReferenceLine y={0.6} stroke={chartTokens.reference} strokeDasharray={lineStyles.threshold} strokeWidth={1}
-                label={labelRefs ? { value: "Alarm reference 60%", position: "insideTopRight", className: "dchart-reflabel" } : undefined} />
+                label={labelRefs ? { value: "Alarm reference 60%", position: "insideBottomRight", className: "dchart-reflabel" } : undefined} />
             )}
             {events.map((e) => (
               <ReferenceLine key={`${e.kind}-${e.day}`} x={e.day} stroke={chartTokens.reference} strokeWidth={1}

@@ -26,13 +26,6 @@ export interface ModuleChartComponentProps {
   height?: number;
 }
 
-interface SimTruth {
-  synthetic?: boolean;
-  label?: string;
-  drift_site?: string;
-  drift_onset_day?: number;
-}
-
 interface Release {
   day: number;
   score: number;
@@ -156,7 +149,7 @@ function Overlay(props: Record<string, unknown>) {
 export function CusumChart({ chart, trialId, height }: ModuleChartComponentProps): JSX.Element {
   const { data: rec, loading, error } = useRecordSections(trialId, ["blinding_metrics", "alerts", "actions"]);
   const { state } = useTrial();
-  const truth = ((state as unknown as { simulated_truth?: SimTruth | null } | null)?.simulated_truth) ?? null;
+  const truth = state?.simulated_truth ?? null;
   const [ref, width] = useWidth<HTMLDivElement>();
   const compact = width > 0 && width < 560;
   const [tipRef, tipClosed] = useTooltipDismiss<HTMLDivElement>();
