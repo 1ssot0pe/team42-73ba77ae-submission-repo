@@ -86,7 +86,7 @@ export function ReportView({ report, input, onUseFixes }: {
             {eff.extrapolated ? " This trial sits outside the range of the calibration data, so the adjustment is extrapolated." : null}
           </p>
           {eff.reported !== null || eff.adjusted !== null ? (
-            <EffectChart e={eff} note={synthetic ? "Synthetic calibration" : calibration ? `Calibration: ${calibration}` : ""} />
+            <EffectChart e={eff} note={synthetic ? "Synthetic calibration" : calibration ? `Calibration: ${R.tidy(calibration)}` : ""} />
           ) : null}
         </section>
       ) : null}
@@ -94,22 +94,34 @@ export function ReportView({ report, input, onUseFixes }: {
       {bl ? (
         <section className="studio-section" aria-labelledby="st-blinding">
           <h3 id="st-blinding" className="studio-h3">How blinded it was</h3>
-          <p className="studio-lead">
-            <StatusDot tone={bl.tone}>{bl.word}</StatusDot>
-            <span className="studio-num"> unblinding {R.fmt(bl.u)}{bl.uSd !== null ? ` ± ${R.fmt(bl.uSd)}` : ""}</span>
-          </p>
-          <p className="studio-small studio-muted">
+          <dl className="studio-pairs">
+            <div>
+              <dt>Overall</dt>
+              <dd><StatusDot tone={bl.tone}>{bl.word}</StatusDot></dd>
+            </div>
+            <div>
+              <dt>Unblinding, 0 to 1</dt>
+              <dd className="studio-num">{R.fmt(bl.u)}{bl.uSd !== null ? <span className="studio-muted"> ± {R.fmt(bl.uSd)}</span> : null}</dd>
+            </div>
+            {guessP ? (
+              <div>
+                <dt>Participant guess accuracy</dt>
+                <dd className="studio-num">{guessP.status !== "unknown" ? pct(guessP.value) : <span className="studio-muted">Not reported</span>}</dd>
+              </div>
+            ) : null}
+            {guessR ? (
+              <div>
+                <dt>Rater guess accuracy</dt>
+                <dd className="studio-num">{guessR.status !== "unknown" ? pct(guessR.value) : <span className="studio-muted">Not reported</span>}</dd>
+              </div>
+            ) : null}
+          </dl>
+          <p className="studio-small studio-muted studio-note">
             {bl.observed
               ? "Observed: worked out from the trial's own blinding data (how often people guessed their arm)."
               : "Estimated: the trial did not report blinding data, so this comes from its design."}
-            {" "}0 means nobody could tell which arm they were in; 1 means everyone could.
           </p>
-          {(guessP && guessP.status !== "unknown") || (guessR && guessR.status !== "unknown") ? (
-            <p className="studio-small">
-              {guessP && guessP.status !== "unknown" ? <>Participants guessed their arm correctly {pct(guessP.value)} of the time. </> : null}
-              {guessR && guessR.status !== "unknown" ? <>Raters guessed correctly {pct(guessR.value)} of the time.</> : null}
-            </p>
-          ) : null}
+          <p className="studio-small studio-muted">0 means nobody could tell which arm they were in; 1 means everyone could.</p>
         </section>
       ) : null}
 
@@ -159,7 +171,7 @@ export function ReportView({ report, input, onUseFixes }: {
       {warnings.length ? (
         <section className="studio-section" aria-labelledby="st-warn">
           <h3 id="st-warn" className="studio-h3">Read with care</h3>
-          <ul className="studio-notes">{warnings.map((w, i) => <li key={i}>{w}</li>)}</ul>
+          <ul className="studio-notes">{warnings.map((w, i) => <li key={i}>{R.tidy(w)}</li>)}</ul>
         </section>
       ) : null}
 
@@ -173,8 +185,8 @@ export function ReportView({ report, input, onUseFixes }: {
                   <li key={i} className={`studio-trace__row studio-trace__row--${t.level}`}>
                     <span className="studio-trace__agent">{t.agent}</span>
                     <span>
-                      {t.action}
-                      {t.detail ? <span className="studio-muted">: {t.detail}</span> : null}
+                      {R.tidy(t.action)}
+                      {t.detail ? <span className="studio-muted">: {R.tidy(t.detail)}</span> : null}
                     </span>
                   </li>
                 ))}
@@ -184,7 +196,7 @@ export function ReportView({ report, input, onUseFixes }: {
           {limitations.length ? (
             <details className="studio-details">
               <summary>Limitations</summary>
-              <ul className="studio-notes">{limitations.map((l, i) => <li key={i}>{l}</li>)}</ul>
+              <ul className="studio-notes">{limitations.map((l, i) => <li key={i}>{R.tidy(l)}</li>)}</ul>
             </details>
           ) : null}
         </section>

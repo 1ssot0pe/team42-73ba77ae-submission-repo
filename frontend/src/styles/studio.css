@@ -80,13 +80,29 @@
 .studio-readout { display: flex; flex-wrap: wrap; gap: var(--space-6) var(--space-12); margin: 0; }
 .studio-readout dt { font: var(--text-body-sm); color: var(--color-smoke); }
 .studio-readout dd { margin: 0; font: 300 32px/1.2 var(--font-display); }
+/* Blinding figures: one labelled column each, same size, tabular figures. */
+.studio-pairs {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5) var(--space-8); margin: 0; max-width: 560px;
+}
+.studio-pairs dt { font: var(--text-body-sm); color: var(--color-smoke); margin: 0 0 var(--space-1); }
+.studio-pairs dd { margin: 0; font: var(--text-body-lg); color: var(--color-ink); font-variant-numeric: tabular-nums; }
+.studio-pairs dd .studio-status { font: inherit; color: inherit; }
+.studio-note { margin-top: var(--space-5); }
+
 .studio-readout dd.studio-readout__range { font: var(--text-body-sm); color: var(--color-graphite); }
 
-.studio-chart { margin: var(--space-6) 0 0; max-width: 560px; }
-.studio-chart svg { display: block; overflow: visible; }
-.studio-chart__zero { stroke: var(--color-smoke); stroke-width: 1; stroke-dasharray: 2 3; }
-.studio-chart__tick { fill: var(--color-smoke); font: 11px var(--font-body); }
-.studio-chart__caption { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); font: var(--text-body-sm); color: var(--color-graphite); margin-top: var(--space-2); }
+.studio-chart { margin: var(--space-8) 0 0; max-width: 620px; }
+.studio-chart__box { width: 100%; min-width: 0; }
+.studio-chart svg { display: block; max-width: 100%; }
+.studio-chart text { font-family: var(--font-body); font-variant-numeric: tabular-nums; }
+.studio-chart__grid { stroke: var(--color-stone); stroke-width: 1; }
+.studio-chart__axis { stroke: var(--color-smoke); stroke-width: 1; }
+.studio-chart__zero { stroke: var(--color-graphite); stroke-width: 1; stroke-dasharray: 3 3; }
+.studio-chart__tick { fill: var(--color-smoke); font-size: 12px; }
+/* A canvas-coloured halo knocks the gridlines out behind row labels. */
+.studio-chart__row { fill: var(--color-graphite); font-size: 13px; paint-order: stroke; stroke: var(--color-eggshell); stroke-width: 5px; stroke-linejoin: round; }
+.studio-chart__title { fill: var(--color-smoke); font-size: 13px; }
+.studio-chart__caption { display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-4); font: var(--text-body-sm); color: var(--color-graphite); margin-top: var(--space-3); }
 .studio-key { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
 
 .studio-facts { list-style: none; margin: 0 0 var(--space-3); padding: 0; }
@@ -129,7 +145,7 @@
 /* ------------------------------------------------------------ drawer */
 .studio-scrim { position: fixed; inset: 0; background: transparent; z-index: 60; }
 .studio-drawer {
-  position: fixed; top: 0; right: 0; bottom: 0; z-index: 61; width: min(440px, 100vw); overflow-y: auto;
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: 61; width: min(440px, 100%); overflow-y: auto; overflow-wrap: anywhere;
   background: var(--color-eggshell); border-left: 1px solid var(--color-stone);
   padding: var(--space-8) var(--space-6); animation: studio-in var(--dur-enter, 220ms) var(--ease-out, ease-out);
 }
@@ -146,6 +162,10 @@
 
 @media (max-width: 560px) {
   .studio { padding-top: var(--space-10); }
+  .studio-section { padding: var(--space-6) 0 var(--space-8); }
+  .studio-pairs { gap: var(--space-4) var(--space-5); }
+  .studio-drawer { border-left: 0; padding: var(--space-6) var(--gutter, 16px); }
+  .studio-form__meta { align-items: flex-start; }
   .studio-title { font-size: 34px; }
   .studio-readout dd { font-size: 26px; }
   .studio-readout { gap: var(--space-4) var(--space-8); }

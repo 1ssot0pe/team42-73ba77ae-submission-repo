@@ -5,6 +5,7 @@
  */
 import { useEffect, useRef } from "react";
 import type { FactRow } from "./report";
+import { tidy } from "./report";
 
 const STATUS_WORD: Record<string, string> = {
   observed: "Observed",
@@ -82,7 +83,7 @@ export function FactDrawer({ fact, onClose }: { fact: FactRow | null; onClose: (
         ) : (
           <p className="studio-muted">No quote: this value was not read directly from a source.</p>
         )}
-        {fact.note ? <p className="studio-small studio-muted">{fact.note}</p> : null}
+        {fact.note ? <p className="studio-small studio-muted">{tidy(fact.note)}</p> : null}
         {fact.sourceUrl ? (
           <p className="studio-small">
             <span className="studio-label">Source</span>

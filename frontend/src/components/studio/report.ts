@@ -244,3 +244,30 @@ export function draftOutline(r: EvidenceReport, input: string): string {
   ];
   return lines.join("\n");
 }
+
+/** Acronyms that stay in capitals even though they are four letters or more. */
+const ACRONYMS = new Set([
+  "NCT", "FDA", "EMA", "DOI", "MADRS", "HAMD", "HAM", "PTSD", "MDMA", "CAPS", "QIDS", "BDI", "PCL",
+  "CONSORT", "NICE", "NIH", "SSRI", "SNRI", "ANCOVA", "MMRM", "LOCF", "RCT", "ITT", "JAMA", "NEJM",
+  "BMJ", "PLOS", "GRADE", "PRISMA", "SPIRIT", "UNBLIND", "OCD", "GAD", "TRD", "MDD", "AUD", "LSD",
+  "DMT", "API", "JSON", "CSV", "PDF", "HTML", "PMID", "PMC", "ISRCTN", "EUCTR",
+]);
+/** Short shouty words that the vowel test below would miss. */
+const SHOUTY = new Set(["ONLY", "NOTE", "REAL", "DEMO", "TEST", "STUB", "MOCK", "FAKE", "WARN", "TRUE", "FALSE"]);
+
+/**
+ * Display text for warnings, notes and trace lines: turns shouty all-caps words ("SYNTHETIC")
+ * into sentence case and leaves acronyms (FDA, NCT, MADRS, DOI) alone. A word counts as shouty when
+ * it has four or more letters, is not a known acronym, and reads like a word (two or more vowels).
+ */
+export function tidy(text: string): string {
+  return text.replace(/\b[A-Z]{4,}\b/g, (w, offset: number, all: string) => {
+    if (ACRONYMS.has(w)) return w;
+    const vowels = (w.match(/[AEIOU]/g) ?? []).length;
+    if (vowels < 2 && !SHOUTY.has(w)) return w;
+    const before = all.slice(0, offset).trimEnd();
+    const startsSentence = before === "" || /[.!?:]$/.test(before);
+    const lower = w.toLowerCase();
+    return startsSentence ? lower[0].toUpperCase() + lower.slice(1) : lower;
+  });
+}
