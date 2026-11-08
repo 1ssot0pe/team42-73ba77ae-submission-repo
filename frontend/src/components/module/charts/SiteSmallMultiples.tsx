@@ -318,6 +318,7 @@ interface PanelProps {
   events: PanelEvent[];
   compact: boolean;
   labelRows: number;
+  labelRefs: boolean;
 }
 
 /** Event labels above the plot, one row each (panels are narrow), drawn with a halo. */
@@ -331,11 +332,15 @@ function EventLabels({ events, compact, ...rest }: { events: PanelEvent[]; compa
     <g className="dchart-events">
       {sorted.map((e, i) => {
         const x = xs(e.day);
+        const y = offset.top - 5 - (sorted.length - 1 - i) * 13;
+        return <line key={`t-${e.kind}-${e.day}`} x1={x} x2={x} y1={y + 3} y2={offset.top} className="dchart-evtick" />;
+      })}
+      {sorted.map((e, i) => {
+        const x = xs(e.day);
         const right = x > offset.left + offset.width * 0.5;
         const y = offset.top - 5 - (sorted.length - 1 - i) * 13;
         return (
           <g key={`${e.kind}-${e.day}`}>
-            <line x1={x} x2={x} y1={y + 3} y2={offset.top} className="dchart-evtick" />
             <text x={right ? x - 3 : x + 3} y={y} textAnchor={right ? "end" : "start"}
               className={`dchart-evlabel${e.kind === "alert" ? " dchart-evlabel--alert" : ""}`}>
               {compact ? e.short : e.label}
@@ -347,7 +352,7 @@ function EventLabels({ events, compact, ...rest }: { events: PanelEvent[]; compa
   );
 }
 
-function Panel({ title, flagged, points, today, height, mode, alarm, events, compact, labelRows }: PanelProps) {
+function Panel({ title, flagged, points, today, height, mode, alarm, events, compact, labelRows, labelRefs }: PanelProps) {
   const rows = panelRows(points, today);
   const colour = flagged ? chartTokens.flag : chartTokens.primary;
   const ticks = dayTicks(today, compact ? 14 : 14);
@@ -365,8 +370,12 @@ function Panel({ title, flagged, points, today, height, mode, alarm, events, com
               tickFormatter={(d: number) => formatDayTick(d)} allowDecimals={false} />
             <YAxis {...axisProps} domain={[0, 1]} ticks={[0, 0.5, 1]} width={38}
               tickFormatter={(v: number) => `${Math.round(v * 100)}%`} />
-            <ReferenceLine y={0.5} stroke={chartTokens.reference} strokeDasharray={lineStyles.reference} strokeWidth={1} />
-            {alarm && <ReferenceLine y={0.6} stroke={chartTokens.reference} strokeDasharray={lineStyles.threshold} strokeWidth={1} />}
+            <ReferenceLine y={0.5} stroke={chartTokens.reference} strokeDasharray={lineStyles.reference} strokeWidth={1}
+              label={labelRefs ? { value: "Coin flip 50%", position: "insideBottomRight", className: "dchart-reflabel" } : undefined} />
+            {alarm && (
+              <ReferenceLine y={0.6} stroke={chartTokens.reference} strokeDasharray={lineStyles.threshold} strokeWidth={1}
+                label={labelRefs ? { value: "Alarm reference 60%", position: "insideTopRight", className: "dchart-reflabel" } : undefined} />
+            )}
             {events.map((e) => (
               <ReferenceLine key={`${e.kind}-${e.day}`} x={e.day} stroke={chartTokens.reference} strokeWidth={1}
                 ifOverflow="hidden" />
@@ -436,8 +445,13 @@ export function SiteSmallMultiples({ chart, trialId, height }: ModuleChartCompon
   } else if (cfg.by === "rater") {
     const site = siteOf(groups[0] ?? "") || latestAlert?.site || "";
     const a = site ? alertBySite.get(site) : undefined;
-    const top = a?.perRater.slice().sort((x, y) => y.correct / Math.max(1, y.n) - x.correct / Math.max(1, x.n))[0];
-    title = a && top && top.n > 0 ? `${top.rater} drives the ${site} alert (${top.correct} of ${top.n} correct)`
+    // The alert is a site-level finding. Per-rater counts are partial (only batches that began after the estimated
+    // onset are attributed) and small, so the title states the site evidence first and lists every named rater with n.
+    const perRater = (a?.perRater ?? []).filter((r) => r.n > 0)
+      .map((r) => `${r.rater} ${r.correct} of ${r.n}${r.n < WILSON_MIN_N ? " (too few for an interval)" : ""}`);
+    const since = a && a.correctSinceOnset !== null && a.nSinceOnset !== null
+      ? ` (${a.correctSinceOnset} of ${a.nSinceOnset} correct since estimated onset)` : "";
+    title = a ? `${site} raters flagged for drift on day ${a.day}${since}${perRater.length ? `; per rater, ${perRater.join(", ")}` : ""}`
       : site ? `Rater accuracy at ${site}, by rater` : "Rater accuracy by rater";
     subtitle = a ? `Raters at ${site}, the site with the latest drift alert. Correct among decisive guesses, last ${ROLLING_BATCHES} vault batches, ${daysWord}`
       : site ? `Raters at ${site}, the site with the highest current drift score. Correct among decisive guesses, last ${ROLLING_BATCHES} vault batches, ${daysWord}`
@@ -453,8 +467,11 @@ export function SiteSmallMultiples({ chart, trialId, height }: ModuleChartCompon
   const panels = groups.map((g) => {
     const site = siteOf(g);
     const a = showEvents ? alertBySite.get(site) : undefined;
-    const flagged = !!a && cfg.who === "rater" && (cfg.by === "site" || a.perRater.some((r) => r.rater === g));
-    const label = cfg.by === "site" && a && cfg.who === "rater" ? `${g}, drift alert day ${a.day}` : g;
+    // every rater at the alerted site is coloured the same way: the alert is about the site, not one rater
+    const flagged = !!a && cfg.who === "rater";
+    const named = a?.perRater.find((r) => r.rater === g && r.n > 0);
+    const label = cfg.by === "site" && a && cfg.who === "rater" ? `${g}, drift alert day ${a.day}`
+      : cfg.by === "rater" && named ? `${g}, named in alert evidence (n = ${named.n})` : g;
     return { g, site, flagged, label, events: a ? eventsFor(a) : [], pts: points.get(g) ?? [] };
   });
 
@@ -506,7 +523,8 @@ export function SiteSmallMultiples({ chart, trialId, height }: ModuleChartCompon
       <p>Points mark each released vault batch; the line holds that value until the next one. Groups with fewer than 5 guesses are hidden by the vault.</p>
       {cfg.alarm && <p>Alarm reference 60%: the upper end of what raters are expected to reach under working blinding (50% to 60%). The alarm itself is the drift score on the CUSUM chart.</p>}
       {cfg.by === "rater" && <p>Per-rater groups are small; intervals appear once a rater has {WILSON_MIN_N} or more guesses in the window.</p>}
-      {panels.some((p) => p.flagged) && <p>Orange line with circles and a dot by the name: named in a drift alert. Violet squares: no alert.</p>}
+      {panels.some((p) => p.flagged) && <p>{cfg.by === "rater" ? "Orange line with circles and a dot by the name: a rater at the site with the drift alert." : "Orange line with circles and a dot by the name: the site with a drift alert. Violet squares: no alert."}</p>}
+      {cfg.by === "rater" && latestAlert && <p>The alert evidence attributes guesses to raters only from batches that began after the estimated onset, so a rater missing from it is not cleared.</p>}
     </>
   );
 
@@ -521,15 +539,13 @@ export function SiteSmallMultiples({ chart, trialId, height }: ModuleChartCompon
       dataTable={anyData ? dataTable : undefined} footnotes={footnotes} empty={empty}>
       <div ref={ref} className={`dchart-grid${compact ? " dchart-grid--stack" : ""}`}
         style={{ ["--dchart-cols" as string]: String(Math.max(1, panels.length)) }}>
-        {panels.map((p) => (
+        {panels.map((p, i) => (
           <Panel key={p.g} title={p.label} flagged={p.flagged} points={p.pts} today={Math.max(today, 1)} height={panelHeight}
             mode={cfg.mode} alarm={cfg.alarm} events={p.events} compact={compact}
-            labelRows={Math.max(0, ...panels.map((x) => x.events.length))} />
+            labelRows={Math.max(0, ...panels.map((x) => x.events.length))} labelRefs={i === panels.length - 1} />
         ))}
       </div>
       <div className="dchart-key" aria-hidden="true">
-        <span><svg width="28" height="8"><line x1="0" x2="28" y1="4" y2="4" strokeDasharray={lineStyles.reference} /></svg>Coin flip 50%</span>
-        {cfg.alarm && <span><svg width="28" height="8"><line x1="0" x2="28" y1="4" y2="4" strokeDasharray={lineStyles.threshold} /></svg>Alarm reference 60%</span>}
         <span><svg width="14" height="10"><rect x="2" y="2" width="6" height="6" className="dchart-key__band" /></svg>95% interval (8 or more guesses)</span>
         <span><svg width="12" height="10"><rect x="2" y="2" width="6" height="6" className="dchart-key__hollow" /></svg>Fewer than 8, no interval</span>
       </div>

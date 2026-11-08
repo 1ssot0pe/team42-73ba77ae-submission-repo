@@ -5,7 +5,7 @@ and a trial walked with tests/e2e/visuals/walk_dosing.py (psilocybin, seed 42, 5
 
     python tests/e2e/visuals/shoot_dosing.py <trial_id> [suffix]
 
-suffix "" shoots the D62 set, "-d90" the D90 variants of the key chart and the CUSUM, "-predecision" the key chart
+suffix "" shoots the D62 set, "-d90" the D90 variants of the key chart and the CUSUM, "-predecision" the key chart and the CUSUM
 while the drift approval is still pending. Files land in
 docs/testing/visuals/after/<chart id><suffix>-{1440-light,1440-dark,390}.png (element crops, each under 400 KB).
 """
@@ -32,7 +32,7 @@ def main(tid: str, suffix: str = "") -> None:
     project = [{"id": "p-dosing", "name": "Psilocybin TRD (visuals)", "createdAt": "2026-11-08T10:00:00.000Z",
                 "updatedAt": "2026-11-08T10:00:00.000Z", "template": "psilocybin", "draft": "", "trialId": tid,
                 "status": "running"}]
-    drawer = ["cusum-site"] if suffix == "-d90" else [] if suffix == "-predecision" else DRAWER
+    drawer = ["cusum-site"] if suffix == "-d90" else ["cusum-site"] if suffix == "-predecision" else DRAWER
     with sync_playwright() as p:
         b = p.chromium.launch()
         for tag, kw, theme in SETTINGS:

@@ -113,8 +113,9 @@ function Overlay(props: Record<string, unknown>) {
   if (!xs || !ys || !offset) return null;
   const stacked = stackRows(events, Infinity);
   // end labels: nudge upwards apart so they never overlap each other or the axis
-  const ends = lines.map((l) => ({ ...l, py: ys(l.y) })).sort((a, b) => b.py - a.py);
-  for (let i = 1; i < ends.length; i++) if (ends[i - 1].py - ends[i].py < 13) ends[i].py = ends[i - 1].py - 13;
+  const floor = offset.top + offset.height - 12; // keep the lowest label clear of the x axis and its last tick
+  const ends = lines.map((l) => ({ ...l, py: Math.min(ys(l.y), floor) })).sort((a, b) => b.py - a.py);
+  for (let i = 1; i < ends.length; i++) if (ends[i - 1].py - ends[i].py < 14) ends[i].py = ends[i - 1].py - 14;
   const bottom = offset.top + offset.height;
   return (
     <g>
@@ -174,7 +175,9 @@ export function CusumChart({ chart, trialId, height }: ModuleChartComponentProps
   const flaggedSite = alert?.site ?? null;
   const flagLine = lines.find((l) => l.site === flaggedSite) ?? null;
   const detect = flagLine && H !== null ? flagLine.releases.find((r) => r.score >= H && (alert ? r.day <= alert.day : true)) ?? null : null;
-  const simDay = truth && typeof truth.drift_onset_day === "number" && shortSite(truth.drift_site) === flaggedSite
+  // the server withholds the truth until the alert is decided or the trial is closed (review S-1); check it here too
+  const decided = !!alert && alert.status !== "open";
+  const simDay = truth && decided && typeof truth.drift_onset_day === "number" && shortSite(truth.drift_site) === flaggedSite
     && truth.drift_onset_day <= today ? truth.drift_onset_day : null;
 
   const events: Ev[] = [];

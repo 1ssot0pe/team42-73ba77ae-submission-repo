@@ -43,6 +43,7 @@ ROUTES: Dict[str, List[str]] = {
     "question_rejected": [],
 }
 CLOSE_DAY = 90
+DECIDED_ALERT = ("action_approved", "resolved", "dismissed", "superseded")  # a human has decided the alert
 SIM_NEVER = 10 ** 9                    # world.py and eval_drift.py use this day for "no drift"
 log = logging.getLogger("parallax.master")
 # Per-trial files other code keeps next to the trial under TRIALS and needs again on later requests.
@@ -342,16 +343,25 @@ class Master:
 
     def simulated_truth(self) -> Optional[dict]:
         """The simulator's planted rater drift (site and onset day), exposed read-only so charts can mark
-        "Drift began (simulated)". Labelled simulated; no agent reads it and nothing is stored. It is shown only
-        once the trial clock has reached the onset day, so it never reveals a future event; None otherwise, or
-        when no drift was planted."""
+        "Drift began (simulated)". Labelled simulated; no agent reads it and nothing is stored.
+
+        It must never act as an oracle for a human decision, so it is withheld (None) until either the trial is
+        closed, or a rater-drift alert at the planted site has been decided by a human (approved, rejected,
+        resolved or superseded) and no rater-drift alert anywhere is still waiting for a decision. Also None when
+        no drift was planted or the clock has not reached the onset day."""
         day = getattr(self, "_planted_drift_day", None)
         if day is None:                                   # snapshots made before this field existed
             day = self.world.cfg.drift_day
         if day is None or day >= SIM_NEVER or self.rec["day"] < day:
             return None
-        return {"synthetic": True, "label": "simulated", "drift_site": self.world.cfg.drift_site,
-                "drift_onset_day": int(day)}
+        site = self.world.cfg.drift_site
+        drift = [a for a in self.rec["alerts"] if a.get("kind") == "rater_drift"]
+        closed = self.rec["phase"] == "closed" or self.rec["day"] >= CLOSE_DAY
+        decided_here = any(a.get("site") == site and a.get("status") in DECIDED_ALERT for a in drift)
+        pending = any(a.get("status") == "open" for a in drift)
+        if not closed and (pending or not decided_here):
+            return None
+        return {"synthetic": True, "label": "simulated", "drift_site": site, "drift_onset_day": int(day)}
 
     def state(self) -> dict:
         r = self.rec
