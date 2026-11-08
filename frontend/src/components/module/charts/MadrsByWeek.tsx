@@ -149,6 +149,7 @@ export function MadrsByWeek({ chart, trialId, height }: ModuleChartComponentProp
 
   return (
     <ChartFrame
+      interactive
       id="madrs-by-week"
       title={title}
       subtitle={subtitle}

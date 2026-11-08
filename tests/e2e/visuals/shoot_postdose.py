@@ -65,7 +65,7 @@ with sync_playwright() as p:
             path = OUT / f"{cid}-{tag}.png"
             el.screenshot(path=str(path))
             size = path.stat().st_size
-            print(tag, cid, f"{size // 1024} KB", "aria:", (el.locator("[role=img]").first.get_attribute("aria-label") or "")[:90])
+            print(tag, cid, f"{size // 1024} KB", "aria:", (el.locator(".chart__body").first.get_attribute("aria-label") or "")[:90])
             if size > 400 * 1024:
                 print("  WARNING over 400 KB")
         sw = pg.evaluate("[document.documentElement.scrollWidth, window.innerWidth]")

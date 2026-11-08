@@ -198,6 +198,7 @@ export function ReportAccuracy({ chart, trialId, height }: ModuleChartComponentP
 
   return (
     <ChartFrame
+      interactive
       id="report-rater-accuracy-site"
       title={title}
       subtitle={subtitle}

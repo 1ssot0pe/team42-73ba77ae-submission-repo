@@ -271,6 +271,7 @@ export function EffectForest({ chart, trialId }: ModuleChartComponentProps): JSX
 
   return (
     <ChartFrame
+      interactive
       id="effect-estimates"
       title={title}
       subtitle={subtitle}
