@@ -162,3 +162,85 @@ def test_trial_works_across_instances_and_survives_losing_one(two_instances):
     assert c.get(f"{b}/api/trials/T-000000-nope/state").status_code == 404
     assert c.get(f"{b}/api/trials/T-000000-nope/state").json()["detail"] == "trial not found"
     assert len(calls) >= 20
+
+
+# ---------------------------------------------------------------------------
+# API edge cases found by the end-to-end testers (in-process client on the store-backed API)
+# ---------------------------------------------------------------------------
+@pytest.fixture
+def api(tmp_path, monkeypatch):
+    from fastapi.testclient import TestClient
+    from backend.main import app
+    from unblind.platform import store
+    monkeypatch.delenv("UNBLIND_DEBUG", raising=False)
+    store.set_store(store.FileStore(tmp_path / "store"))
+    try:
+        c = TestClient(app)
+        tid = c.post("/api/trials", json={"example": "example_psilocybin_trd.md", "seed": 42, "n_applicants": 60,
+                                          "auto_approve": True}).json()["trial_id"]
+        yield c, tid
+    finally:
+        store.set_store(None)
+
+
+def test_health_counts_trials_without_listing_ids(api, monkeypatch):
+    c, tid = api
+    h = c.get("/api/health").json()
+    assert h["trial_count"] == 1 and h["store"] == "file" and h["store_ok"] is True
+    assert tid not in str(h)
+    assert c.get("/api/trials").json() == []                 # no enumeration of other people's trials
+    monkeypatch.setenv("UNBLIND_DEBUG", "1")
+    assert [t["trial_id"] for t in c.get("/api/trials").json()] == [tid]
+
+
+def test_unknown_trial_is_404_trial_not_found(api):
+    c, _ = api
+    for method, path in (("GET", "state"), ("GET", "events"), ("POST", "step"), ("POST", "auto_approve")):
+        r = c.request(method, f"/api/trials/T-nope/{path}", json={"days": 1} if path == "step" else None)
+        assert r.status_code == 404 and r.json()["detail"] == "trial not found", (path, r.text)
+    assert c.get("/api/trials/..%2F..%2Fetc/state").status_code == 404
+
+
+def test_events_limit_is_clamped(api):
+    c, tid = api
+    c.post(f"/api/trials/{tid}/step", json={"days": 5})
+    n_all = len(c.get(f"/api/trials/{tid}/events", params={"limit": 1000}).json())
+    assert n_all > 1
+    assert len(c.get(f"/api/trials/{tid}/events", params={"limit": 0}).json()) == 1
+    assert len(c.get(f"/api/trials/{tid}/events", params={"limit": -5}).json()) == 1
+    assert len(c.get(f"/api/trials/{tid}/events", params={"limit": 10 ** 6}).json()) == min(n_all, 1000)
+
+
+def test_unknown_module_or_action_is_404_and_saves_nothing(api):
+    from unblind.platform.store import get_store
+    c, tid = api
+    v = get_store().version(tid)
+    assert c.get(f"/api/trials/{tid}/modules/nope/view").status_code == 404
+    assert c.post(f"/api/trials/{tid}/modules/nope/actions/x", json={"payload": {}}).status_code == 404
+    for mod in ("predose", "dosing", "postdose"):
+        r = c.post(f"/api/trials/{tid}/modules/{mod}/actions/no_such_action", json={"payload": {}})
+        assert r.status_code == 404, (mod, r.text)
+    assert get_store().version(tid) == v
+
+
+def test_portal_overflowing_age_is_a_validation_message(api):
+    c, tid = api
+    r = c.post(f"/api/trials/{tid}/modules/predose/actions/apply", json={"payload": {"applicant": {"age": "1e400"}}})
+    assert r.status_code == 200
+    assert r.json()["result"] == {"ok": False, "error": "'age' must be a whole number"}
+
+
+def test_module_errors_keep_stack_traces_out_of_the_timeline(api, monkeypatch):
+    from unblind.platform.store import get_store
+    c, tid = api
+
+    def boom(m):
+        def bad_kpis(rec):
+            raise RuntimeError("kaboom")
+        m.modules["dosing"].kpis = bad_kpis
+        m.kpis()
+        del m.modules["dosing"].kpis
+    get_store().mutate(tid, boom)
+    ev = [e for e in c.get(f"/api/trials/{tid}/events", params={"limit": 1000}).json() if "kaboom" in e["text"]]
+    assert ev and all(not e.get("data") for e in ev)
+    assert "Traceback" not in c.get(f"/api/trials/{tid}/events", params={"limit": 1000}).text

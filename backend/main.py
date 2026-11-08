@@ -194,6 +194,7 @@ def record(tid: str, sections: str = ""):
 
 @app.get("/api/trials/{tid}/events")
 def events(tid: str, since: int = 0, module: str = "", level: str = "", limit: int = 400):
+    limit = max(1, min(int(limit), 1000))     # rows[-0:] would return everything
     m = _m(tid)
     with m.lock:
         ev = m.rec["events"]
@@ -241,6 +242,8 @@ def messages(tid: str):
 @app.get("/api/trials/{tid}/modules/{module}/view")
 def module_view(tid: str, module: str):
     m = _m(tid)
+    if module not in m.modules:
+        raise HTTPException(404, f"unknown module {module}")
     with m.lock:
         return _strip_private(m.module_view(module))
 
@@ -248,7 +251,11 @@ def module_view(tid: str, module: str):
 @app.post("/api/trials/{tid}/modules/{module}/actions/{action}")
 def module_action(tid: str, module: str, action: str, body: Action):
     def go(m: Master):
+        if module not in m.modules:
+            raise HTTPException(404, f"unknown module {module}")
         res = m.module_action(module, action, body.payload)
+        if isinstance(res, dict) and res.get("ok") is False and "has no action" in str(res.get("error", "")):
+            raise HTTPException(404, str(res["error"]))      # raised inside the store lock: nothing is saved
         return {"result": _strip_private(res), "state": m.state()}
     return _mutate(tid, go)
 

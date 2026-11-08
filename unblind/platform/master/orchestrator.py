@@ -16,6 +16,7 @@ from stubs.py is used so the platform still runs end to end.
 from __future__ import annotations
 
 import importlib
+import logging
 import os
 import random
 import threading
@@ -42,6 +43,7 @@ ROUTES: Dict[str, List[str]] = {
     "question_rejected": [],
 }
 CLOSE_DAY = 90
+log = logging.getLogger("parallax.master")
 # Per-trial files other code keeps next to the trial under TRIALS and needs again on later requests.
 # They travel inside the snapshot so a fresh instance (empty /tmp) sees exactly the same values.
 SIDECAR_SUFFIXES = (".salt",)          # postdose export pseudonymisation salt (postdose/agents.py _salt)
@@ -124,8 +126,9 @@ class Master:
         try:
             return fn(*a)
         except Exception as e:
-            self.rec.event("master", f"{mname} raised {type(e).__name__}: {e}", "warn", "master",
-                           data=traceback.format_exc()[-1500:])
+            # the stack trace goes to the server log only; the timeline (sent to the browser) gets the summary
+            log.warning("module %s raised in trial %s\n%s", mname, self.rec.get("trial_id"), traceback.format_exc())
+            self.rec.event("master", f"{mname} raised {type(e).__name__}: {e}", "warn", "master")
             return None
 
     # -------------------------------------------------------------- routing
