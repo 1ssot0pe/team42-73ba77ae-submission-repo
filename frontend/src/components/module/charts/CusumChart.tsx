@@ -315,7 +315,7 @@ export function CusumChart({ chart, trialId, height }: ModuleChartComponentProps
             {styled.filter(({ l }) => l.reset !== null && l.resetFrom !== null).map(({ l, s }) => (
               <ReferenceLine key={`${l.site}-drop`} segment={[{ x: l.reset!, y: l.resetFrom! }, { x: l.reset!, y: 0 }]}
                 stroke={s.stroke} strokeDasharray={lineStyles.derived} strokeWidth={1.5}
-                label={compact ? undefined : { value: "Reset after action", position: "right", className: "dchart-reflabel" }} />
+                label={compact ? undefined : { value: "Reset after action", position: l.reset! > Math.max(today, 2) * 0.7 ? "left" : "right", className: "dchart-reflabel" }} />
             ))}
             {detect && (
               <ReferenceDot x={detect.day} y={detect.score} r={5} fill={chartTokens.flag} stroke={chartTokens.halo} strokeWidth={2} />

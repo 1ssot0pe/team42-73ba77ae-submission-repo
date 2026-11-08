@@ -307,6 +307,10 @@ function TooltipBox({ active, payload, mode }: { active?: boolean; payload?: Arr
   return <div className="dchart-tip" role="status">{sentence({ ...p, day: row.day === p.day ? p.day : p.day }, mode)}{held}</div>;
 }
 
+/** Right gutter for the reference labels. Desktop: only the last panel gets it, and its flex basis grows by the same
+ * amount, so every plot keeps the same width (shared x scale). Stacked: every panel gets it for the same reason. */
+const REF_GUTTER = 76;
+
 interface PanelProps {
   title: string;
   flagged: boolean;
@@ -319,6 +323,22 @@ interface PanelProps {
   compact: boolean;
   labelRows: number;
   labelRefs: boolean;
+  gutter: number;
+}
+
+/** "Coin flip 50%" and "Alarm 60%" in the right gutter beside their rules, where no data is drawn. */
+function RefLabels({ alarm, ...rest }: { alarm: boolean } & Record<string, unknown>) {
+  const yAxisMap = rest.yAxisMap as Record<string, { scale: (v: number) => number }> | undefined;
+  const offset = rest.offset as { left: number; width: number } | undefined;
+  const ys = yAxisMap ? Object.values(yAxisMap)[0]?.scale : undefined;
+  if (!ys || !offset) return null;
+  const x = offset.left + offset.width + 4;
+  return (
+    <g>
+      {alarm && <text x={x} y={ys(0.6) - 2} className="dchart-reflabel">Alarm 60%</text>}
+      <text x={x} y={ys(0.5) + (alarm ? 11 : 4)} className="dchart-reflabel">Coin flip 50%</text>
+    </g>
+  );
 }
 
 /** Event labels above the plot, one row each (panels are narrow), drawn with a halo. */
@@ -333,7 +353,8 @@ function EventLabels({ events, compact, ...rest }: { events: PanelEvent[]; compa
       {sorted.map((e, i) => {
         const x = xs(e.day);
         const y = offset.top - 5 - (sorted.length - 1 - i) * 13;
-        return <line key={`t-${e.kind}-${e.day}`} x1={x} x2={x} y1={y + 3} y2={offset.top} className="dchart-evtick" />;
+        void y; // stubs start below the lowest label row, so no rule crosses a label
+        return <line key={`t-${e.kind}-${e.day}`} x1={x} x2={x} y1={offset.top - 3} y2={offset.top} className="dchart-evtick" />;
       })}
       {sorted.map((e, i) => {
         const x = xs(e.day);
@@ -352,7 +373,7 @@ function EventLabels({ events, compact, ...rest }: { events: PanelEvent[]; compa
   );
 }
 
-function Panel({ title, flagged, points, today, height, mode, alarm, events, compact, labelRows, labelRefs }: PanelProps) {
+function Panel({ title, flagged, points, today, height, mode, alarm, events, compact, labelRows, labelRefs, gutter }: PanelProps) {
   const rows = panelRows(points, today);
   const colour = flagged ? chartTokens.flag : chartTokens.primary;
   const ticks = dayTicks(today, compact ? 14 : 14);
@@ -360,21 +381,22 @@ function Panel({ title, flagged, points, today, height, mode, alarm, events, com
   const topPad = 8 + 13 * labelRows;
   const [tipRef, tipClosed] = useTooltipDismiss<HTMLDivElement>();
   return (
-    <div className={`dchart-panel${flagged ? " dchart-panel--flag" : ""}`}>
+    <div className={`dchart-panel${flagged ? " dchart-panel--flag" : ""}`}
+      style={{ flexBasis: compact ? undefined : gutter }}>
       <p className="dchart-panel__title">{title}</p>
       <div ref={tipRef} className="dchart-panel__plot" style={{ height: height + topPad }}>
         <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart data={rows} margin={{ top: topPad, right: 10, bottom: 0, left: 0 }}>
+          <ComposedChart data={rows} margin={{ top: topPad, right: 10 + gutter, bottom: 0, left: 0 }}>
             <CartesianGrid {...gridProps} />
             <XAxis {...axisProps} dataKey="day" type="number" domain={[1, Math.max(today, 2)]} ticks={ticks}
               tickFormatter={(d: number) => formatDayTick(d)} allowDecimals={false} />
             <YAxis {...axisProps} domain={[0, 1]} ticks={[0, 0.5, 1]} width={38}
               tickFormatter={(v: number) => `${Math.round(v * 100)}%`} />
             <ReferenceLine y={0.5} stroke={chartTokens.reference} strokeDasharray={lineStyles.reference} strokeWidth={1}
-              label={labelRefs ? { value: "Coin flip 50%", position: "insideTopRight", className: "dchart-reflabel" } : undefined} />
+ />
             {alarm && (
               <ReferenceLine y={0.6} stroke={chartTokens.reference} strokeDasharray={lineStyles.threshold} strokeWidth={1}
-                label={labelRefs ? { value: "Alarm reference 60%", position: "insideBottomRight", className: "dchart-reflabel" } : undefined} />
+ />
             )}
             {events.map((e) => (
               <ReferenceLine key={`${e.kind}-${e.day}`} x={e.day} stroke={chartTokens.reference} strokeWidth={1}
@@ -399,6 +421,7 @@ function Panel({ title, flagged, points, today, height, mode, alarm, events, com
                 }}
                 activeDot={tipClosed ? false : { r: 4, stroke: chartTokens.halo, strokeWidth: 2, fill: colour }} />
             )}
+            {labelRefs && <Customized component={<RefLabels alarm={alarm} />} />}
             {events.length > 0 && <Customized component={<EventLabels events={events} compact={compact} />} />}
             {!tooFew && <Tooltip content={<TooltipBox mode={mode} />} cursor={{ stroke: chartTokens.grid }}
               active={tipClosed ? false : undefined} />}
@@ -529,6 +552,8 @@ export function SiteSmallMultiples({ chart, trialId, height }: ModuleChartCompon
   );
 
   const anyData = panels.some((p) => p.pts.length > 0);
+  const allFlagged = panels.length > 0 && panels.every((p) => p.flagged);
+  const keyColour = allFlagged ? chartTokens.flag : chartTokens.primary;
   const empty = error ? { title: "Could not load the blinding record", body: error }
     : !loading && rec && groups.length === 0 ? { title: "Too few to show", body: "No sites with released guesses yet." }
     : null;
@@ -542,12 +567,15 @@ export function SiteSmallMultiples({ chart, trialId, height }: ModuleChartCompon
         {panels.map((p, i) => (
           <Panel key={p.g} title={p.label} flagged={p.flagged} points={p.pts} today={Math.max(today, 1)} height={panelHeight}
             mode={cfg.mode} alarm={cfg.alarm} events={p.events} compact={compact}
-            labelRows={Math.max(0, ...panels.map((x) => x.events.length))} labelRefs={i === panels.length - 1} />
+            labelRows={Math.max(0, ...panels.map((x) => x.events.length))} labelRefs={i === panels.length - 1}
+            gutter={compact || i === panels.length - 1 ? REF_GUTTER : 0} />
         ))}
       </div>
       <div className="dchart-key" aria-hidden="true">
-        <span><svg width="14" height="10"><rect x="2" y="2" width="6" height="6" className="dchart-key__band" /></svg>95% interval (8 or more guesses)</span>
-        <span><svg width="12" height="10"><rect x="2" y="2" width="6" height="6" className="dchart-key__hollow" /></svg>Fewer than 8, no interval</span>
+        <span><svg width="14" height="10"><rect x="2" y="2" width="10" height="8" className="dchart-key__band" fill={keyColour} /></svg>95% interval (8 or more guesses)</span>
+        <span><svg width="12" height="10">{allFlagged
+          ? <circle cx="5" cy="5" r="3.2" className="dchart-key__hollow" stroke={keyColour} />
+          : <rect x="2" y="2" width="6" height="6" className="dchart-key__hollow" stroke={keyColour} />}</svg>Fewer than 8, no interval</span>
       </div>
     </ChartFrame>
   );
