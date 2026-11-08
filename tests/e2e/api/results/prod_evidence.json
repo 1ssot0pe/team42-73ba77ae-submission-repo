@@ -1,0 +1,18 @@
+{
+ "base": "https://parallax-two-tau.vercel.app",
+ "at": "2026-11-08 12:48:39",
+ "evidence": {
+  "status": 200,
+  "s": 6.1,
+  "bytes": 11010,
+  "head": "{\"input\":\"psilocybin for treatment-resistant depression\",\"nct\":\"NCT05710237\",\"title\":\"Does Psilocybin Require Psychedelic Effects to Treat Depression?\",\"drug\":[\"psilocybin\"],\"in_domain\":true,\"facts\":{\"primary_endpoint\":{\"name\":\"primary_endpoint\",\"value\":{\"scale\":null,\"week\":4,\"measure\":\"Feasibility ",
+  "headers": {
+   "Cache-Control": "public, max-age=0, must-revalidate",
+   "Server": "Vercel",
+   "X-Vercel-Cache": "MISS",
+   "X-Vercel-Id": "lhr1::iad1::8jkjv-1794142120013-3f26e391573c"
+  }
+ },
+ "latency": [],
+ "status_counts": {}
+}

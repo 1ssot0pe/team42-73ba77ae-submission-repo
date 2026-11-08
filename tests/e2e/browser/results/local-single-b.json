@@ -1,0 +1,261 @@
+{
+  "base_url": "http://127.0.0.1:5174",
+  "env": "local-single-b",
+  "at": "2026-11-08 12:55:14",
+  "results": [
+    {
+      "id": "J9",
+      "title": "Drift action approved vs rejected",
+      "env": "local-single-b",
+      "base_url": "http://127.0.0.1:5174",
+      "passed": true,
+      "error": null,
+      "duration_s": 38.8,
+      "timings": {
+        "create_trial": 0.07,
+        "decide:confirm shortlist": 0.06,
+        "play_to_drift:approved": 9.87,
+        "decide:raters to remote": 0.06,
+        "play_to_drift:rejected": 9.87
+      },
+      "failures": [],
+      "notes": [
+        "[approved] drift decided at day 47; pending slips after +20 days: ['Add to reference data: MAPP1 (Mitchell 2021)', 'Site C: add SMS reminders and a coordinator call']",
+        "[rejected] drift decided at day 47; pending slips after +20 days: ['Add to reference data: MAPP1 (Mitchell 2021)', 'Site C: add SMS reminders and a coordinator call']"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 510,
+      "toasts": [],
+      "shots": []
+    },
+    {
+      "id": "J10",
+      "title": "Researcher questions (neutral, leading, unblinding, identifying) before and after the primary lock",
+      "env": "local-single-b",
+      "base_url": "http://127.0.0.1:5174",
+      "passed": false,
+      "error": null,
+      "duration_s": 25.0,
+      "timings": {
+        "create_trial": 0.07,
+        "decide:confirm shortlist": 0.06,
+        "ask:neutral": 0.08,
+        "ask:leading": 0.05,
+        "ask:unblinding": 0.06,
+        "ask:identifying": 0.06
+      },
+      "failures": [
+        {
+          "t": 12.68,
+          "msg": "[before lock] neutral question not accepted: ACCEPTED No unblinding cues, leading wording, personal data, safety or consent issues found. Waiting for an ethics reviewer.",
+          "shot": "docs/testing/screenshots/local-single-J10-1.png",
+          "url": "http://127.0.0.1:5174/postdose"
+        },
+        {
+          "t": 24.98,
+          "msg": "[after lock] neutral question not accepted: ACCEPTED No unblinding cues, leading wording, personal data, safety or consent issues found. Waiting for an ethics reviewer.",
+          "shot": "docs/testing/screenshots/local-single-J10-2.png",
+          "url": "http://127.0.0.1:5174/postdose"
+        }
+      ],
+      "notes": [
+        "before lock at day 31",
+        "[before lock] neutral: ACCEPTED No unblinding cues, leading wording, personal data, safety or consent issues found. Waiting for an ethics reviewer.",
+        "[before lock] leading: ACCEPTED Rejected: leading cannot be fixed by rewording.",
+        "[before lock] unblinding: ACCEPTED Rewrite proposed: Do you think you received the study session or the study session capsule? Waiting for an ethics reviewer.",
+        "[before lock] identifying: ACCEPTED Rejected: personal cannot be fixed by rewording.",
+        "after lock at day 73",
+        "[after lock] neutral: ACCEPTED No unblinding cues, leading wording, personal data, safety or consent issues found. Waiting for an ethics reviewer.",
+        "[after lock] leading: ACCEPTED Rejected: leading cannot be fixed by rewording.",
+        "[after lock] unblinding: ACCEPTED Rewrite proposed: Do you think you received the study session or the study session capsule? Waiting for an ethics reviewer.",
+        "[after lock] identifying: ACCEPTED Rejected: personal cannot be fixed by rewording."
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 325,
+      "toasts": [
+        "NO UNBLINDING CUES, LEADING WORDING, PERSONAL DATA, SAFETY OR CONSENT ISSUES FOUND. WAITING FOR AN ETHICS REVIEWER.",
+        "REJECTED: LEADING CANNOT BE FIXED BY REWORDING.",
+        "REWRITE PROPOSED: DO YOU THINK YOU RECEIVED THE STUDY SESSION OR THE STUDY SESSION CAPSULE? WAITING FOR AN ETHICS REVIEWER.",
+        "REJECTED: PERSONAL CANNOT BE FIXED BY REWORDING."
+      ],
+      "shots": [
+        "docs/testing/screenshots/local-single-J10-1.png ([before lock] neutral question not accep)",
+        "docs/testing/screenshots/local-single-J10-2.png ([after lock] neutral question not accept)"
+      ]
+    },
+    {
+      "id": "J11",
+      "title": "Refresh mid-trial on each page; second tab; deep links",
+      "env": "local-single-b",
+      "base_url": "http://127.0.0.1:5174",
+      "passed": true,
+      "error": null,
+      "duration_s": 31.8,
+      "timings": {
+        "create_trial": 0.1,
+        "decide:confirm shortlist": 0.06,
+        "reload:/": 1.36,
+        "reload:/predose": 1.41,
+        "reload:/portal": 1.33,
+        "reload:/dosing": 1.37,
+        "reload:/postdose": 1.35
+      },
+      "failures": [],
+      "notes": [
+        "trial T-125204-079f at D+13 / 90"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 262,
+      "toasts": [],
+      "shots": []
+    },
+    {
+      "id": "J12",
+      "title": "Dark mode and 390 px width on every page",
+      "env": "local-single-b",
+      "base_url": "http://127.0.0.1:5174",
+      "passed": false,
+      "error": "TimeoutError: Locator.click: Timeout 20000ms exceeded.",
+      "duration_s": 22.9,
+      "timings": {
+        "create_trial": 0.07
+      },
+      "failures": [
+        {
+          "t": 22.9,
+          "msg": "exception: TimeoutError: Locator.click: Timeout 20000ms exceeded.",
+          "shot": "docs/testing/screenshots/local-single-J12-1.png",
+          "url": "http://127.0.0.1:5174/"
+        }
+      ],
+      "notes": [
+        "n.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/dannybud/Desktop/unblind/.claude/worktrees/parallax-e2e/.venv/lib/python3.12/site-packages/playwright/_impl/_connection.py\", line 636, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Locator.click: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\".mc-dock\").get_by_role(\"button\", name=re.compile(r\"^\\+1 week$\"))\n    - locator resolved to <button disabled type=\"button\" class=\"btn btn--outline btn--dock\" title=\"Waiting for a human: Protocol fix: Move outcome raters to central, remote, blinded assessment; Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters; Protocol fix: Measure expectancy before randomisation and at end of treatment; Protocol fix: Use a low dose of the same drug as comparator; Protocol fix: Stratify randomisation by prior psychedelic use; Clinician: confirm shortlist of 49 eligible appl\u2026>+1 week</button>\n  - attempting click action\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not enabled\n    - retrying click action\n    - waiting 20ms\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not enabled\n    - retrying click action\n      - waiting 100ms\n    39 \u00d7 waiting for element to be visible, enabled and stable\n       - element is not enabled\n     - retrying click action\n       - waiting 500ms\n\n"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 21,
+      "toasts": [
+        "TRIAL T-125236-B9F9 CREATED"
+      ],
+      "shots": [
+        "docs/testing/screenshots/local-single-J12-1.png (exception: TimeoutError: Locator.click: )"
+      ]
+    },
+    {
+      "id": "J13",
+      "title": "Play for 2 minutes under polling load; step 30 days at once",
+      "env": "local-single-b",
+      "base_url": "http://127.0.0.1:5174",
+      "passed": false,
+      "error": null,
+      "duration_s": 123.7,
+      "timings": {
+        "create_trial": 0.11,
+        "play_2min_step_calls": 292,
+        "step_p50_ms": 36,
+        "step_max_ms": 98,
+        "api_step_30_s": 0.39,
+        "api_step_31_s": 0.44
+      },
+      "failures": [
+        {
+          "t": 121.35,
+          "msg": "play stopped early at day 31: toasts ['TRIAL T-125433-98F4 CREATED', 'TRIAL CLOSED \u00b7 REPORT SIGNED BY DEMO REVIEWER (AUTO-APPROVE ON)', 'TRIAL T-125452-F150 CREATED']",
+          "shot": "docs/testing/screenshots/local-single-J13-1.png",
+          "url": "http://127.0.0.1:5174/"
+        }
+      ],
+      "notes": [
+        "2 minutes: 7 trials, 578 simulated days, 292 step calls, step latency ms p50=36 max=98",
+        "step 30 days: HTTP 200 in 0.39s, day now 61",
+        "step 31 days: HTTP 200 in 0.44s, day now 90"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 1917,
+      "toasts": [],
+      "shots": [
+        "docs/testing/screenshots/local-single-J13-1.png (play stopped early at day 31: toasts ['T)"
+      ]
+    },
+    {
+      "id": "J14",
+      "title": "Gemini off (local) / on (production): dock pill matches /api/health",
+      "env": "local-single-b",
+      "base_url": "http://127.0.0.1:5174",
+      "passed": true,
+      "error": null,
+      "duration_s": 5.0,
+      "timings": {
+        "create_trial": 0.11
+      },
+      "failures": [],
+      "notes": [
+        "health gemini=False",
+        "dock pill: 'GEMINI OFF'"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 25,
+      "toasts": [
+        "SCREENED \u00b7 PORTAL-0001 \u00b7 ELIGIBLE"
+      ],
+      "shots": []
+    },
+    {
+      "id": "J15",
+      "title": "Every nav link, including Evidence engine",
+      "env": "local-single-b",
+      "base_url": "http://127.0.0.1:5174",
+      "passed": false,
+      "error": null,
+      "duration_s": 6.8,
+      "timings": {
+        "create_trial": 0.11
+      },
+      "failures": [
+        {
+          "t": 6.74,
+          "msg": "Evidence engine link points at http://localhost:8501, which only works on the developer's machine",
+          "shot": "docs/testing/screenshots/local-single-J15-1.png",
+          "url": "http://127.0.0.1:5174/dosing"
+        },
+        {
+          "t": 6.81,
+          "msg": "Evidence engine tab did not load (url chrome-error://chromewebdata/, title '')",
+          "shot": "docs/testing/screenshots/local-single-J15-2.png",
+          "url": "chrome-error://chromewebdata/"
+        }
+      ],
+      "notes": [
+        "Evidence engine href: http://localhost:8501",
+        "Evidence engine tab url after click: chrome-error://chromewebdata/"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 83,
+      "toasts": [],
+      "shots": [
+        "docs/testing/screenshots/local-single-J15-1.png (Evidence engine link points at http://lo)",
+        "docs/testing/screenshots/local-single-J15-2.png (Evidence engine tab did not load (url ch)"
+      ]
+    }
+  ]
+}

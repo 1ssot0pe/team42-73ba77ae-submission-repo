@@ -17,3 +17,5 @@ frontend/dist/
 frontend/screenshots/
 .vercel
 .env*
+# Full-resolution test screenshots stay local; only one downscaled screenshot per journey is committed
+docs/testing/screenshots/*.png

@@ -1,0 +1,1061 @@
+{
+  "base_url": "http://127.0.0.1:5173",
+  "env": "local-proxy",
+  "at": "2026-11-08 12:55:35",
+  "results": [
+    {
+      "id": "J1",
+      "title": "Psilocybin, manual approvals: 2 fixes, shortlist, drift action, amendment, FDA report",
+      "env": "local-proxy",
+      "base_url": "http://127.0.0.1:5173",
+      "passed": false,
+      "error": "aborted: trial was not created",
+      "duration_s": 30.5,
+      "timings": {
+        "create_trial": 30.12
+      },
+      "failures": [
+        {
+          "t": 30.47,
+          "msg": "Create trial did not reach the running Mission control view",
+          "shot": "docs/testing/screenshots/local-J1-1.png",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 30.54,
+          "msg": "aborted: trial was not created",
+          "shot": "docs/testing/screenshots/local-J1-2.png",
+          "url": "http://127.0.0.1:5173/"
+        }
+      ],
+      "notes": [],
+      "console_errors": [
+        {
+          "t": 0.45,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.45,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.45,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.46,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.46,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.46,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        }
+      ],
+      "console_error_count": 6,
+      "network_failures": [
+        {
+          "t": 0.46,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125416-6be6/approvals?status=all",
+          "status": 404,
+          "backend": "127.0.0.1:8101",
+          "body": "{\"detail\":\"no trial T-125416-6be6 in this server session; create one\"}"
+        },
+        {
+          "t": 0.46,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125416-6be6/messages",
+          "status": 404,
+          "backend": "127.0.0.1:8101",
+          "body": "{\"detail\":\"no trial T-125416-6be6 in this server session; create one\"}"
+        },
+        {
+          "t": 0.46,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125416-6be6/state",
+          "status": 404,
+          "backend": "127.0.0.1:8101",
+          "body": "{\"detail\":\"no trial T-125416-6be6 in this server session; create one\"}"
+        },
+        {
+          "t": 0.46,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125416-6be6/approvals?status=all",
+          "status": 404,
+          "backend": "127.0.0.1:8101",
+          "body": "{\"detail\":\"no trial T-125416-6be6 in this server session; create one\"}"
+        },
+        {
+          "t": 0.46,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125416-6be6/events?limit=400",
+          "status": 404,
+          "backend": "127.0.0.1:8101",
+          "body": "{\"detail\":\"no trial T-125416-6be6 in this server session; create one\"}"
+        },
+        {
+          "t": 0.46,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125416-6be6/kpis",
+          "status": 404,
+          "backend": "127.0.0.1:8101",
+          "body": "{\"detail\":\"no trial T-125416-6be6 in this server session; create one\"}"
+        }
+      ],
+      "network_failure_count": 6,
+      "api_calls": 20,
+      "toasts": [
+        "TRIAL T-125416-6BE6 CREATED"
+      ],
+      "shots": [
+        "docs/testing/screenshots/local-J1-1.png (Create trial did not reach the running M)",
+        "docs/testing/screenshots/local-J1-2.png (aborted: trial was not created)"
+      ]
+    },
+    {
+      "id": "J2",
+      "title": "Auto-approve on, play to close",
+      "env": "local-proxy",
+      "base_url": "http://127.0.0.1:5173",
+      "passed": false,
+      "error": null,
+      "duration_s": 3.8,
+      "timings": {
+        "create_trial": 0.11,
+        "play_to_close": 0.27
+      },
+      "failures": [
+        {
+          "t": 2.83,
+          "msg": "did not reach day 90 (play ended: stopped, day -1)",
+          "shot": "docs/testing/screenshots/local-J2-1.png",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 3.84,
+          "msg": "[mission control (auto) at close] stray 'UNBLIND' in UI text: ['Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters']",
+          "shot": "",
+          "url": "http://127.0.0.1:5173/"
+        }
+      ],
+      "notes": [
+        "trial T-125446-e707",
+        "header at close: 'The agents are at work. Press Play or step a day to move the clock.'"
+      ],
+      "console_errors": [
+        {
+          "t": 0.4,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.4,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.4,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.4,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.4,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.4,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.4,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.4,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 2.47,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        }
+      ],
+      "console_error_count": 9,
+      "network_failures": [
+        {
+          "t": 0.4,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125446-e707/messages",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125446-e707 in this server session; create one\"}"
+        },
+        {
+          "t": 0.4,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125446-e707/approvals?status=all",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125446-e707 in this server session; create one\"}"
+        },
+        {
+          "t": 0.4,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125446-e707/events?module=master&limit=40",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125446-e707 in this server session; create one\"}"
+        },
+        {
+          "t": 0.4,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125446-e707/messages",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125446-e707 in this server session; create one\"}"
+        },
+        {
+          "t": 0.4,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125446-e707/events?module=master&limit=40",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125446-e707 in this server session; create one\"}"
+        },
+        {
+          "t": 0.4,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125446-e707/kpis",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125446-e707 in this server session; create one\"}"
+        },
+        {
+          "t": 0.41,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125446-e707/kpis",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125446-e707 in this server session; create one\"}"
+        },
+        {
+          "t": 0.41,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125446-e707/events?limit=400",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125446-e707 in this server session; create one\"}"
+        },
+        {
+          "t": 2.47,
+          "method": "POST",
+          "url": "http://127.0.0.1:5173/api/trials/T-125446-e707/step",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125446-e707 in this server session; create one\"}"
+        }
+      ],
+      "network_failure_count": 9,
+      "api_calls": 23,
+      "toasts": [
+        "TRIAL T-125446-E707 CREATED",
+        "NO TRIAL T-125446-E707 IN THIS SERVER SESSION; CREATE ONE",
+        "NO TRIAL T-125446-E707 IN THIS SERVER SESSION; CREATE ONE"
+      ],
+      "shots": [
+        "docs/testing/screenshots/local-J2-1.png (did not reach day 90 (play ended: stoppe)"
+      ]
+    },
+    {
+      "id": "J3",
+      "title": "MDMA example to close: CAPS-5 labels everywhere, drift at Site C",
+      "env": "local-proxy",
+      "base_url": "http://127.0.0.1:5173",
+      "passed": false,
+      "error": "aborted: trial was not created",
+      "duration_s": 2.6,
+      "timings": {
+        "create_trial": 0.07
+      },
+      "failures": [
+        {
+          "t": 2.51,
+          "msg": "Trial None vanished right after creation (page fell back to 'Start a trial')",
+          "shot": "docs/testing/screenshots/local-J3-1.png",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 2.58,
+          "msg": "aborted: trial was not created",
+          "shot": "docs/testing/screenshots/local-J3-2.png",
+          "url": "http://127.0.0.1:5173/"
+        }
+      ],
+      "notes": [],
+      "console_errors": [
+        {
+          "t": 0.42,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.42,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.42,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.42,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.42,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.42,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        }
+      ],
+      "console_error_count": 6,
+      "network_failures": [
+        {
+          "t": 0.42,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125450-d32f/approvals?status=all",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125450-d32f in this server session; create one\"}"
+        },
+        {
+          "t": 0.42,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125450-d32f/state",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125450-d32f in this server session; create one\"}"
+        },
+        {
+          "t": 0.42,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125450-d32f/messages",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125450-d32f in this server session; create one\"}"
+        },
+        {
+          "t": 0.42,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125450-d32f/approvals?status=all",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125450-d32f in this server session; create one\"}"
+        },
+        {
+          "t": 0.42,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125450-d32f/messages",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125450-d32f in this server session; create one\"}"
+        },
+        {
+          "t": 0.42,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125450-d32f/kpis",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125450-d32f in this server session; create one\"}"
+        }
+      ],
+      "network_failure_count": 6,
+      "api_calls": 20,
+      "toasts": [
+        "TRIAL T-125450-D32F CREATED"
+      ],
+      "shots": [
+        "docs/testing/screenshots/local-J3-1.png (Trial None vanished right after creation)",
+        "docs/testing/screenshots/local-J3-2.png (aborted: trial was not created)"
+      ]
+    },
+    {
+      "id": "J4",
+      "title": "Pasted custom protocol with other site names",
+      "env": "local-proxy",
+      "base_url": "http://127.0.0.1:5173",
+      "passed": false,
+      "error": "TimeoutError: Locator.inner_text: Timeout 20000ms exceeded.",
+      "duration_s": 31.2,
+      "timings": {
+        "create_trial": 0.15,
+        "decide:confirm shortlist": 0.06,
+        "play_to_drift_or_close": 0.0
+      },
+      "failures": [
+        {
+          "t": 2.62,
+          "msg": "approve shortlist: no trial T-125453-9f97 in this server session; create one",
+          "shot": "docs/testing/screenshots/local-J4-1.png",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 9.65,
+          "msg": "none of the pasted site names (Leeds, Glasgow, Cardiff) appear anywhere",
+          "shot": "docs/testing/screenshots/local-J4-2.png",
+          "url": "http://127.0.0.1:5173/postdose"
+        },
+        {
+          "t": 31.21,
+          "msg": "exception: TimeoutError: Locator.inner_text: Timeout 20000ms exceeded.",
+          "shot": "docs/testing/screenshots/local-J4-3.png",
+          "url": "http://127.0.0.1:5173/predose"
+        }
+      ],
+      "notes": [
+        "trial T-125453-9f97",
+        "pasted site names seen: []",
+        "nv/lib/python3.12/site-packages/playwright/sync_api/_generated.py\", line 12419, in inner_text\n    self._sync(self._impl_obj.inner_text(timeout=to_milliseconds(timeout)))\n  File \"/Users/dannybud/Desktop/unblind/.claude/worktrees/parallax-e2e/.venv/lib/python3.12/site-packages/playwright/_impl/_sync_base.py\", line 111, in _sync\n    return task.result()\n           ^^^^^^^^^^^^^\n  File \"/Users/dannybud/Desktop/unblind/.claude/worktrees/parallax-e2e/.venv/lib/python3.12/site-packages/playwright/_impl/_locator.py\", line 514, in inner_text\n    return await self._frame.inner_text(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/dannybud/Desktop/unblind/.claude/worktrees/parallax-e2e/.venv/lib/python3.12/site-packages/playwright/_impl/_frame.py\", line 748, in inner_text\n    return await self._channel.send(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/dannybud/Desktop/unblind/.claude/worktrees/parallax-e2e/.venv/lib/python3.12/site-packages/playwright/_impl/_connection.py\", line 78, in send\n    return await self._connection.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/dannybud/Desktop/unblind/.claude/worktrees/parallax-e2e/.venv/lib/python3.12/site-packages/playwright/_impl/_connection.py\", line 636, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Locator.inner_text: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\".pd-page header p\").first\n\n"
+      ],
+      "console_errors": [
+        {
+          "t": 0.33,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.33,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.33,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.33,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.33,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.33,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.33,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.34,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 2.42,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 2.66,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 2.66,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 2.66,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 2.67,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 2.67,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 2.67,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        }
+      ],
+      "console_error_count": 15,
+      "network_failures": [
+        {
+          "t": 0.33,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125453-9f97/messages",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125453-9f97 in this server session; create one\"}"
+        },
+        {
+          "t": 0.33,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125453-9f97/events?module=master&limit=40",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125453-9f97 in this server session; create one\"}"
+        },
+        {
+          "t": 0.33,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125453-9f97/approvals?status=all",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125453-9f97 in this server session; create one\"}"
+        },
+        {
+          "t": 0.33,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125453-9f97/messages",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125453-9f97 in this server session; create one\"}"
+        },
+        {
+          "t": 0.33,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125453-9f97/events?limit=400",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125453-9f97 in this server session; create one\"}"
+        },
+        {
+          "t": 0.33,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125453-9f97/events?module=master&limit=40",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125453-9f97 in this server session; create one\"}"
+        },
+        {
+          "t": 0.34,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125453-9f97/events?limit=400",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125453-9f97 in this server session; create one\"}"
+        },
+        {
+          "t": 0.34,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125453-9f97/kpis",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125453-9f97 in this server session; create one\"}"
+        },
+        {
+          "t": 2.42,
+          "method": "POST",
+          "url": "http://127.0.0.1:5173/api/trials/T-125453-9f97/approvals/b7316ad1",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125453-9f97 in this server session; create one\"}"
+        },
+        {
+          "t": 2.66,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125453-9f97/state",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125453-9f97 in this server session; create one\"}"
+        },
+        {
+          "t": 2.66,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125453-9f97/events?limit=400",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125453-9f97 in this server session; create one\"}"
+        },
+        {
+          "t": 2.67,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125453-9f97/approvals?status=all",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125453-9f97 in this server session; create one\"}"
+        },
+        {
+          "t": 2.67,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125453-9f97/events?module=master&limit=40",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125453-9f97 in this server session; create one\"}"
+        },
+        {
+          "t": 2.67,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125453-9f97/kpis",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125453-9f97 in this server session; create one\"}"
+        },
+        {
+          "t": 2.67,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125453-9f97/events?module=master&limit=40",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125453-9f97 in this server session; create one\"}"
+        }
+      ],
+      "network_failure_count": 15,
+      "api_calls": 39,
+      "toasts": [],
+      "shots": [
+        "docs/testing/screenshots/local-J4-1.png (approve shortlist: no trial T-125453-9f9)",
+        "docs/testing/screenshots/local-J4-2.png (none of the pasted site names (Leeds, Gl)",
+        "docs/testing/screenshots/local-J4-3.png (exception: TimeoutError: Locator.inner_t)"
+      ]
+    },
+    {
+      "id": "J5",
+      "title": "Garbage protocol (!!! ???)",
+      "env": "local-proxy",
+      "base_url": "http://127.0.0.1:5173",
+      "passed": false,
+      "error": null,
+      "duration_s": 7.6,
+      "timings": {
+        "create": 4.03
+      },
+      "failures": [
+        {
+          "t": 7.55,
+          "msg": "garbage input '!!! ???' was accepted as a protocol with no warning to the user",
+          "shot": "docs/testing/screenshots/local-J5-3.png",
+          "url": "http://127.0.0.1:5173/"
+        }
+      ],
+      "notes": [
+        "toasts: ['TRIAL T-125524-D8CA CREATED', 'NO TRIAL T-125524-D8CA IN THIS SERVER SESSION; CREATE ONE']",
+        "a trial was created from garbage: T-125524-d8ca; header: 'WAITING\\nWaiting for a human: 6 decisions to sign.'",
+        "heading: 'Setup before day 1 of 90'",
+        "pre-dosing header: ''"
+      ],
+      "console_errors": [
+        {
+          "t": 0.36,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.36,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.36,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.36,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.36,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.36,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.36,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.37,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 4.36,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/predose"
+        },
+        {
+          "t": 4.36,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/predose"
+        },
+        {
+          "t": 4.36,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/predose"
+        },
+        {
+          "t": 4.37,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/predose"
+        }
+      ],
+      "console_error_count": 12,
+      "network_failures": [
+        {
+          "t": 0.36,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125524-d8ca/approvals?status=all",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125524-d8ca in this server session; create one\"}"
+        },
+        {
+          "t": 0.36,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125524-d8ca/messages",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125524-d8ca in this server session; create one\"}"
+        },
+        {
+          "t": 0.36,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125524-d8ca/events?module=master&limit=40",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125524-d8ca in this server session; create one\"}"
+        },
+        {
+          "t": 0.36,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125524-d8ca/messages",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125524-d8ca in this server session; create one\"}"
+        },
+        {
+          "t": 0.36,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125524-d8ca/events?limit=400",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125524-d8ca in this server session; create one\"}"
+        },
+        {
+          "t": 0.36,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125524-d8ca/kpis",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125524-d8ca in this server session; create one\"}"
+        },
+        {
+          "t": 0.37,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125524-d8ca/messages",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125524-d8ca in this server session; create one\"}"
+        },
+        {
+          "t": 0.37,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125524-d8ca/kpis",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125524-d8ca in this server session; create one\"}"
+        },
+        {
+          "t": 4.36,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125524-d8ca/kpis",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125524-d8ca in this server session; create one\"}"
+        },
+        {
+          "t": 4.36,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125524-d8ca/state",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125524-d8ca in this server session; create one\"}"
+        },
+        {
+          "t": 4.36,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125524-d8ca/state",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125524-d8ca in this server session; create one\"}"
+        },
+        {
+          "t": 4.37,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125524-d8ca/record?sections=protocol%2Cprotocol_versions%2Cdesign_review%2Crecruitment%2Capplicants%2Cenrolled%2Cmeasurement_plan",
+          "status": 404,
+          "backend": "127.0.0.1:8102",
+          "body": "{\"detail\":\"no trial T-125524-d8ca in this server session; create one\"}"
+        }
+      ],
+      "network_failure_count": 12,
+      "api_calls": 32,
+      "toasts": [],
+      "shots": [
+        "docs/testing/screenshots/local-J5-1.png (garbage protocol trial, pre-dosing)",
+        "docs/testing/screenshots/local-J5-2.png (garbage protocol trial, mission control)",
+        "docs/testing/screenshots/local-J5-3.png (garbage input '!!! ???' was accepted as )"
+      ]
+    },
+    {
+      "id": "J6",
+      "title": "Volunteer portal: valid, bipolar free text, age 17, non-UK phone, lithium, recent use, non-numeric age",
+      "env": "local-proxy",
+      "base_url": "http://127.0.0.1:5173",
+      "passed": false,
+      "error": null,
+      "duration_s": 4.2,
+      "timings": {
+        "create_trial": 0.07,
+        "apply:valid": 0.07,
+        "apply:bipolar in free text": 0.06,
+        "apply:age 17": 0.06,
+        "apply:non-UK phone": 0.06,
+        "apply:lithium": 0.06,
+        "apply:psychedelic use 3 months ago": 0.06
+      },
+      "failures": [
+        {
+          "t": 2.62,
+          "msg": "[valid] expected an eligible decision: PRE-SCREENING AGENT Result NOT SCREENED no trial T-125531-572b in this server session; create one Correct the form and press Apply again. No decision was made. Final eligibility is always confirmed by",
+          "shot": "docs/testing/screenshots/local-J6-1.png",
+          "url": "http://127.0.0.1:5173/portal"
+        },
+        {
+          "t": 2.93,
+          "msg": "[age 17] expected Excluded: PRE-SCREENING AGENT Result NOT SCREENED no trial T-125531-572b in this server session; create one Correct the form and press Apply again. No decision was made. Final eligibility is always confirmed by",
+          "shot": "docs/testing/screenshots/local-J6-2.png",
+          "url": "http://127.0.0.1:5173/portal"
+        },
+        {
+          "t": 3.22,
+          "msg": "[lithium] expected Excluded: PRE-SCREENING AGENT Result NOT SCREENED no trial T-125531-572b in this server session; create one Correct the form and press Apply again. No decision was made. Final eligibility is always confirmed by",
+          "shot": "docs/testing/screenshots/local-J6-3.png",
+          "url": "http://127.0.0.1:5173/portal"
+        }
+      ],
+      "notes": [
+        "valid: PRE-SCREENING AGENT Result NOT SCREENED no trial T-125531-572b in this server session; create one Correct the form and press Apply again. No decision was made. Final eligibility is always confirmed by a clinician.",
+        "bipolar in free text: PRE-SCREENING AGENT Result NEEDS CLINICIAN PORTAL-0001 \u00b7 D\u22121 REASONS Free text discloses a possible safety risk QUOTED DISCLOSURE \u201cI was diagnosed with bipolar disorder last year\u201d your free text Final eligibility is always confirmed by a clinician.",
+        "age 17: PRE-SCREENING AGENT Result NOT SCREENED no trial T-125531-572b in this server session; create one Correct the form and press Apply again. No decision was made. Final eligibility is always confirmed by a clinician.",
+        "non-UK phone: PRE-SCREENING AGENT Result EXCLUDED PORTAL-0002 \u00b7 D\u22121 REASONS Not a UK mobile (+44 7) number; check-ins run through the UK chatbot Final eligibility is always confirmed by a clinician.",
+        "lithium: PRE-SCREENING AGENT Result NOT SCREENED no trial T-125531-572b in this server session; create one Correct the form and press Apply again. No decision was made. Final eligibility is always confirmed by a clinician.",
+        "psychedelic use 3 months ago: PRE-SCREENING AGENT Result EXCLUDED PORTAL-0003 \u00b7 D\u22121 REASONS Psychedelic use 3 months ago (within 12 months) Final eligibility is always confirmed by a clinician."
+      ],
+      "console_errors": [
+        {
+          "t": 0.39,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.39,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.39,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.39,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.39,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.39,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.39,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 0.39,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/"
+        },
+        {
+          "t": 2.5,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/portal"
+        },
+        {
+          "t": 2.8,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/portal"
+        },
+        {
+          "t": 3.1,
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:5173/portal"
+        }
+      ],
+      "console_error_count": 11,
+      "network_failures": [
+        {
+          "t": 0.39,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125531-572b/events?module=master&limit=40",
+          "status": 404,
+          "backend": "127.0.0.1:8101",
+          "body": "{\"detail\":\"no trial T-125531-572b in this server session; create one\"}"
+        },
+        {
+          "t": 0.39,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125531-572b/messages",
+          "status": 404,
+          "backend": "127.0.0.1:8101",
+          "body": "{\"detail\":\"no trial T-125531-572b in this server session; create one\"}"
+        },
+        {
+          "t": 0.39,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125531-572b/approvals?status=all",
+          "status": 404,
+          "backend": "127.0.0.1:8101",
+          "body": "{\"detail\":\"no trial T-125531-572b in this server session; create one\"}"
+        },
+        {
+          "t": 0.39,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125531-572b/events?module=master&limit=40",
+          "status": 404,
+          "backend": "127.0.0.1:8101",
+          "body": "{\"detail\":\"no trial T-125531-572b in this server session; create one\"}"
+        },
+        {
+          "t": 0.39,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125531-572b/approvals?status=all",
+          "status": 404,
+          "backend": "127.0.0.1:8101",
+          "body": "{\"detail\":\"no trial T-125531-572b in this server session; create one\"}"
+        },
+        {
+          "t": 0.39,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125531-572b/kpis",
+          "status": 404,
+          "backend": "127.0.0.1:8101",
+          "body": "{\"detail\":\"no trial T-125531-572b in this server session; create one\"}"
+        },
+        {
+          "t": 0.39,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125531-572b/kpis",
+          "status": 404,
+          "backend": "127.0.0.1:8101",
+          "body": "{\"detail\":\"no trial T-125531-572b in this server session; create one\"}"
+        },
+        {
+          "t": 0.4,
+          "method": "GET",
+          "url": "http://127.0.0.1:5173/api/trials/T-125531-572b/messages",
+          "status": 404,
+          "backend": "127.0.0.1:8101",
+          "body": "{\"detail\":\"no trial T-125531-572b in this server session; create one\"}"
+        },
+        {
+          "t": 2.5,
+          "method": "POST",
+          "url": "http://127.0.0.1:5173/api/trials/T-125531-572b/modules/predose/actions/apply",
+          "status": 404,
+          "backend": "127.0.0.1:8101",
+          "body": "{\"detail\":\"no trial T-125531-572b in this server session; create one\"}"
+        },
+        {
+          "t": 2.8,
+          "method": "POST",
+          "url": "http://127.0.0.1:5173/api/trials/T-125531-572b/modules/predose/actions/apply",
+          "status": 404,
+          "backend": "127.0.0.1:8101",
+          "body": "{\"detail\":\"no trial T-125531-572b in this server session; create one\"}"
+        },
+        {
+          "t": 3.1,
+          "method": "POST",
+          "url": "http://127.0.0.1:5173/api/trials/T-125531-572b/modules/predose/actions/apply",
+          "status": 404,
+          "backend": "127.0.0.1:8101",
+          "body": "{\"detail\":\"no trial T-125531-572b in this server session; create one\"}"
+        }
+      ],
+      "network_failure_count": 11,
+      "api_calls": 28,
+      "toasts": [
+        "TRIAL T-125531-572B CREATED",
+        "NO TRIAL T-125531-572B IN THIS SERVER SESSION; CREATE ONE",
+        "NO TRIAL T-125531-572B IN THIS SERVER SESSION; CREATE ONE",
+        "SCREENED \u00b7 PORTAL-0001 \u00b7 NEEDS CLINICIAN",
+        "NO TRIAL T-125531-572B IN THIS SERVER SESSION; CREATE ONE",
+        "SCREENED \u00b7 PORTAL-0002 \u00b7 EXCLUDED",
+        "NO TRIAL T-125531-572B IN THIS SERVER SESSION; CREATE ONE",
+        "SCREENED \u00b7 PORTAL-0003 \u00b7 EXCLUDED"
+      ],
+      "shots": [
+        "docs/testing/screenshots/local-J6-1.png ([valid] expected an eligible decision: P)",
+        "docs/testing/screenshots/local-J6-2.png ([age 17] expected Excluded: PRE-SCREENIN)",
+        "docs/testing/screenshots/local-J6-3.png ([lithium] expected Excluded: PRE-SCREENI)"
+      ]
+    }
+  ]
+}

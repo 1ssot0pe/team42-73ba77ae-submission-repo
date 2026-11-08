@@ -1,0 +1,2 @@
+/tmp/parallax-e2e/8001/T-124433-79dd.json exists on disk: True (735424 bytes)
+after restart, GET state on http://127.0.0.1:8001: 404 '{"detail":"no trial T-124433-79dd in this server session; create one"}'
