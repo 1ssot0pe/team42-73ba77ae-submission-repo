@@ -16,13 +16,14 @@ from stubs.py is used so the platform still runs end to end.
 from __future__ import annotations
 
 import importlib
+import os
 import random
 import threading
 import traceback
 from typing import Any, Dict, List, Optional
 
 from ... import llm
-from ..core import ApprovalQueue, BaseModule, Ctx, MessageBus, TrialRecord, Vault, bottlenecks
+from ..core import TRIALS, ApprovalQueue, BaseModule, Ctx, MessageBus, TrialRecord, Vault, bottlenecks
 from ..world import World, WorldConfig
 from . import stubs
 
@@ -41,6 +42,15 @@ ROUTES: Dict[str, List[str]] = {
     "question_rejected": [],
 }
 CLOSE_DAY = 90
+# Per-trial files other code keeps next to the trial under TRIALS and needs again on later requests.
+# They travel inside the snapshot so a fresh instance (empty /tmp) sees exactly the same values.
+SIDECAR_SUFFIXES = (".salt",)          # postdose export pseudonymisation salt (postdose/agents.py _salt)
+
+
+def write_record_files() -> bool:
+    """Writing the full record JSON after every settle used to dominate step time. The trial store now holds
+    the state, so the debug copy on disk is opt-in: UNBLIND_WRITE_RECORD=1."""
+    return os.environ.get("UNBLIND_WRITE_RECORD", "").strip().lower() in ("1", "true", "yes")
 
 
 class Master:
@@ -74,6 +84,40 @@ class Master:
                 self.rec.event("master", f"module '{m}' not available ({type(e).__name__}: {e}); using labelled STUB",
                                "warn", "master")
         self.rec["module_status"] = self.module_status
+
+    # -------------------------------------------------------------- snapshot (trial store)
+    def __getstate__(self) -> dict:
+        d = dict(self.__dict__)
+        d.pop("lock", None)                      # threading.RLock cannot be pickled; rebuilt on load
+        side: Dict[str, str] = {}
+        for suf in SIDECAR_SUFFIXES:
+            p = TRIALS / f"{self.rec['trial_id']}{suf}"
+            try:
+                if p.is_file():
+                    side[suf] = p.read_text()
+            except OSError:
+                pass
+        # keep anything captured earlier if the file is gone on this instance
+        d["_sidecars"] = {**(self.__dict__.get("_sidecars") or {}), **side}
+        return d
+
+    def __setstate__(self, state: dict) -> None:
+        self.__dict__.update(state)
+        self.lock = threading.RLock()
+        for suf, text in (state.get("_sidecars") or {}).items():
+            if suf not in SIDECAR_SUFFIXES:
+                continue
+            p = TRIALS / f"{self.rec['trial_id']}{suf}"
+            try:
+                if not p.is_file() or p.read_text() != text:
+                    TRIALS.mkdir(parents=True, exist_ok=True)
+                    p.write_text(text)
+            except OSError:
+                pass
+
+    def _save_record_file(self) -> None:
+        if write_record_files():
+            self.rec.save()
 
     # -------------------------------------------------------------- safety
     def _safe(self, mname: str, fn, *a):
@@ -149,7 +193,7 @@ class Master:
             self._deliver()
         self._sync_world()
         self._note_late_signoff()
-        self.rec.save()
+        self._save_record_file()
 
     # -------------------------------------------------------------- FDA blinding report status
     def report_status(self) -> dict:
@@ -235,7 +279,7 @@ class Master:
                 if d >= CLOSE_DAY:
                     self.rec["phase"] = "closed"
                     self.rec.event("master", self._closing_text(), "decision", "master")
-            self.rec.save()
+            self._save_record_file()
             return {"advanced": True, "day": self.rec["day"], "phase": self.rec["phase"]}
 
     def run_to(self, day: int) -> dict:

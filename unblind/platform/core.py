@@ -154,6 +154,15 @@ class Vault:
             d = json.loads(self.path.read_text())
             self._alloc, self.access_log = d["alloc"], d.get("log", [])
 
+    def __getstate__(self) -> dict:
+        return dict(self.__dict__)
+
+    def __setstate__(self, state: dict) -> None:
+        # the allocation and access log travel inside the snapshot; the file path is re-pointed at this
+        # instance's TRIALS dir (a snapshot may be restored on a different machine with an empty /tmp)
+        self.__dict__.update(state)
+        self.path = TRIALS / Path(str(state.get("path", "vault.json"))).name
+
     def _save(self) -> None:
         TRIALS.mkdir(parents=True, exist_ok=True)
         self.path.write_text(json.dumps({"alloc": self._alloc, "log": self.access_log}))
@@ -288,6 +297,17 @@ class Ctx:
     rng: random.Random
     world: Any = None             # SYNTHETIC world simulator; modules may only use its public "respond_*" methods
     bottlenecks: Dict[str, dict] = field(default_factory=dict)
+
+    # The llm entry is the `unblind.llm` module, which cannot be pickled: drop it and re-import on load.
+    def __getstate__(self) -> dict:
+        d = dict(self.__dict__)
+        d["llm"] = None
+        return d
+
+    def __setstate__(self, state: dict) -> None:
+        self.__dict__.update(state)
+        from .. import llm as _llm
+        self.llm = _llm
 
 
 class BaseModule:
