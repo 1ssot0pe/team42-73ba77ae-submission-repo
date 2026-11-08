@@ -9,7 +9,7 @@
 .studio-label { display: block; font: var(--text-body-sm); color: var(--color-smoke); margin: 0 0 var(--space-2); }
 .studio-small { font: var(--text-body-sm); margin: var(--space-2) 0 0; }
 .studio-muted { color: var(--color-smoke); }
-.studio-num, .studio-readout, .studio-past__date, .studio-fixes, .studio-chart { font-variant-numeric: tabular-nums; }
+.studio-num, .studio-readout, .studio-past__date, .studio-fixes, .st-frame { font-variant-numeric: tabular-nums; }
 .studio-break { word-break: break-all; }
 
 /* ------------------------------------------------------------ form */
@@ -91,19 +91,68 @@
 
 .studio-readout dd.studio-readout__range { font: var(--text-body-sm); color: var(--color-graphite); }
 
-.studio-chart { margin: var(--space-8) 0 0; max-width: 620px; }
-.studio-chart__box { width: 100%; min-width: 0; }
-.studio-chart svg { display: block; max-width: 100%; }
-.studio-chart text { font-family: var(--font-body); font-variant-numeric: tabular-nums; }
-.studio-chart__grid { stroke: var(--color-stone); stroke-width: 1; }
-.studio-chart__axis { stroke: var(--color-smoke); stroke-width: 1; }
-.studio-chart__zero { stroke: var(--color-graphite); stroke-width: 1; stroke-dasharray: 3 3; }
-.studio-chart__tick { fill: var(--color-smoke); font-size: 12px; }
-/* A canvas-coloured halo knocks the gridlines out behind row labels. */
-.studio-chart__row { fill: var(--color-graphite); font-size: 13px; paint-order: stroke; stroke: var(--color-eggshell); stroke-width: 5px; stroke-linejoin: round; }
-.studio-chart__title { fill: var(--color-smoke); font-size: 13px; }
-.studio-chart__caption { display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-4); font: var(--text-body-sm); color: var(--color-graphite); margin-top: var(--space-3); }
-.studio-key { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
+/* Studio charts (effect-forest, blinding-meter, design-fixes): hand-written SVG, tokens only. */
+.st-frame { margin: var(--space-8) 0 0; max-width: 760px; position: relative; }
+.st-frame__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--space-1) var(--space-4); }
+.st-frame__title { font: 600 16px/1.4 var(--font-body); margin: 0; color: var(--color-ink); flex: 1 1 320px; }
+.st-frame__synthetic { font: var(--text-body-sm); color: var(--color-smoke); }
+.st-frame__subtitle { font: var(--text-body-sm); color: var(--color-smoke); margin: var(--space-1) 0 0; }
+.st-frame__status { margin: var(--space-2) 0 0; }
+.st-frame__body { margin-top: var(--space-4); }
+.st-frame__foot { font: var(--text-body-sm); color: var(--color-smoke); margin-top: var(--space-3); }
+.st-frame__empty { padding: var(--space-6) 0; color: var(--color-graphite); }
+.st-frame__data { margin-top: var(--space-2); }
+.st-notes { margin: 0; padding-left: 1.1em; display: grid; gap: 2px; }
+.st-table { width: 100%; border-collapse: collapse; font: var(--text-body-sm); font-variant-numeric: tabular-nums; margin-top: var(--space-4); }
+.st-table caption { text-align: left; color: var(--color-smoke); padding-bottom: var(--space-2); }
+.st-table th { text-align: left; font-weight: 600; color: var(--color-graphite); border-bottom: 1px solid var(--color-stone); padding: 6px 8px 6px 0; vertical-align: bottom; }
+.st-table td { border-bottom: 1px solid var(--color-stone); padding: 6px 8px 6px 0; vertical-align: top; color: var(--color-ink); }
+.st-table .st-r { text-align: right; }
+
+.st-forest, .st-meter, .st-fixes { position: relative; width: 100%; min-width: 0; }
+.st-forest svg, .st-meter svg, .st-fixes svg { display: block; max-width: 100%; overflow: visible; }
+.st-frame svg text { font-family: var(--font-body); font-variant-numeric: tabular-nums; }
+.st-grid { stroke: var(--color-stone); stroke-width: 1; }
+.st-axis { stroke: var(--color-smoke); stroke-width: 1; }
+.st-null { stroke: var(--color-graphite); stroke-width: 1; }
+.st-cut { stroke: var(--color-smoke); stroke-width: 1; stroke-dasharray: 1 3; }
+.st-track { stroke: var(--color-stone); stroke-width: 6; stroke-linecap: round; }
+.st-tick { fill: var(--color-smoke); font-size: 12px; }
+.st-label { fill: var(--color-smoke); font-size: 13px; }
+.st-label--small { font-size: 12px; }
+.st-label--ref { fill: var(--color-graphite); }
+.st-label--dir { fill: var(--color-graphite); }
+.st-label--conn { fill: var(--color-graphite); font-size: 12px; }
+.st-row { fill: var(--color-ink); font-size: 14px; }
+.st-sub { fill: var(--color-smoke); font-size: 12px; }
+.st-flag { fill: var(--color-smoke); font-weight: 400; }
+.st-value { fill: var(--color-ink); font-size: 14px; font-weight: 600; }
+.st-value-inline { fill: var(--color-ink); font-size: 13px; }
+/* A canvas-coloured halo knocks gridlines and connectors out behind labels. */
+.st-halo { paint-order: stroke; stroke: var(--color-eggshell); stroke-width: 5px; stroke-linejoin: round; }
+.st-conn polyline, .st-conn-line { stroke: var(--color-smoke); stroke-width: 1; fill: none; }
+.st-arrowhead { fill: var(--color-smoke); }
+.st-before { fill: var(--color-eggshell); stroke: var(--color-smoke); stroke-width: 1.5; }
+.st-hit { fill: transparent; }
+.st-mark { cursor: pointer; outline: none; }
+.st-mark:focus-visible .st-hit { stroke: var(--color-ink); stroke-width: 1.5; }
+.st-tip {
+  position: absolute; z-index: 5; padding: 8px 10px; border: 1px solid var(--color-stone); border-radius: 8px;
+  background: var(--color-eggshell); color: var(--color-ink); font: var(--text-body-sm); pointer-events: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .st-frame { animation: st-fade 160ms ease-out; }
+  @keyframes st-fade { from { opacity: 0; } to { opacity: 1; } }
+}
+
+.st-tiles { margin-bottom: var(--space-2); }
+.st-tile { min-width: 0; }
+.st-tile__value { white-space: nowrap; }
+.st-unit { font-size: 0.55em; color: var(--color-smoke); }
+.studio-readout dd.st-tile__note { font: var(--text-body-sm); margin-top: 2px; }
+.studio-readout dd.st-tile__note .studio-status { font: inherit; }
+.st-guess { margin-top: var(--space-6); }
 
 .studio-facts { list-style: none; margin: 0 0 var(--space-3); padding: 0; }
 .studio-fact {
@@ -119,7 +168,6 @@
   .studio-fact__value { grid-column: 1 / -1; grid-row: 2; }
 }
 
-.studio-fixes { margin: 0 0 var(--space-6); padding-left: 1.4em; display: grid; gap: var(--space-2); font: var(--text-body); }
 .studio-notes { margin: 0; padding-left: 1.2em; display: grid; gap: var(--space-2); font: var(--text-body-sm); color: var(--color-graphite); }
 
 .studio-text-btn, .studio-action {
@@ -169,4 +217,5 @@
   .studio-title { font-size: 34px; }
   .studio-readout dd { font-size: 26px; }
   .studio-readout { gap: var(--space-4) var(--space-8); }
+  .st-tiles { flex-direction: column; }
 }

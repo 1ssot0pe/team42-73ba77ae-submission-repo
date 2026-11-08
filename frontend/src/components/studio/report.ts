@@ -45,6 +45,11 @@ export interface Effect {
   adjustedHi: number | null;
   bias: number | null;
   extrapolated: boolean;
+  /** correction.u_status: whether the unblinding u behind the adjustment was observed or imputed. */
+  uStatus: string;
+  /** facts.se_g, the standard error the reported interval is built from (g ± 1.96·se). */
+  se: number | null;
+  seStatus: string;
 }
 
 export interface Blinding {
@@ -62,6 +67,10 @@ export interface Fix {
   reduction: number | null;
   before: number | null;
   after: number | null;
+  /** counterfactuals[].feasibility_weight, 0 to 1. */
+  feasibility: number | null;
+  /** counterfactuals[].score = reduction × feasibility; the pipeline ranks by it. */
+  score: number | null;
 }
 
 export interface TraceRow {
@@ -151,7 +160,8 @@ function fact(r: EvidenceReport, key: string): Obj | null {
 
 export function effect(r: EvidenceReport): Effect | null {
   const g = fact(r, "g");
-  const se = num(fact(r, "se_g")?.value);
+  const seFact = fact(r, "se_g");
+  const se = num(seFact?.value);
   const c = isObj(r.correction) ? r.correction : null;
   const reported = num(g?.value);
   if (reported === null && !c) return null;
@@ -165,7 +175,49 @@ export function effect(r: EvidenceReport): Effect | null {
     adjustedHi: num(c?.hi),
     bias: num(c?.bias),
     extrapolated: c?.extrapolated === true,
+    uStatus: str(c?.u_status),
+    se,
+    seStatus: str(seFact?.status),
   };
+}
+
+/**
+ * Word boundaries for the unblinding u, exactly as the verdict uses them (u < 0.25, u < 0.55, else).
+ * The blinding meter draws these cut-offs so the verdict has visible boundaries.
+ */
+export const BLINDING_BANDS: { word: string; tone: Blinding["tone"]; from: number; below: number }[] = [
+  { word: "Blinding largely held", tone: "good", from: 0, below: 0.25 },
+  { word: "Partly unblinded", tone: "watch", from: 0.25, below: 0.55 },
+  { word: "Largely unblinded", tone: "alert", from: 0.55, below: Infinity },
+];
+
+export function bandWord(v: number): string {
+  return (BLINDING_BANDS.find((b) => v < b.below) ?? BLINDING_BANDS[BLINDING_BANDS.length - 1]).word;
+}
+
+/** Guess accuracy facts (0 to 1) when reported, else null. */
+export function guessAccuracy(r: EvidenceReport, who: "participants" | "raters"): number | null {
+  const f = fact(r, `guess_acc_${who}`);
+  return f && str(f.status) !== "unknown" ? num(f.value) : null;
+}
+
+/**
+ * report.status in sentence case for a status line: "AWAITING HUMAN SIGN-OFF: instrument reading, not a verdict"
+ * becomes label "Awaiting human sign-off" and detail "instrument reading, not a verdict".
+ */
+export function signOff(r: EvidenceReport): { label: string; detail: string } | null {
+  const raw = str(r.status).trim();
+  if (!raw) return null;
+  const [head, ...rest] = raw.split(":");
+  const h = head.trim().toLowerCase();
+  return { label: h ? h[0].toUpperCase() + h.slice(1) : raw, detail: rest.join(":").trim() };
+}
+
+/** fit_primary summary used in footnotes: number of calibration trials and tau². */
+export function fitPrimary(r: EvidenceReport): { k: number | null; tau2: number | null; slope: number | null } {
+  const f = isObj(r.fit_primary) ? r.fit_primary : {};
+  const u = isObj(f.u) ? (f.u as Obj) : {};
+  return { k: num(f.k), tau2: num(f.tau2), slope: num(u.est) };
 }
 
 export function blinding(r: EvidenceReport): Blinding | null {
@@ -174,10 +226,8 @@ export function blinding(r: EvidenceReport): Blinding | null {
   if (!u || value === null) return null;
   const status = str(u.status);
   const observed = status === "derived" || status === "observed";
-  const [word, tone]: [string, Blinding["tone"]] =
-    value < 0.25 ? ["Blinding largely held", "good"]
-    : value < 0.55 ? ["Partly unblinded", "watch"]
-    : ["Largely unblinded", "alert"];
+  const band = BLINDING_BANDS.find((b) => value < b.below) ?? BLINDING_BANDS[BLINDING_BANDS.length - 1];
+  const { word, tone } = band;
   return { u: value, uSd: num(fact(r, "u_sd")?.value), status, observed, word, tone, note: str(u.note) };
 }
 
@@ -188,6 +238,8 @@ export function fixes(r: EvidenceReport): Fix[] {
     reduction: num(c.bias_reduction),
     before: num(c.expected_bias_before),
     after: num(c.expected_bias_after),
+    feasibility: num(c.feasibility_weight ?? c.feasibility),
+    score: num(c.score),
   }));
 }
 
