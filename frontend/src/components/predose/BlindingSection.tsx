@@ -50,6 +50,8 @@ export function VersionHistory({ versions, history }: { versions: ProtocolVersio
   const withRisk = uOf.size > 0;
   const rows = versions.slice().reverse().map((v) => [
     <span className="num">v{v.version}</span>,
+    // Predicted u sits second so it stays on screen at phone width.
+    ...(withRisk ? [<span className="num">{typeof uOf.get(v.version) === "number" ? (uOf.get(v.version) as number).toFixed(2) : "n/a"}</span>] : []),
     <span className="num">{formatDay(v.day)}</span>,
     v.why,
     v.changes.length === 0 ? <span className="c-ash">none</span> : (
@@ -58,11 +60,10 @@ export function VersionHistory({ versions, history }: { versions: ProtocolVersio
         <span className="vhist__first" title={v.changes.join("\n")}>{v.changes[0].replace(/^[+-]/, "")}</span>
       </span>
     ),
-    ...(withRisk ? [<span className="num">{typeof uOf.get(v.version) === "number" ? (uOf.get(v.version) as number).toFixed(2) : "n/a"}</span>] : []),
   ]);
   return (
-    <LedgerTable title="Version history" columns={[{ label: "Version", mono: true }, { label: "Day", mono: true }, "Why", "Changes",
-      ...(withRisk ? [{ label: "Predicted u", align: "right" as const, mono: true }] : [])]}
+    <LedgerTable title="Version history" columns={[{ label: "Version", mono: true },
+      ...(withRisk ? [{ label: "Predicted u", align: "right" as const }] : []), { label: "Day", mono: true }, "Why", "Changes"]}
       rows={rows} empty="No versions yet." maxHeight={360} />
   );
 }
