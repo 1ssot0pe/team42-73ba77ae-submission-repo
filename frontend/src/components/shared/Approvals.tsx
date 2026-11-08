@@ -5,9 +5,9 @@
  *   Pending: eyebrow MODULE · AGENT · DAY, title, rationale, evidence in <details>, an underlined Reviewer
  *   signature line (required, remembered) plus an optional comment, then Approve (filled) and Reject (outline).
  *   Calls api.decide, then trial.refresh(), and shows a toast. A decided approval renders as a SignedStamp row.
- * SignedStamp props: approval (decided). "SIGNED · APPROVED · DANNY · D+3", "REJECTED", or "AUTO-APPROVED (DEMO)".
- *   An "expired" approval (a pre-dosing fix still pending when dosing started) is not signed by anyone: it renders
- *   as a flat neutral "EXPIRED AT ENROLMENT" tag, never as approved or pending.
+ * SignedStamp props: approval (decided). A dot plus a word: "Approved · Danny · D+3", "Rejected · ...", or
+ *   "Auto-approved (demo)". An "expired" approval (a pre-dosing fix still pending when dosing started) is not
+ *   signed by anyone: it renders as a neutral "Expired at enrolment", never as approved or pending.
  * ApprovalInbox props: module (optional filter, e.g. "predose"); title (default "Approval inbox");
  *   showSigned (default true; recent signed slips under the pending ones, then expired fixes); signedLimit (default 6);
  *   moduleTabs (default true when no module is given: filter pills by module).
@@ -23,6 +23,7 @@ import { EvidenceView, hasEvidence } from "./EvidenceView";
 import { dotJoin, formatDay, moduleLabel } from "./format";
 import { useToast } from "./Toast";
 import { useReviewer } from "./useReviewer";
+import "../../styles/review.css";
 
 const AUTO_REVIEWER = /auto-approve/i;
 /** Expired fixes are signed by "nobody (dosing started before sign-off)": never show that as a signature. */
@@ -30,39 +31,53 @@ const NOBODY_REVIEWER = /^nobody\b/i;
 const isExpired = (a: Approval) => a.status === "expired" || NOBODY_REVIEWER.test(a.reviewer ?? "");
 
 /* ------------------------------------------------------------------ stamp */
+/** Status as a small dot plus a word (design-v2.md Colour). */
+function StatusWord({ tone, word, rest, title }: { tone: "good" | "alert" | "watch" | "neutral"; word: string; rest?: string; title?: string }) {
+  return (
+    <span className={`rv-status rv-status--${tone}`} title={title}>
+      <span className="rv-status__dot" aria-hidden="true" />
+      {word}
+      {rest ? <span className="rv-status__rest">{`· ${rest}`}</span> : null}
+    </span>
+  );
+}
+
 export function SignedStamp({ approval: a, land = false }: { approval: Approval; land?: boolean }) {
   if (isExpired(a)) return <ExpiredStamp approval={a} />;
   const auto = AUTO_REVIEWER.test(a.reviewer ?? "");
   const day = formatDay(a.decided_day ?? a.day);
-  let text: string;
+  let word: string;
+  let rest: string;
   let tone: "good" | "alert" | "watch";
   if (auto && a.status === "approved") {
-    text = dotJoin("Auto-approved (demo)", day);
+    word = "Auto-approved (demo)";
+    rest = day;
     tone = "watch";
   } else if (a.status === "approved") {
-    text = dotJoin("Signed", "Approved", a.reviewer, day);
+    word = "Approved";
+    rest = dotJoin(a.reviewer, day);
     tone = "good";
   } else {
-    text = dotJoin("Signed", "Rejected", a.reviewer, day);
+    word = "Rejected";
+    rest = dotJoin(a.reviewer, day);
     tone = "alert";
   }
   return (
-    <div className="signed">
+    <div className={`signed${land ? " signed--land" : ""}`}>
       <span className="signed__title">{a.title}</span>
-      <span className={`stamp stamp--${tone}${land ? " stamp--land" : ""}`} title={a.comment || undefined}>{text}</span>
+      <StatusWord tone={tone} word={word} rest={rest} title={a.comment || undefined} />
     </div>
   );
 }
 
 /** A fix nobody signed before dosing started. Neutral: not approved, not rejected, not waiting. */
 export function ExpiredStamp({ approval: a }: { approval: Approval }) {
-  const day = a.decided_day !== null && a.decided_day !== undefined ? formatDay(a.decided_day) : null;
+  const day = a.decided_day !== null && a.decided_day !== undefined ? formatDay(a.decided_day) : undefined;
   return (
     <div className="signed signed--expired">
       <span className="signed__title">{a.title}</span>
-      <span className="stamp stamp--expired" title="Dosing started before anyone signed this fix, so it was not applied.">
-        {dotJoin("Expired at enrolment", day)}
-      </span>
+      <StatusWord tone="neutral" word="Expired at enrolment" rest={day}
+        title="Dosing started before anyone signed this fix, so it was not applied." />
     </div>
   );
 }
@@ -110,7 +125,7 @@ export function ApprovalSlip({ approval, onDecided }: ApprovalSlipProps) {
   };
 
   return (
-    <article className="slip glass glass--strong glass--enter" aria-labelledby={`${idBase}-title`}>
+    <article className="slip" aria-labelledby={`${idBase}-title`}>
       <div className="slip__eyebrow">{dotJoin(moduleLabel(a.module), a.agent, formatDay(a.day))}</div>
       <h3 className="slip__title" id={`${idBase}-title`}>{a.title}</h3>
       {a.rationale ? <p className="slip__rationale">{a.rationale}</p> : null}
