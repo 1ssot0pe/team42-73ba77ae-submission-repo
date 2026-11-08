@@ -11,7 +11,7 @@ import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { api } from "../../api";
 import { useDeveloper } from "../../dev";
-import { useTrial } from "../../trial";
+import { useTrialSnapshot } from "../../trialBridge";
 import { moduleLabel } from "./format";
 import { StatusPill } from "./Pills";
 import { applyTheme, getThemePref, type ThemePref } from "./theme";
@@ -37,7 +37,7 @@ const linkClass = ({ isActive }: { isActive: boolean }) => `nav__link${isActive 
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function GlassNav(_props: GlassNavProps = {}) {
-  const { trialId, state } = useTrial();
+  const { trialId, state } = useTrialSnapshot();
   const [theme, setTheme] = useState<ThemePref>(getThemePref);
   const [dev, setDev] = useDeveloper();
   const [open, setOpen] = useState(false);

@@ -69,3 +69,6 @@
 .drawer__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); padding: var(--space-6); border-bottom: 1px solid var(--color-stone); }
 .drawer__title { margin: 0; font: 300 22px/1.2 var(--font-display); color: var(--color-ink); }
 .drawer__body { padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-4); }
+
+/* ---------- lost trial: shown under TrialLost (rendered by the TrialProvider) */
+.ws-lost-note { margin-top: 0; padding-top: 0; text-align: center; font: 400 15px/1.6 var(--font-body); color: var(--color-graphite); }

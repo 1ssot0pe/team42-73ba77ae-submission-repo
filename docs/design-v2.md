@@ -2,6 +2,24 @@
 
 This overrides `plans/design.md` wherever the two differ. Anything not mentioned here keeps the v1 rule.
 
+## Fix round 1: file ownership
+
+No two agents edit the same file. Paths are under `frontend/src/` unless stated. Off limits to everyone: `backend/`, `api/`, `unblind/`, `vercel.json`, `requirements*.txt`, `tests/`, `api.ts`, `trial.tsx`. Any file not listed is read-only for fixers. Exported names and props of shared components stay stable. A fixer that needs new CSS adds its own file rather than editing someone else's.
+
+| Owner | Files |
+|---|---|
+| Orchestrator | `docs/design-v2.md`, `App.tsx` (the only owner of routes), `main.tsx`, `trialBridge.tsx`, `store/projects.ts`, `pages/Home.tsx`, `pages/Trials.tsx` |
+| F1 Design review flow | `components/review/*` (new; `PredoseApprovals.tsx` is already wired into Predose), `components/shared/Approvals.tsx`, `styles/review.css` (new) |
+| F2 Trial clock labels and stepper | `pages/Workspace.tsx`, `components/stepper/*`, `styles/stepper.css`, `styles/workspace.css` |
+| F3 Advancing time | `components/projects/TrialClock.tsx`, `components/mission/ControlDock.tsx`, `api-extra.ts`, `styles/clock.css` (new) |
+| F4 Draft editor | `components/projects/DraftEditor.tsx`, `components/projects/CreateTrialDialog.tsx`, `components/editor/*` (new), `styles/editor.css` (new) |
+| F5 Risk visual | `components/predose/UnblindingSphere.tsx`, `styles/risk.css` (new) |
+| F6 Drawers on stages | `components/projects/Drawer.tsx`, `components/projects/ReportPanel.tsx`, `pages/{Predose,Portal,ModulePage}.tsx`, `components/module/*`, `components/predose/*` except `UnblindingSphere.tsx`, `components/shared/{AgentLog,LedgerTable,EvidenceView,EvidenceQuote}.tsx`, `styles/{predose,module,drawer}.css` |
+| F7 Studio polish | `pages/Studio.tsx`, `components/studio/*`, `store/analyses.ts`, `styles/studio.css` |
+| F8 Phone nav | `components/shared/GlassNav.tsx`, `components/shared/theme.ts`, `dev.ts`, `styles/components.css` |
+
+Merged before the round: `origin/main` (PR #8: resilient `api.ts`, `trial.tsx`, `TrialLost`). The `TrialProvider` now lives inside the project workspace, keyed by project and trial. The nav reads the open trial through `trialBridge.tsx`, and a lost trial shows `TrialLost` inside the project with a link back to the draft.
+
 ## The idea
 
 Parallax is a calm workspace for running and checking psychedelic trials. It should read like a well set document, not an instrument panel. Hierarchy comes from type and whitespace, not from boxes, pills and colour.

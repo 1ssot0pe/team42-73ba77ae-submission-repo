@@ -13,7 +13,7 @@ import { api, errorText } from "../api";
 import { useTrial } from "../trial";
 import type { Kpi, RecordSections } from "../types";
 import {
-  AgentLog, ApprovalInbox, BottleneckCards, EmptyState, LoadingHairline, ReadoutGrid,
+  AgentLog, BottleneckCards, EmptyState, LoadingHairline, ReadoutGrid,
 } from "../components/shared";
 import { FdaChecklist } from "../components/predose/FdaChecklist";
 import { ProtocolEditor } from "../components/predose/ProtocolEditor";
@@ -21,6 +21,7 @@ import { DraftedSection, VersionHistory } from "../components/predose/BlindingSe
 import { FairnessTable, FlaggedLedger, ScreeningFunnel } from "../components/predose/Screening";
 import { MeasurementPlanLedger, RecruitmentAds } from "../components/predose/RecruitmentAds";
 import { RiskCard } from "../components/predose/UnblindingSphere";
+import { PredoseApprovals } from "../components/review/PredoseApprovals";
 import "../styles/module.css";
 import "../styles/predose.css";
 
@@ -112,7 +113,7 @@ export default function Predose({ only }: { only?: PredoseSlice } = {}) {
 
         {full || only === "design" || only === "screening" ? (
           <aside className="pd-aside" aria-label="Pre-dosing approvals">
-            <ApprovalInbox module="predose" title="Approvals" signedLimit={4} />
+            <PredoseApprovals only={only} />
           </aside>
         ) : null}
 

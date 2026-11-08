@@ -3,7 +3,8 @@
  * runEvidence aborts after 55 s by default (the live server's limit) and throws EvidenceTimeout.
  */
 import { api, ApiError } from "./api";
-import type { EvidenceReport, Health } from "./types";
+import type { EvidenceReport } from "./types";
+import type { Health } from "./api";
 
 export class EvidenceTimeout extends Error {
   constructor() {

@@ -3,7 +3,7 @@
  * Main column plus the vertical stepper on the right. The Draft stage is a document editor; later stages
  * render the existing pages against this project's trial (set through useTrial().setTrialId).
  */
-import { useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { VerticalStepper } from "../components/stepper/VerticalStepper";
 import { currentStageIndex, deriveStages, isStageId, STAGES, type StageId } from "../components/stepper/stages";
@@ -12,8 +12,9 @@ import { ReportPanel } from "../components/projects/ReportPanel";
 import { ProjectStatusDot } from "../components/projects/StatusDot";
 import { TrialClock } from "../components/projects/TrialClock";
 import { useProject } from "../components/projects/useProjects";
-import { projects } from "../store/projects";
-import { useTrial } from "../trial";
+import { projects, type Project } from "../store/projects";
+import { TrialProvider, useTrial } from "../trial";
+import { TrialBridge } from "../trialBridge";
 import ModulePage from "./ModulePage";
 import Portal from "./Portal";
 import Predose from "./Predose";
@@ -46,30 +47,12 @@ function StageBody({ stage }: { stage: StageId }) {
 }
 
 export default function Workspace() {
-  const { projectId, stage: stageParam } = useParams<{ projectId: string; stage?: string }>();
+  const { projectId } = useParams<{ projectId: string; stage?: string }>();
   const navigate = useNavigate();
   const project = useProject(projectId);
-  const { trialId, state, setTrialId, error } = useTrial();
-
-  const projectTrial = project?.trialId ?? null;
-
-  // Point the shared trial context at this project's trial.
-  useEffect(() => {
-    if (!project) return;
-    if (projectTrial !== trialId) setTrialId(projectTrial);
-    // Only react to the project's trial changing, not to every context update.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [project?.id, projectTrial]);
-
-  const ours = !!projectTrial && projectTrial === trialId ? state : null;
-  const launched = !!projectTrial;
-  const stages = useMemo(() => deriveStages(launched, ours), [launched, ours]);
-
-  // Mark the project complete once its trial is closed.
-  useEffect(() => {
-    if (!project || !ours) return;
-    if (ours.phase === "closed" && project.status !== "complete") projects.update(project.id, { status: "complete" });
-  }, [project, ours]);
+  // True when the TrialProvider has replaced the workspace with TrialLost (see trialBridge.tsx).
+  const [lost, setLost] = useState(false);
+  const onGone = useCallback((gone: boolean) => setLost(gone), []);
 
   if (!project) {
     return (
@@ -79,6 +62,52 @@ export default function Workspace() {
       </main>
     );
   }
+
+  const relaunch = () => {
+    projects.update(project.id, { trialId: null, status: "draft" });
+    navigate(`/trials/${project.id}/draft`);
+  };
+
+  // One provider per project and trial: switching either starts from a clean trial context.
+  return (
+    <>
+      <TrialProvider key={`${project.id}:${project.trialId ?? "draft"}`}>
+        <TrialBridge onGone={onGone} />
+        <WorkspaceInner project={project} />
+      </TrialProvider>
+      {lost ? (
+        <p className="page ws-lost-note">
+          Your protocol draft for {project.name} is safe.{" "}
+          <button type="button" className="textbtn" onClick={relaunch}>Open the draft to launch it again</button>
+        </p>
+      ) : null}
+    </>
+  );
+}
+
+function WorkspaceInner({ project }: { project: Project }) {
+  const { stage: stageParam } = useParams<{ projectId: string; stage?: string }>();
+  const navigate = useNavigate();
+  const { trialId, state, setTrialId, error } = useTrial();
+
+  const projectTrial = project.trialId ?? null;
+
+  // Point the shared trial context at this project's trial.
+  useEffect(() => {
+    if (projectTrial !== trialId) setTrialId(projectTrial);
+    // Only react to the project's trial changing, not to every context update.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [project.id, projectTrial]);
+
+  const ours = !!projectTrial && projectTrial === trialId ? state : null;
+  const launched = !!projectTrial;
+  const stages = useMemo(() => deriveStages(launched, ours), [launched, ours]);
+
+  // Mark the project complete once its trial is closed.
+  useEffect(() => {
+    if (!ours) return;
+    if (ours.phase === "closed" && project.status !== "complete") projects.update(project.id, { status: "complete" });
+  }, [project, ours]);
 
   const curIdx = Math.min(currentStageIndex(launched, ours), STAGES.length - 1);
   const current = STAGES[curIdx].id;
