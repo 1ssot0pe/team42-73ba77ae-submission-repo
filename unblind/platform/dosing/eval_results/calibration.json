@@ -1,0 +1,71 @@
+{
+ "seeds": "100-129",
+ "p0": 0.6,
+ "p1": 0.85,
+ "grid": [
+  {
+   "H": 2.0,
+   "median_delay": 9.0,
+   "missed": 4,
+   "false_alarms_per_trial_null": 0.867,
+   "false_alarms_per_trial_drift": 0.7
+  },
+  {
+   "H": 2.5,
+   "median_delay": 15,
+   "missed": 1,
+   "false_alarms_per_trial_null": 0.467,
+   "false_alarms_per_trial_drift": 0.333
+  },
+  {
+   "H": 3.0,
+   "median_delay": 15.0,
+   "missed": 0,
+   "false_alarms_per_trial_null": 0.233,
+   "false_alarms_per_trial_drift": 0.133
+  },
+  {
+   "H": 3.5,
+   "median_delay": 15.0,
+   "missed": 0,
+   "false_alarms_per_trial_null": 0.133,
+   "false_alarms_per_trial_drift": 0.1
+  },
+  {
+   "H": 4.0,
+   "median_delay": 15,
+   "missed": 1,
+   "false_alarms_per_trial_null": 0.1,
+   "false_alarms_per_trial_drift": 0.067
+  },
+  {
+   "H": 4.5,
+   "median_delay": 20.0,
+   "missed": 2,
+   "false_alarms_per_trial_null": 0.067,
+   "false_alarms_per_trial_drift": 0.033
+  },
+  {
+   "H": 5.0,
+   "median_delay": 20,
+   "missed": 5,
+   "false_alarms_per_trial_null": 0.033,
+   "false_alarms_per_trial_drift": 0.0
+  },
+  {
+   "H": 5.5,
+   "median_delay": 20,
+   "missed": 7,
+   "false_alarms_per_trial_null": 0.033,
+   "false_alarms_per_trial_drift": 0.0
+  },
+  {
+   "H": 6.0,
+   "median_delay": 25,
+   "missed": 7,
+   "false_alarms_per_trial_null": 0.0,
+   "false_alarms_per_trial_drift": 0.0
+  }
+ ],
+ "rule": "lowest false-alarm rate among thresholds that missed no drift (a false alarm costs one human review; a missed drift costs the trial)"
+}

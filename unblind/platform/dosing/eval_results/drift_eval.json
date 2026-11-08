@@ -1,0 +1,166 @@
+{
+ "synthetic": true,
+ "seeds": "0-19",
+ "n_seeds": 20,
+ "planted_drift": {
+  "site": "Site B (Manchester)",
+  "onset_day": 28,
+  "rater_accuracy": "about 0.59 before, about 0.89 after (world.py)"
+ },
+ "detector": {
+  "rule": "batched Bernoulli CUSUM",
+  "p0": 0.6,
+  "p1": 0.85,
+  "H": 3.5,
+  "min_batch": 5,
+  "alarm_by": "site",
+  "note": "H chosen on calibration seeds 100-129, not on the reported seeds"
+ },
+ "cusum": {
+  "detected": 18,
+  "median_delay_days": 13.5,
+  "delay_iqr": [
+   9.0,
+   20.0
+  ],
+  "false_alarms_per_trial_no_drift": 0.3,
+  "false_alarms_per_trial_drift_runs": 0.15
+ },
+ "wilson_rule": {
+  "detected": 9,
+  "median_delay_days": 25,
+  "delay_iqr": [
+   15.0,
+   30.0
+  ],
+  "false_alarms_per_trial_no_drift": 0.0
+ },
+ "end_of_trial_baseline": {
+  "detected": 14,
+  "delay_days_if_detected": 62,
+  "false_alarms_per_trial_no_drift": 0.0
+ },
+ "live_agent_alert_days": [
+  null,
+  48,
+  48,
+  37,
+  43,
+  37,
+  51,
+  37,
+  48,
+  32,
+  null,
+  58,
+  37,
+  58,
+  37,
+  45,
+  37,
+  43,
+  40,
+  37
+ ],
+ "onset_estimate_error_days": {
+  "median": -0.5,
+  "values": [
+   0,
+   0,
+   -3,
+   0,
+   -1,
+   -3,
+   -1,
+   0,
+   -12,
+   0,
+   -1,
+   0,
+   -1,
+   4,
+   0,
+   -5,
+   0,
+   -5
+  ]
+ },
+ "after_approval": {
+  "drift_stopped": 16,
+  "too_few_post_action_guesses": 2,
+  "re_alerts": 0,
+  "pooled_post_action": {
+   "correct": 166,
+   "n": 288,
+   "accuracy": 0.576,
+   "ci": [
+    0.519,
+    0.632
+   ]
+  }
+ },
+ "operations_mean_per_trial": {
+  "checkin_completion_pct": 99.6,
+  "debriefs_structured": 72.0,
+  "adverse_events_captured": 11.7,
+  "rater_contact_cues": 6.2,
+  "primary_lock_day": 63.0
+ },
+ "scale": "72 participants, 3 sites, 2 raters per site (plan scale)",
+ "sensitivity_small_trial": {
+  "label": "24 participants, 3 sites, 1 rater per site (stub pre-dosing scale)",
+  "n_seeds": 20,
+  "cusum": {
+   "detected": 1,
+   "median_delay_days": 22,
+   "delay_iqr": [
+    22.0,
+    22.0
+   ],
+   "false_alarms_per_trial_no_drift": 0.0,
+   "false_alarms_per_trial_drift_runs": 0.0
+  },
+  "wilson_rule": {
+   "detected": 0,
+   "median_delay_days": null,
+   "delay_iqr": [
+    null,
+    null
+   ],
+   "false_alarms_per_trial_no_drift": 0.0
+  },
+  "end_of_trial_baseline": {
+   "detected": 2,
+   "delay_days_if_detected": 62,
+   "false_alarms_per_trial_no_drift": 0.1
+  },
+  "live_agent_alert_days": [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   50,
+   null,
+   null
+  ],
+  "onset_estimate_error_days": {
+   "median": -28,
+   "values": [
+    -28
+   ]
+  }
+ }
+}
