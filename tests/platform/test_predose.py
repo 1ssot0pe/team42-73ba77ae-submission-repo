@@ -133,7 +133,8 @@ def test_checklist_psilocybin_is_missing_the_blinding_items():
     assert "SYNTHETIC" in dr["risk"]["calibration"]
     assert set(dr["proposed_fixes"]) == {"central_raters", "blinding_questionnaire", "expectancy_measure",
                                          "alternative_control", "stratify_prior_use"}
-    assert len(m.ctx.approvals.pending("predose")) == 5     # one approval per proposed fix
+    fixes = [a for a in m.ctx.approvals.pending("predose") if a["action"]["type"] == "apply_fix"]
+    assert len(fixes) == 5     # one approval per proposed fix
     assert m.rec["protocol_versions"][0]["version"] == 1
 
 
@@ -145,7 +146,7 @@ def test_fix_central_raters_creates_version_2_and_rechecks():
     assert check(m, "central_raters")["present"] is True
     assert m.rec["protocol"]["design_flags"]["raters_attend_sessions"] is False
     assert any(x["kind"] == "protocol_amended" and x["from"] == "predose" for x in m.rec["messages"])
-    pending = [a["action"]["fix"] for a in m.ctx.approvals.pending("predose")]
+    pending = [a["action"]["fix"] for a in m.ctx.approvals.pending("predose") if a["action"]["type"] == "apply_fix"]
     assert sorted(pending) == sorted(set(pending)), "re-check must not duplicate pending approvals"
     assert "central_raters" not in pending
 
@@ -164,3 +165,118 @@ def test_fix_rejected_changes_nothing():
     m.decide(fix_approval(m, "central_raters")["id"], "Danny", "rejected", "not now")
     assert len(m.rec["protocol_versions"]) == 1
     assert check(m, "central_raters")["present"] is False
+
+
+# ---------------------------------------------------------------- Phase 2 follow-ups (decided by Danny)
+def test_fix_rejected_is_not_asked_again_after_later_rechecks():
+    m = master()
+    m.decide(fix_approval(m, "central_raters")["id"], "Danny", "rejected")
+    m.decide(fix_approval(m, "expectancy_measure")["id"], "Danny", "approved")    # triggers a re-check
+    m.decide(fix_approval(m, "blinding_questionnaire")["id"], "Danny", "approved")  # and another
+    asked = [a for a in m.rec["approvals"] if a["action"] == {"type": "apply_fix", "fix": "central_raters"}]
+    assert len(asked) == 1 and asked[0]["status"] == "rejected"
+    assert "central_raters" in m.rec["design_review"]["rejected_fixes"]
+
+
+def test_fix_reparse_after_central_raters_keeps_the_item_present():
+    m = master()
+    m.decide(fix_approval(m, "central_raters")["id"], "Danny", "approved")
+    text = m.rec["protocol"]["text"]
+    assert "the rater is present during the dosing session" in text      # the old sentence is still there
+    p = ProtocolParser().run(text, m.ctx)
+    assert p["rater_model"] == "central_remote" and p["design_flags"]["raters_attend_sessions"] is False
+    cl = {c["id"]: c["present"] for c in m.modules["predose"].codesigner.checklist(p)}
+    assert cl["central_raters"] is True
+
+
+# ---------------------------------------------------------------- Phase 3: recruitment, screening, enrolment
+import json  # noqa: E402
+
+from unblind.platform.predose.agents import CRITERIA, PreScreeningAgent, flesch  # noqa: E402
+
+
+def shortlist(m):
+    return next(a for a in m.ctx.approvals.pending("predose") if a["action"]["type"] == "shortlist")
+
+
+def test_screening_nothing_enrolled_before_clinician_approval():
+    m = master()
+    assert m.rec["enrolled"] == []
+    out = m.step(1)
+    assert out["advanced"] is False and "Clinician: confirm shortlist" in out["blocked"]
+    assert m.rec["day"] == -1
+    sl = [a for a in m.rec["approvals"] if a["action"]["type"] == "shortlist"]
+    assert len(sl) == 1, "the clinician shortlist is ONE approval"
+
+
+def test_screening_every_hidden_exclusion_is_not_eligible():
+    m = master()
+    hidden = [a for a in m.rec["applicants"] if a.get("_hidden_exclusion")]
+    assert hidden, "the synthetic world should plant some hidden exclusions"
+    assert all(a["screening"]["decision"] != "eligible" for a in hidden)
+    f = m.rec["recruitment"]["funnel"]
+    assert f["applied"] == 500 and f["auto_eligible"] + f["auto_excluded"] + f["needs_clinician"] == 500
+
+
+def test_screening_agent_never_reads_underscore_keys():
+    ctx = make_ctx()
+    clean = {"age": 30, "phone": "+447700900123", "self_reported_diagnosis": "treatment-resistant depression",
+             "failed_antidepressants": 3, "current_medication": "none", "prior_psychedelic_use": "never",
+             "can_attend_8_visits": True, "consents_to_chatbot_checkins": True, "free_text": "My GP suggested I look into trials."}
+    proto = {"indication": "treatment-resistant depression"}
+    a = PreScreeningAgent().screen_one(clean, proto, ctx)
+    b = PreScreeningAgent().screen_one(dict(clean, _hidden_exclusion=True), proto, ctx)
+    assert a == b and a["decision"] == "eligible"
+
+
+def test_screening_portal_disclosure_needs_clinician_with_quote():
+    ctx = make_ctx()
+    out = PreScreeningAgent().screen_one({"age": 30, "phone": "+447700900123",
+                                          "free_text": "I was diagnosed with bipolar disorder"},
+                                         {"indication": "treatment-resistant depression"}, ctx)
+    assert out["decision"] == "needs_clinician"
+    assert {"criterion": "free_text", "quote": "I was diagnosed with bipolar disorder"} in out["evidence"]
+
+
+def test_enrolment_after_approval_is_stratified_in_the_vault():
+    m = master()
+    m.decide(shortlist(m)["id"], "Dr Clinician", "approved")
+    n = len(m.rec["enrolled"])
+    assert n > 10
+    assert sum(m.rec["recruitment"]["strata"].values()) == n == m.vault.enrolled()
+    assert m.rec["recruitment"]["funnel"]["enrolled"] == n
+    assert all(p["stratum"] == f"{p['site']}|{'naive' if p['prior_psychedelic_use'] == 'never' else 'experienced'}"
+               for p in m.rec["enrolled"])
+    eligible = {a["id"] for a in m.rec["applicants"] if a["screening"]["decision"] == "eligible"}
+    assert {p["id"] for p in m.rec["enrolled"]} <= eligible          # flagged stay out without 'include flagged'
+    assert any(x["kind"] == "enrolment_complete" and x["from"] == "predose" for x in m.rec["messages"])
+    assert m.step(1)["advanced"] is True
+
+
+def test_enrolment_include_flagged_adds_washout_only_never_disclosures():
+    m = master()
+    m.decide(shortlist(m)["id"], "Dr Clinician", "approved", "Include flagged after washout review")
+    by_id = {a["id"]: a for a in m.rec["applicants"]}
+    for p in m.rec["enrolled"]:
+        s = by_id[p["id"]]["screening"]
+        assert s["decision"] == "eligible" or s["criteria_hit"] == ["ssri_snri"]
+        assert "free_text" not in s["criteria_hit"]
+
+
+def test_enrolment_record_never_contains_an_arm():
+    m = master()
+    m.decide(shortlist(m)["id"], "Dr Clinician", "approved")
+    dumped = json.dumps(m.rec)
+    assert '"arm"' not in dumped and '"alloc"' not in dumped
+    assert all(set(p) == {"id", "name", "site", "stratum", "prior_psychedelic_use", "dosing_day", "consents"}
+               for p in m.rec["enrolled"])
+
+
+def test_recruitment_ads_pass_checks_and_targeting_is_parked():
+    m = master()
+    r = m.rec["recruitment"]
+    assert len(r["ads"]) == 3 and all(all(a["checks"].values()) for a in r["ads"])
+    assert all(a["reading_ease"] > 50 for a in r["ads"])
+    assert "UK GDPR" in r["parked"] and len(r["channels"]) == 4
+    assert any("ethics approval" in e["text"] for e in m.rec["events"])
+    assert flesch("") == 0.0 and len(CRITERIA) == 13
