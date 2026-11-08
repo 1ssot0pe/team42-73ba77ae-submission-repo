@@ -19,7 +19,7 @@ The maths is a short meta-regression. The hard part is collecting about eight fa
 ## Quick start
 
 ```bash
-pip install -r requirements.txt
+pip install -r requirements-dev.txt   # requirements.txt is the slim API-only set Vercel uses
 export GEMINI_API_KEY=...            # optional: without it, deterministic rules extract every field
 streamlit run app/app.py             # the demo
 python -m unblind run NCT03866174    # command line, live agent trace

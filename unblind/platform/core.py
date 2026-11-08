@@ -17,6 +17,7 @@ Everything a module needs is in `Ctx`. Module contract (see MODULE_CONTRACT.md):
 from __future__ import annotations
 
 import hashlib
+import os
 import json
 import math
 import random
@@ -28,7 +29,7 @@ from typing import Any, Callable, Dict, List, Optional
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "data"
-TRIALS = DATA / "trials"
+TRIALS = Path(os.environ.get("UNBLIND_TRIALS_DIR", DATA / "trials"))  # Vercel: only /tmp is writable
 
 SECTIONS = [
     "protocol", "protocol_versions", "design_review", "recruitment", "applicants", "enrolled",
