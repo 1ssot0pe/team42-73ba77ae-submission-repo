@@ -34,7 +34,7 @@ proj = [{"id": "p-vis", "name": "Psilocybin visuals", "createdAt": "2026-11-08T1
          "updatedAt": "2026-11-08T10:00:00.000Z", "template": "psilocybin", "draft": "", "trialId": tid, "status": "running"}]
 SETTINGS = [("1440-light", dict(viewport={"width": 1440, "height": 900}, color_scheme="light"), "light"),
             ("1440-dark", dict(viewport={"width": 1440, "height": 900}, color_scheme="dark"), "dark"),
-            ("390", dict(viewport={"width": 390, "height": 844}, color_scheme="light", device_scale_factor=2,
+            ("390", dict(viewport={"width": 390, "height": 1800}, color_scheme="light", device_scale_factor=2,
                          is_mobile=True, has_touch=True), "light")]
 CHARTS = ["effect-estimates", "madrs-by-week", "report-rater-accuracy-site"]
 

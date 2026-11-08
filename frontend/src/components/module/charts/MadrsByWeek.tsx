@@ -30,8 +30,8 @@ const f1 = (v: number) => v.toFixed(1);
 
 export function MadrsByWeek({ chart, trialId, height }: ModuleChartComponentProps): JSX.Element {
   const [boxRef, width] = useWidth<HTMLDivElement>();
-  const { tip, show, hide, toggle } = useTip(boxRef);
   const { data: rec } = useRecordSections(trialId, ["outcomes", "followups"]);
+  const { tip, show, hide, toggle } = useTip(boxRef, rec);
 
   const key = chart.series[0]?.key ?? "All participants";
   const xKey = chart.x || "week";
@@ -82,7 +82,7 @@ export function MadrsByWeek({ chart, trialId, height }: ModuleChartComponentProp
   const hasSd = weeks.some((w) => w.sd !== null);
 
   const pendingText = (w: Week) => {
-    const parts = Object.entries(w.pending).map(([k, c]) => `${c} ${k}`);
+    const parts = Object.entries(w.pending).map(([k, c]) => `${c} ${k === "after close" ? `visit${c === 1 ? "" : "s"} due after the trial closed` : k}`);
     return parts.length ? parts.join(", ") : "fewer visits so far";
   };
 
@@ -124,7 +124,7 @@ export function MadrsByWeek({ chart, trialId, height }: ModuleChartComponentProp
   const narrow = width > 0 && width < 560;
   const padL = 44;
   const padR = narrow ? 30 : 48;
-  const top = 18;
+  const top = 30;
   const plotH = Math.max(150, (height ?? 240) - 60);
   const bottom = top + plotH;
   const H = bottom + 46;
@@ -167,7 +167,7 @@ export function MadrsByWeek({ chart, trialId, height }: ModuleChartComponentProp
                 <text className="pd-tick" x={plotX0 - 14} y={sy(t) + 4} textAnchor="end">{t}</text>
               </g>
             ))}
-            <text className="pd-axis-title" x={4} y={top - 6} textAnchor="start">MADRS total (0 to 60)</text>
+            <text className="pd-axis-title" x={4} y={top - 16} textAnchor="start">MADRS total (0 to 60)</text>
 
             {/* straight segments between visits; the one into a low-n visit is dashed */}
             {weeks.slice(1).map((w, i) => {
@@ -190,7 +190,7 @@ export function MadrsByWeek({ chart, trialId, height }: ModuleChartComponentProp
                   aria-label={t.text}
                   onPointerEnter={(e) => { if (e.pointerType === "mouse") show(t); }}
                   onClick={() => toggle(t)}
-                  onFocus={() => show(t)}
+                  onFocus={(e) => { if (e.currentTarget.matches(":focus-visible")) show(t); }}
                   onBlur={hide}
                 >
                   <rect x={cx - 16} y={top} width={32} height={plotH} fill="transparent" />

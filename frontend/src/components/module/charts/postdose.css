@@ -29,3 +29,4 @@
   .pd-n { font-size: 11px; }
   .pd-rowlabel, .pd-est { font-size: 12px; }
 }
+.pd-halo { paint-order: stroke; stroke: var(--color-taupe); stroke-width: 5px; stroke-linejoin: round; }

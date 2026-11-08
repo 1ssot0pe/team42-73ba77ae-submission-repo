@@ -68,9 +68,9 @@ function eventsFor(a: Alert | null): Ev[] {
 
 export function ReportAccuracy({ chart, trialId, height }: ModuleChartComponentProps): JSX.Element {
   const [boxRef, width] = useWidth<HTMLDivElement>();
-  const { tip, show, hide, toggle } = useTip(boxRef);
   const { state } = useTrial();
   const { data: rec } = useRecordSections(trialId, ["blinding_metrics", "alerts", "report"]);
+  const { tip, show, hide, toggle } = useTip(boxRef, rec);
   const [focusIdx, setFocusIdx] = useState<Record<string, number>>({});
 
   // Sites and values from the view's own chart; counts and bounds from the record.
@@ -280,18 +280,27 @@ export function ReportAccuracy({ chart, trialId, height }: ModuleChartComponentP
                     </g>
                   ))}
                   <line x1={x0} x2={x1} y1={yBot} y2={yBot} stroke={chartTokens.axis} />
-                  {dayTicks.map((d, i) => (
+                  {dayTicks.filter((d, i) => !(i === 0 && dayTicks.length > 1 && sx(dayTicks[1]) - sx(d) < 34)).map((d, i, ts) => (
                     <text key={d} className="pd-tick" x={sx(d)} y={yBot + 15}
-                      textAnchor={i === 0 ? "start" : i === dayTicks.length - 1 ? "end" : "middle"}>{`D${d}`}</text>
+                      textAnchor={d === 1 ? "start" : i === ts.length - 1 ? "end" : "middle"}>{`D${d}`}</text>
                   ))}
-                  {/* events */}
+                  {/* events: every rule first, then each label on a canvas-coloured plate so no rule runs through it */}
                   {p.events.map((e, ei) => (
-                    <g key={e.day}>
-                      <line x1={sx(e.day)} x2={sx(e.day)} y1={oy + headH + ei * evRowH + 6} y2={yBot} stroke={chartTokens.reference} strokeWidth={1} strokeOpacity={0.7} />
-                      <text className="pd-ev" x={sx(e.day) + (sx(e.day) > (x0 + x1) / 2 ? -4 : 4)} y={oy + headH + ei * evRowH + 10}
-                        textAnchor={sx(e.day) > (x0 + x1) / 2 ? "end" : "start"}>{e.label}</text>
-                    </g>
+                    <line key={`l${e.day}`} x1={sx(e.day)} x2={sx(e.day)} y1={oy + headH + ei * evRowH + 6} y2={yBot}
+                      stroke={chartTokens.reference} strokeWidth={1} strokeOpacity={0.7} />
                   ))}
+                  {p.events.map((e, ei) => {
+                    const right = sx(e.day) > (x0 + x1) / 2;
+                    const w = e.label.length * 5.9 + 6;
+                    const tx = sx(e.day) + (right ? -4 : 4);
+                    const ty = oy + headH + ei * evRowH + 10;
+                    return (
+                      <g key={`t${e.day}`}>
+                        <rect x={right ? tx - w + 3 : tx - 3} y={ty - 10} width={w} height={13} fill="var(--color-taupe)" />
+                        <text className="pd-ev" x={tx} y={ty} textAnchor={right ? "end" : "start"}>{e.label}</text>
+                      </g>
+                    );
+                  })}
                   {/* coin flip */}
                   <line x1={x0} x2={x1} y1={sy(0.5)} y2={sy(0.5)} stroke={chartTokens.reference} strokeWidth={1} strokeDasharray="4 4" />
                   {pi === 0 || narrow ? (
@@ -333,7 +342,7 @@ export function ReportAccuracy({ chart, trialId, height }: ModuleChartComponentP
                         setFocusIdx((s) => ({ ...s, [p.site]: i }));
                         toggle(tipAt(i));
                       }}
-                      onFocus={() => { const i = fi ?? pts.length - 1; setFocusIdx((s) => ({ ...s, [p.site]: i })); show(tipAt(i)); }}
+                      onFocus={(e) => { if (!e.currentTarget.matches(":focus-visible")) return; const i = fi ?? pts.length - 1; setFocusIdx((s) => ({ ...s, [p.site]: i })); show(tipAt(i)); }}
                       onBlur={() => { hide(); setFocusIdx((s) => { const n = { ...s }; delete n[p.site]; return n; }); }}
                       onKeyDown={(e) => {
                         if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;

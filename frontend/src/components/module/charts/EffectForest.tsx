@@ -51,8 +51,10 @@ export interface Tip {
  * Tooltip state for a hand-drawn chart. Hover and focus open it; a tap toggles it; a tap outside the chart or
  * a scroll closes it, so it never sticks on a phone.
  */
-export function useTip(boxRef: RefObject<HTMLElement>) {
+export function useTip(boxRef: RefObject<HTMLElement>, data?: unknown) {
   const [tip, setTip] = useState<Tip | null>(null);
+  // New data: close the tooltip so it never shows text from the previous fetch.
+  useEffect(() => setTip(null), [data]);
   const show = useCallback((t: Tip) => setTip(t), []);
   const hide = useCallback(() => setTip(null), []);
   const toggle = useCallback((t: Tip) => setTip((cur) => (cur && cur.key === t.key ? null : t)), []);
@@ -169,8 +171,8 @@ const lower = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
 
 export function EffectForest({ chart, trialId }: ModuleChartComponentProps): JSX.Element {
   const [boxRef, width] = useWidth<HTMLDivElement>();
-  const { tip, show, hide, toggle } = useTip(boxRef);
   const { data: rec } = useRecordSections(trialId, ["report"]);
+  const { tip, show, hide, toggle } = useTip(boxRef, rec);
   const effect = ((rec?.report as Record<string, unknown> | null | undefined)?.effect ?? null) as Record<string, unknown> | null;
 
   const rows = readRows(chart);
@@ -201,14 +203,19 @@ export function EffectForest({ chart, trialId }: ModuleChartComponentProps): JSX
     within_trial_rater: "Within-trial (patient and rater guess)",
     cross_trial: "Cross-trial calibration",
   };
-  const missing: string[] = [];
+  // Methods with no estimate, grouped by the record's own reason.
+  const byWhy = new Map<string, string[]>();
   for (const [k, label] of Object.entries(missingNames)) {
     const e = (effect?.[k] ?? null) as EffectPart | null;
     if (e && (e.md === null || e.md === undefined) && !rows.some((r) => r.name === label)) {
-      missing.push(`${label}${e.why_missing ? `: ${e.why_missing}` : ""}`);
+      const why = e.why_missing ?? "";
+      byWhy.set(why, [...(byWhy.get(why) ?? []), label]);
     }
   }
-  if (missing.length) notes.push(`Not estimable, so not drawn. ${missing.join(". ")}.`);
+  for (const [why, labels] of byWhy) {
+    const names = labels.map((l, i) => (i === 0 ? l : lower(l))).join(" and ");
+    notes.push(`Not drawn: ${names}, not estimable${why ? ` because ${why}` : ""}.`);
+  }
   if (truth !== null) {
     notes.push(`Planted truth ${fmt(truth, 1)} is the effect the simulator was given. A real trial has no such line.`);
   }
@@ -295,6 +302,9 @@ export function EffectForest({ chart, trialId }: ModuleChartComponentProps): JSX
               No effect
             </text>
 
+            {!narrow ? (
+              <text className="pd-axis-title" x={width - 4} y={top - 12} textAnchor="end">Mean difference [95% CI]</text>
+            ) : null}
             {rows.map((r, i) => {
               const cy = top + i * rowH + (narrow ? rowH - 18 : rowH / 2);
               const color = r.reported ? chartTokens.primary : chartTokens.flag;
@@ -304,8 +314,9 @@ export function EffectForest({ chart, trialId }: ModuleChartComponentProps): JSX
                 <g key={r.name}>
                   {narrow ? (
                     <>
-                      <text className="pd-rowlabel" x={plotX0 - padL + 12} y={cy - 18}>{r.name}</text>
-                      <text className="pd-est" x={width - padR} y={cy - 18} textAnchor="end">{est}</text>
+                      <text className="pd-rowlabel pd-halo" x={plotX0 - padL + 12} y={cy - 18}>{r.name}</text>
+                      <rect x={width - padR - est.length * 6.9 - 6} y={cy - 32} width={est.length * 6.9 + 10} height={19} fill="var(--color-taupe)" />
+                      <text className="pd-est pd-halo" x={width - padR} y={cy - 18} textAnchor="end">{est}</text>
                     </>
                   ) : (
                     <>
@@ -320,7 +331,7 @@ export function EffectForest({ chart, trialId }: ModuleChartComponentProps): JSX
                     aria-label={t.text}
                     onPointerEnter={(e) => { if (e.pointerType === "mouse") show(t); }}
                     onClick={() => toggle(t)}
-                    onFocus={() => show(t)}
+                    onFocus={(e) => { if (e.currentTarget.matches(":focus-visible")) show(t); }}
                     onBlur={hide}
                   >
                     <rect x={sx(r.lo) - 6} y={cy - 14} width={sx(r.hi) - sx(r.lo) + 12} height={28} fill="transparent" />
