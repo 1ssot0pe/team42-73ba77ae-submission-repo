@@ -31,15 +31,21 @@ export function fixesSubtitle(fx: Fix[]): string {
 }
 
 /** Footnote: feasibility is an assumption, and how the gap between the top two compares with the u uncertainty. */
-export function fixesFootnote(fx: Fix[]): string {
+export function fixesFootnote(fx: Fix[], slope: number | null): string {
   const parts = ["Expected bias is the model's prediction for a new trial with this change, using the same calibration.",
     "Feasibility weights are assumptions from the model's assumption table, not data."];
   const [a, b] = fx;
   if (a && b && has(a.reduction) && has(b.reduction)) {
     const gap = Math.abs(a.reduction - b.reduction);
-    const sds = [a.uSd, b.uSd].filter(has);
-    const inside = sds.length > 0 && gap < Math.min(...sds);
-    parts.push(`The top two differ by ${fmt(gap, 3)} g in expected bias reduction${sds.length ? `, ${inside ? "well inside" : "compared with"} the uncertainty in predicted u (SD ${sds.map((v) => fmt(v)).join(" and ")})` : ""}.`);
+    // Put the SD of predicted u on the bias scale (g) with the fitted slope: bias = slope × u, so SD(bias) ≈ |slope| × SD(u).
+    const sds = slope === null ? [] : [a.uSd, b.uSd].filter(has).map((v) => Math.abs(slope) * v);
+    if (sds.length) {
+      const words = sds.map((v) => `${fmt(v)} g`).join(" and ");
+      const small = gap < Math.min(...sds);
+      parts.push(`The top two differ by ${fmt(gap, 3)} g in expected bias reduction, against about ${words} of uncertainty in the predicted bias (slope ${fmt(slope, 3)} × SD of predicted u)${small ? ", so the ranking rests mainly on the assumed feasibility weights" : ""}.`);
+    } else {
+      parts.push(`The top two differ by ${fmt(gap, 3)} g in expected bias reduction.`);
+    }
   }
   return parts.join(" ");
 }
