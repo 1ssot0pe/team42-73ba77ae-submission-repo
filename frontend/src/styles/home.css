@@ -58,7 +58,7 @@
 }
 .rowlink:hover { background: var(--color-taupe); }
 .rowlink:focus-visible { outline: 2px solid var(--color-ink); outline-offset: -2px; }
-.rowlink__name { font: 400 16px/1.5 var(--font-body); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rowlink__name { font: 400 16px/1.5 var(--font-body); min-width: 0; overflow-wrap: anywhere; }
 .rowlink__meta { font: 400 13px/1.5 var(--font-body); color: var(--color-smoke); font-variant-numeric: tabular-nums; white-space: nowrap; min-width: 9ch; text-align: right; }
 
 .rows--table .rowlink, .rows__header { grid-template-columns: minmax(0, 1fr) 120px 130px; }

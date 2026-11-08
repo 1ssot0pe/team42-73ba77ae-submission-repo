@@ -219,7 +219,9 @@ export function TrialClock({ state }: { state: TrialState }) {
           <span>
             {run.kind === "check"
               ? "Checking the trial day…"
-              : <>{run.days === 1 ? "Advancing day " : "Advancing to day "}<span className="num">{run.target}</span>…</>}
+              : run.target < 1
+                ? "Preparing for dosing…"
+                : <>{run.days === 1 ? "Advancing day " : "Advancing to day "}<span className="num">{run.target}</span>…</>}
           </span>
           <span className="num clock__elapsed" aria-hidden="true">{elapsed} s</span>
           {slow ? <span className="clock__slow">This is taking longer than usual.</span> : null}

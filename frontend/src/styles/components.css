@@ -156,7 +156,7 @@
 .readout__arrow--good { color: var(--status-good-fg); background: var(--status-good-bg); }
 .readout__arrow--alert { color: var(--status-alert-fg); background: var(--status-alert-bg); }
 .readout__arrow--neutral { color: var(--status-neutral-fg); background: var(--status-neutral-bg); }
-.readout__note { font: var(--text-caption); letter-spacing: var(--track-caption); color: var(--color-graphite); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.readout__note { font: var(--text-caption); letter-spacing: var(--track-caption); color: var(--color-graphite); }
 .readout__chips { display: flex; gap: var(--space-1); flex-wrap: wrap; }
 .readout__chips .pill { white-space: normal; height: auto; min-height: 22px; padding-block: 3px; max-width: 100%; }
 
@@ -275,7 +275,7 @@
   border-radius: 50%; border: 1px solid currentColor;
 }
 .seal__tick svg { width: 10px; height: 10px; }
-.seal__text { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.seal__text { min-width: 0; overflow-wrap: anywhere; }
 @media (prefers-reduced-motion: no-preference) {
   .stamp--land { animation: stamp-land 120ms ease-out both; }
 }

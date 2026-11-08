@@ -7,8 +7,8 @@ import { useLayoutEffect, useRef, useState } from "react";
 import type { Effect } from "./report";
 import { fmt } from "./report";
 
-const VIOLET = "#0447ff";
-const ORANGE = "#ff4704";
+const VIOLET = "var(--color-spark-violet)";
+const ORANGE = "var(--color-spark-ember)";
 const NICE = [1, 2, 2.5, 5];
 
 /** Rounded ticks that cover [lo, hi] with at least `min` ticks, choosing the widest nice step that does. */
@@ -99,9 +99,9 @@ export function EffectChart({ e, note }: { e: Effect; note: string }) {
                 {r.label}
               </text>
               {r.a !== null && r.b !== null ? (
-                <line x1={x(r.a)} x2={x(r.b)} y1={r.y} y2={r.y} stroke={r.c} strokeWidth={2} strokeLinecap="round" />
+                <line x1={x(r.a)} x2={x(r.b)} y1={r.y} y2={r.y} strokeWidth={2} strokeLinecap="round" style={{ stroke: r.c }} />
               ) : null}
-              {r.mid !== null ? <circle cx={x(r.mid)} cy={r.y} r={5} fill={r.c} /> : null}
+              {r.mid !== null ? <circle cx={x(r.mid)} cy={r.y} r={5} style={{ fill: r.c }} /> : null}
             </g>
           ))}
         </svg>

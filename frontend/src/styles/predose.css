@@ -106,13 +106,13 @@
 .editor { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
 .editor__chips { display: flex; gap: var(--space-2); flex-wrap: wrap; }
 .vchip {
-  height: 30px; max-width: 100%; padding: 0 var(--space-3); border-radius: var(--radius-pill);
+  min-height: 30px; max-width: 100%; padding: 4px var(--space-3); border-radius: var(--radius-pill);
   border: 1px solid var(--button-border); background: transparent; color: var(--color-ink);
-  font: 500 13px/1 var(--font-body); cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font: 400 13px/1.3 var(--font-body); cursor: pointer; text-align: left; overflow-wrap: anywhere;
   transition: background var(--dur-hover) ease-out;
 }
 .vchip:hover { background: var(--color-stone); }
-.vchip[aria-pressed="true"] { background: var(--color-ink); color: var(--color-eggshell); border-color: var(--color-ink); }
+.vchip[aria-pressed="true"] { background: transparent; color: var(--color-ink); border-color: var(--color-ink); font-weight: 600; }
 .editor__text {
   width: 100%; min-height: 360px; resize: vertical;
   padding: var(--space-4) var(--space-4) var(--space-4) var(--space-5);

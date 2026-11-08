@@ -51,7 +51,7 @@
   color: var(--color-ink); text-align: left; cursor: pointer; font: var(--text-body);
 }
 .studio-past__row:hover .studio-past__name, .studio-past__row.is-current .studio-past__name { text-decoration: underline; text-underline-offset: 4px; }
-.studio-past__name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.studio-past__name { min-width: 0; overflow-wrap: anywhere; }
 .studio-past__date { flex: none; font: var(--text-body-sm); color: var(--color-smoke); }
 
 /* ------------------------------------------------------------ progress */

@@ -28,7 +28,7 @@
 .st-dot--watch { background: var(--status-watch-fg); }
 .st-dot--alert { background: var(--status-alert-fg); }
 .st-dot--neutral, .st-dot--outline, .st-dot--ink { background: var(--color-ash); }
-.report-seal__text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.report-seal__text { min-width: 0; overflow-wrap: anywhere; }
 
 /* Shared ledgers inside a stage: flat, hairline above, own horizontal scroll. */
 .stage-page .ledger { background: none; border-radius: 0; border-top: 1px solid var(--color-stone); max-width: 100%; }

@@ -178,7 +178,7 @@ export function ProtocolEditor({ protocol, versions, enrolled }: ProtocolEditorP
           <input id="protocol-editor-name" className="input input--line" value={editor} autoComplete="name"
             placeholder="Your name" onChange={(e) => setEditor(e.target.value)} aria-required="true" />
         </label>
-        <Button variant="filled" busy={busy} onClick={save}>Save version and re-check</Button>
+        <Button variant="outline" busy={busy} onClick={save}>Save version and re-check</Button>
       </div>
       <p className="field__help">
         {enrolled
