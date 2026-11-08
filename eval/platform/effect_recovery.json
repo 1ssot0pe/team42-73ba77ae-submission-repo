@@ -1,0 +1,245 @@
+{
+ "synthetic": true,
+ "truth_md": -4.0,
+ "n_seeds": 200,
+ "n_participants": 120,
+ "scenarios": {
+  "planted": {
+   "reported": {
+    "label": "Reported (naive, the baseline)",
+    "n_estimable": 200,
+    "mean": -6.34,
+    "bias": -2.34,
+    "rmse": 2.57,
+    "coverage": 0.45,
+    "mean_ci_width": 4.4
+   },
+   "within_trial": {
+    "label": "Within-trial: same patient guess",
+    "n_estimable": 196,
+    "mean": -4.35,
+    "bias": -0.35,
+    "rmse": 1.97,
+    "coverage": 0.94,
+    "mean_ci_width": 7.56,
+    "mean_share_of_participants_used": 0.69
+   },
+   "within_trial_rater": {
+    "label": "Within-trial: same patient and rater guess",
+    "n_estimable": 162,
+    "mean": -3.51,
+    "bias": 0.49,
+    "rmse": 2.65,
+    "coverage": 0.95,
+    "mean_ci_width": 10.74,
+    "mean_share_of_participants_used": 0.23
+   },
+   "cross_trial": {
+    "label": "Cross-trial calibration (SYNTHETIC calibration)",
+    "n_estimable": 200,
+    "mean": -2.58,
+    "bias": 1.42,
+    "rmse": 1.79,
+    "coverage": 0.99,
+    "mean_ci_width": 7.54
+   }
+  },
+  "no_bias": {
+   "reported": {
+    "label": "Reported (naive, the baseline)",
+    "n_estimable": 200,
+    "mean": -3.8,
+    "bias": 0.2,
+    "rmse": 1.07,
+    "coverage": 0.97,
+    "mean_ci_width": 4.24
+   },
+   "within_trial": {
+    "label": "Within-trial: same patient guess",
+    "n_estimable": 196,
+    "mean": -3.57,
+    "bias": 0.43,
+    "rmse": 1.99,
+    "coverage": 0.93,
+    "mean_ci_width": 7.28,
+    "mean_share_of_participants_used": 0.69
+   },
+   "within_trial_rater": {
+    "label": "Within-trial: same patient and rater guess",
+    "n_estimable": 162,
+    "mean": -3.52,
+    "bias": 0.48,
+    "rmse": 2.65,
+    "coverage": 0.95,
+    "mean_ci_width": 10.33,
+    "mean_share_of_participants_used": 0.23
+   },
+   "cross_trial": {
+    "label": "Cross-trial calibration (SYNTHETIC calibration)",
+    "n_estimable": 200,
+    "mean": -0.18,
+    "bias": 3.82,
+    "rmse": 3.99,
+    "coverage": 0.38,
+    "mean_ci_width": 7.15
+   }
+  },
+  "reverse_causation": {
+   "reported": {
+    "label": "Reported (naive, the baseline)",
+    "n_estimable": 200,
+    "mean": -4.06,
+    "bias": -0.06,
+    "rmse": 1.4,
+    "coverage": 0.95,
+    "mean_ci_width": 5.17
+   },
+   "within_trial": {
+    "label": "Within-trial: same patient guess",
+    "n_estimable": 198,
+    "mean": -2.0,
+    "bias": 2.0,
+    "rmse": 2.74,
+    "coverage": 0.85,
+    "mean_ci_width": 8.14,
+    "mean_share_of_participants_used": 0.8
+   },
+   "within_trial_rater": {
+    "label": "Within-trial: same patient and rater guess",
+    "n_estimable": 156,
+    "mean": -2.15,
+    "bias": 1.85,
+    "rmse": 3.44,
+    "coverage": 0.89,
+    "mean_ci_width": 11.17,
+    "mean_share_of_participants_used": 0.35
+   },
+   "cross_trial": {
+    "label": "Cross-trial calibration (SYNTHETIC calibration)",
+    "n_estimable": 200,
+    "mean": 0.12,
+    "bias": 4.12,
+    "rmse": 4.36,
+    "coverage": 0.57,
+    "mean_ci_width": 8.53
+   }
+  }
+ },
+ "by_n": {
+  "24": {
+   "reported": {
+    "label": "Reported (naive, the baseline)",
+    "n_estimable": 200,
+    "mean": -6.68,
+    "bias": -2.68,
+    "rmse": 3.71,
+    "coverage": 0.82,
+    "mean_ci_width": 9.85
+   },
+   "within_trial": {
+    "label": "Within-trial: same patient guess",
+    "n_estimable": 5,
+    "mean": -3.55,
+    "bias": 0.45,
+    "rmse": 1.77,
+    "coverage": 1.0,
+    "mean_ci_width": 15.18,
+    "mean_share_of_participants_used": 0.63
+   },
+   "within_trial_rater": {
+    "label": "Within-trial: same patient and rater guess",
+    "n_estimable": 0
+   },
+   "cross_trial": {
+    "label": "Cross-trial calibration (SYNTHETIC calibration)",
+    "n_estimable": 200,
+    "mean": -2.72,
+    "bias": 1.28,
+    "rmse": 3.03,
+    "coverage": 0.96,
+    "mean_ci_width": 12.99
+   }
+  },
+  "60": {
+   "reported": {
+    "label": "Reported (naive, the baseline)",
+    "n_estimable": 200,
+    "mean": -6.36,
+    "bias": -2.36,
+    "rmse": 2.83,
+    "coverage": 0.65,
+    "mean_ci_width": 6.21
+   },
+   "within_trial": {
+    "label": "Within-trial: same patient guess",
+    "n_estimable": 110,
+    "mean": -4.5,
+    "bias": -0.5,
+    "rmse": 2.49,
+    "coverage": 0.97,
+    "mean_ci_width": 10.49,
+    "mean_share_of_participants_used": 0.56
+   },
+   "within_trial_rater": {
+    "label": "Within-trial: same patient and rater guess",
+    "n_estimable": 29,
+    "mean": -3.25,
+    "bias": 0.75,
+    "rmse": 2.9,
+    "coverage": 0.93,
+    "mean_ci_width": 13.08,
+    "mean_share_of_participants_used": 0.26
+   },
+   "cross_trial": {
+    "label": "Cross-trial calibration (SYNTHETIC calibration)",
+    "n_estimable": 200,
+    "mean": -2.63,
+    "bias": 1.37,
+    "rmse": 2.11,
+    "coverage": 0.97,
+    "mean_ci_width": 9.07
+   }
+  },
+  "120": {
+   "reported": {
+    "label": "Reported (naive, the baseline)",
+    "n_estimable": 200,
+    "mean": -6.34,
+    "bias": -2.34,
+    "rmse": 2.57,
+    "coverage": 0.45,
+    "mean_ci_width": 4.4
+   },
+   "within_trial": {
+    "label": "Within-trial: same patient guess",
+    "n_estimable": 196,
+    "mean": -4.35,
+    "bias": -0.35,
+    "rmse": 1.97,
+    "coverage": 0.94,
+    "mean_ci_width": 7.56,
+    "mean_share_of_participants_used": 0.69
+   },
+   "within_trial_rater": {
+    "label": "Within-trial: same patient and rater guess",
+    "n_estimable": 162,
+    "mean": -3.51,
+    "bias": 0.49,
+    "rmse": 2.65,
+    "coverage": 0.95,
+    "mean_ci_width": 10.74,
+    "mean_share_of_participants_used": 0.23
+   },
+   "cross_trial": {
+    "label": "Cross-trial calibration (SYNTHETIC calibration)",
+    "n_estimable": 200,
+    "mean": -2.58,
+    "bias": 1.42,
+    "rmse": 1.79,
+    "coverage": 0.99,
+    "mean_ci_width": 7.54
+   }
+  }
+ },
+ "note": "SYNTHETIC planted-truth simulation. Not real-world performance."
+}
