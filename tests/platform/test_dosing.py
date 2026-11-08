@@ -97,6 +97,29 @@ def test_view_and_kpis_follow_view_model(drift_approved):
     json.dumps(v)  # JSON-able
 
 
+def test_charts_are_complete(drift_approved):
+    """Every chart has one row per day from 1 to today, and every row carries every series key."""
+    m = drift_approved
+    v = m.module_view("dosing")
+    titles = [c["title"] for c in v["charts"]]
+    assert any("by site" in t for t in titles) and any("by rater" in t for t in titles)
+    for c in v["charts"]:
+        keys = [s["key"] for s in c["series"]]
+        assert [d["day"] for d in c["data"]] == list(range(1, m.rec["day"] + 1)), c["title"]
+        assert all(set(keys) <= set(d) for d in c["data"]), c["title"]
+        assert any(d[k] is not None for d in c["data"] for k in keys), c["title"]
+    rater = next(c for c in v["charts"] if "by site, last 3" in c["title"])
+    labels = [mk["label"] for mk in rater["markers"]]
+    assert any("onset" in x for x in labels) and any("Alert" in x for x in labels)
+    cus = next(c for c in v["charts"] if "CUSUM" in c["title"])
+    alert = drift_alerts(m, DRIFT_SITE)[0]
+    peak = next(d for d in cus["data"] if d["day"] == alert["day"])
+    assert peak["Site B"] >= stats.H, "the alarm crossing must stay visible on the alert day"
+    assert next(d for d in cus["data"] if d["day"] == alert["action_day"] + 1)["Site B"] == 0.0
+    tl = next(t for t in v["tables"] if t["title"].startswith("Drift timeline"))
+    assert [r[0] for r in tl["rows"]] == sorted(r[0] for r in tl["rows"]) and len(tl["rows"]) >= 3
+
+
 # ------------------------------------------------------------------ security
 def test_monitor_windows_disjoint_and_at_least_five(drift_pending):
     rows = [r for r in drift_pending.rec["blinding_metrics"] if r.get("module") == "dosing"]

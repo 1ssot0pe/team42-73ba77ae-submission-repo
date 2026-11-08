@@ -43,7 +43,7 @@ from ..core import BaseModule, Ctx, TrialRecord, bottlenecks
 from . import stats
 from .agents import (MODULE, CHECKIN, CheckinAgent, DebriefAgent, LiteratureAgent, MissingDataChaser, PrimaryLock,
                      RaterVisitAgent, SessionAgent, log, short_site)
-from .monitor import BlindingMonitor, DriftAgent, batches
+from .monitor import BlindingMonitor, DriftAgent, batches, rater_sites, reset_day
 
 EVAL = Path(__file__).resolve().parent / "eval_results" / "drift_eval.json"
 DRIFT_SITE_DEFAULT_ONSET = None  # never used by agents: onset comes from the CUSUM change-point estimate
@@ -184,20 +184,21 @@ class Module(BaseModule):
                           "body": f"{lock['with_week6']} of {lock['n']} participants have a week-6 MADRS."})
 
         sites = sorted({s.get("site", "") for s in rec["schedule"] if s.get("owner") == MODULE and s.get("site")})
+        rater_ids = sorted({s["rater_id"] for s in rec["schedule"] if s.get("owner") == MODULE and s.get("rater_id")})
+        timeline = self._drift_timeline(rec)
+        markers = [{"x": t["day"], "label": t["label"]} for t in timeline]
         charts = [
             self._chart(rec, "rater", "site", sites, "rolling_accuracy",
-                        "Rater guess accuracy by site, last 3 batches (SYNTHETIC)",
-                        ref=("Expected with working blinding", stats.P0)),
+                        "Rater guess accuracy by site, last 3 vault batches (SYNTHETIC)",
+                        ref=("Expected with working blinding", stats.P0), markers=markers, y_domain=[0, 1]),
+            self._chart(rec, "rater", "rater", rater_ids, "rolling_accuracy",
+                        "Rater guess accuracy by rater, last 3 vault batches (SYNTHETIC)",
+                        ref=("Expected with working blinding", stats.P0), markers=markers, y_domain=[0, 1]),
             self._chart(rec, "rater", "site", sites, "cusum", "Drift score (CUSUM) by site (SYNTHETIC)",
-                        ref=("Alarm line", stats.H)),
+                        ref=("Alarm line", stats.H), markers=markers),
             self._chart(rec, "participant", "site", sites, "accuracy",
-                        "Participant guess accuracy by site, cumulative (SYNTHETIC, information only)"),
+                        "Participant guess accuracy by site, cumulative (SYNTHETIC, information only)", y_domain=[0, 1]),
         ]
-        for c in charts[:2]:
-            c["markers"] = [{"x": a["day"], "label": f"Alert {short_site(a['site'])}"} for a in rec["alerts"]
-                            if a.get("kind") == "rater_drift"] + \
-                           [{"x": a["day"], "label": f"Action {short_site(a['site'])}"} for a in rec["actions"]
-                            if a.get("module") == MODULE and a.get("type") == "remote_raters"]
 
         alerts_tbl = [[a["day"], short_site(a.get("site") or "all"), a["severity"], a["title"], a["status"], a.get("approval_id") or ""]
                       for a in rec["alerts"] if a.get("module") == MODULE][-12:][::-1]
@@ -224,6 +225,8 @@ class Module(BaseModule):
         return {
             "module": self.name, "title": self.title, "kpis": self.kpis(rec), "cards": cards, "charts": charts,
             "tables": [
+                {"title": "Drift timeline (marked on the rater charts)", "columns": ["Day", "Event", "Detail"],
+                 "rows": [[t["day"], t["label"], t["detail"]] for t in timeline]},
                 {"title": "Alerts", "columns": ["Day", "Site", "Severity", "What", "Status", "Approval"], "rows": alerts_tbl},
                 {"title": "Blinding by rater (vault aggregates, SYNTHETIC)",
                  "columns": ["Rater", "Site", "Guesses", "Accuracy", "95% interval", "Drift score"], "rows": raters},
@@ -243,21 +246,61 @@ class Module(BaseModule):
                 ]}],
         }
 
-    def _chart(self, rec, who, by, groups, field, title, ref=None) -> dict:
-        rows = [m for m in rec["blinding_metrics"] if m.get("module") == MODULE and m["who"] == who and m["by"] == by]
-        series = [{"key": short_site(g), "label": short_site(g)} for g in groups]
+    @staticmethod
+    def _drift_timeline(rec) -> list:
+        """Onset estimate, alert, action and resolution for every rater-drift alert, in day order."""
+        out = []
+        for a in rec["alerts"]:
+            if a.get("kind") != "rater_drift":
+                continue
+            s = short_site(a["site"])
+            ev = a.get("evidence") or {}
+            if ev.get("onset_day_estimate") is not None:
+                out.append({"day": ev["onset_day_estimate"], "label": f"Drift onset {s} (estimated)",
+                            "detail": "Change point from the CUSUM: first batch after the score last sat at 0."})
+            out.append({"day": a["day"], "label": f"Alert {s}",
+                        "detail": f"{ev.get('correct_since_onset')} of {ev.get('n_since_onset')} rater guesses correct since onset."})
+            if a.get("action_day") is not None:
+                out.append({"day": a["action_day"], "label": f"Remote raters {s}", "detail": "Approved by a named human."})
+            if a.get("resolved_day") is not None:
+                pa = a.get("post_action") or {}
+                out.append({"day": a["resolved_day"], "label": f"Drift stopped {s}",
+                            "detail": f"{pa.get('correct')} of {pa.get('n')} correct since the action."})
+            if a.get("status") == "dismissed":
+                out.append({"day": a.get("decided_day") or a["day"], "label": f"Action rejected {s}", "detail": "Monitoring continues."})
+        return sorted(out, key=lambda t: t["day"])
+
+    def _chart(self, rec, who, by, groups, field, title, ref=None, markers=None, y_domain=None) -> dict:
+        """One row per day from day 1 to today with every series key present: null until the group's first
+        vault release, then the last released value (the vault only releases batches of 5 or more guesses)."""
+        rows = sorted((m for m in rec["blinding_metrics"] if m.get("module") == MODULE and m["who"] == who and m["by"] == by),
+                      key=lambda m: m["day"])
+        label = (lambda g: g) if by == "rater" else short_site
+        series = [{"key": label(g), "label": label(g)} for g in groups]
         if ref:
             series.append({"key": ref[0], "label": ref[0]})
-        days = sorted({m["day"] for m in rows})
-        latest: dict = {}
-        data = []
-        for d in days:
-            for m in rows:
-                if m["day"] == d:
-                    latest[short_site(m["group"])] = m.get(field)
-            pt = {"day": d, **{k: (round(v, 3) if isinstance(v, float) else v) for k, v in latest.items()}}
+        latest = {label(g): None for g in groups}
+        seen_day = {label(g): None for g in groups}
+        site_of = {label(g): (g if by == "site" else rater_sites(rec).get(g)) for g in groups}
+        resets = {k: reset_day(rec, s) for k, s in site_of.items() if s} if field == "cusum" else {}
+        data, i = [], 0
+        for d in range(1, max(rec["day"], 0) + 1):
+            while i < len(rows) and rows[i]["day"] <= d:
+                v = rows[i].get(field)
+                k = label(rows[i]["group"])
+                latest[k] = round(v, 3) if isinstance(v, (int, float)) else v
+                seen_day[k] = rows[i]["day"]
+                i += 1
+            pt = {"day": d, **latest}
+            for k, r in resets.items():  # show the reset from the day after approval, so the alarm itself stays visible
+                if latest[k] is not None and seen_day[k] <= r < d:
+                    pt[k] = 0.0
             if ref:
                 pt[ref[0]] = ref[1]
             data.append(pt)
-        return {"title": title, "x": "day", "series": series, "data": data,
-                "y_domain": [0, 1] if field != "cusum" else None}
+        chart = {"title": title, "x": "day", "series": series, "data": data}
+        if markers:
+            chart["markers"] = markers  # optional extra; the same events are in the "Drift timeline" table
+        if y_domain:
+            chart["y_domain"] = y_domain
+        return chart

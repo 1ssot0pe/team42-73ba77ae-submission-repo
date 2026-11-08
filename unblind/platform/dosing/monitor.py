@@ -103,7 +103,8 @@ class BlindingMonitor:
                     "window_correct": wc, "window_decisive": wd,
                     "window_accuracy": round(wc / wd, 3) if wd else None, "synthetic": True,
                 }
-                tail = prev[-(stats.ROLLING_BATCHES - 1):] + [row]
+                rd = reset_day(rec, site) if site else -10 ** 9  # an approved action restarts the window too
+                tail = [b for b in prev if b["window_from"] > rd][-(stats.ROLLING_BATCHES - 1):] + [row]
                 rc, rn = stats.rolling(tail)
                 row["rolling_accuracy"] = round(rc / rn, 3) if rn else None
                 if who == "rater":
