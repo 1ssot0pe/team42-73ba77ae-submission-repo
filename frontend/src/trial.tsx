@@ -240,9 +240,13 @@ export function TrialProvider({ children }: { children: ReactNode }) {
   }, [trialId, lost, refresh]);
 
   const startNew = useCallback(() => {
-    setTrialId(null);
+    // Forget the lost trial without re-rendering: navigation runs as a transition (v7_startTransition), so a
+    // state change here would render first at the old route, remount the workspace and store the lost id
+    // again. Keep TrialLost on screen until the route changes and this provider unmounts with the workspace.
+    writeStoredId(null);
+    idRef.current = null;
     navigate("/");
-  }, [setTrialId, navigate]);
+  }, [navigate]);
 
   const value = useMemo<TrialContextValue>(
     () => ({ trialId, state, tick, setTrialId, refresh, adopt, error, lost }),

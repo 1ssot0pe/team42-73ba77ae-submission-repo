@@ -1,0 +1,241 @@
+{
+ "base_url": "https://parallax-two-tau.vercel.app",
+ "api": {
+  "J1": {
+   "trial": "T-141741-c08b",
+   "approvals_signed": 19,
+   "final_day": 90,
+   "phase": "closed",
+   "report_signoff": {
+    "ok": true,
+    "message": "Sign-off recorded (approved) by Smoke Test."
+   },
+   "report_status": "final"
+  },
+  "J5": {
+   "status": 200,
+   "trial": "T-141820-f93a",
+   "phase": "recruitment",
+   "note": "BL-6 (known open): garbage is accepted as a trial"
+  },
+  "trial_not_found_404s": 0,
+  "latency_ms": {
+   "create": {
+    "n": 2,
+    "p50": 995,
+    "p95": 1195
+   },
+   "read": {
+    "n": 13,
+    "p50": 412,
+    "p95": 1846
+   },
+   "approve": {
+    "n": 20,
+    "p50": 426,
+    "p95": 1743
+   },
+   "step": {
+    "n": 13,
+    "p50": 423,
+    "p95": 1522
+   },
+   "burst_read": {
+    "n": 120,
+    "p50": 384,
+    "p95": 1571
+   }
+  }
+ },
+ "browser": {
+  "light-1440_": {
+   "ms": 1910,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "light-1440_trials": {
+   "ms": 1289,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "light-1440_trials_smoke-t-141741-c08b_draft": {
+   "ms": 1502,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "light-1440_trials_smoke-t-141741-c08b_design-review": {
+   "ms": 2651,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "light-1440_trials_smoke-t-141741-c08b_recruitment": {
+   "ms": 2926,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "light-1440_trials_smoke-t-141741-c08b_screening": {
+   "ms": 2326,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "light-1440_trials_smoke-t-141741-c08b_dosing": {
+   "ms": 2035,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "light-1440_trials_smoke-t-141741-c08b_follow-up": {
+   "ms": 1950,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "light-1440_trials_smoke-t-141741-c08b_report": {
+   "ms": 1830,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "light-1440-console_errors": [],
+  "light-1440-failed_requests": [],
+  "light-390_": {
+   "ms": 1529,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "light-390_trials": {
+   "ms": 1215,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "light-390_trials_smoke-t-141741-c08b_draft": {
+   "ms": 1480,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "light-390_trials_smoke-t-141741-c08b_design-review": {
+   "ms": 2390,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "light-390_trials_smoke-t-141741-c08b_recruitment": {
+   "ms": 2125,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "light-390_trials_smoke-t-141741-c08b_screening": {
+   "ms": 2383,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "light-390_trials_smoke-t-141741-c08b_dosing": {
+   "ms": 2047,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "light-390_trials_smoke-t-141741-c08b_follow-up": {
+   "ms": 1980,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "light-390_trials_smoke-t-141741-c08b_report": {
+   "ms": 1721,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "light-390-console_errors": [],
+  "light-390-failed_requests": [],
+  "dark-1440_": {
+   "ms": 2560,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "dark-1440_trials": {
+   "ms": 1365,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "dark-1440_trials_smoke-t-141741-c08b_draft": {
+   "ms": 1435,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "dark-1440_trials_smoke-t-141741-c08b_design-review": {
+   "ms": 2391,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "dark-1440_trials_smoke-t-141741-c08b_recruitment": {
+   "ms": 2339,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "dark-1440_trials_smoke-t-141741-c08b_screening": {
+   "ms": 2966,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "dark-1440_trials_smoke-t-141741-c08b_dosing": {
+   "ms": 2502,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "dark-1440_trials_smoke-t-141741-c08b_follow-up": {
+   "ms": 2451,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "dark-1440_trials_smoke-t-141741-c08b_report": {
+   "ms": 1991,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "dark-1440-console_errors": [],
+  "dark-1440-failed_requests": [],
+  "dark-390_": {
+   "ms": 1862,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "dark-390_trials": {
+   "ms": 1269,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "dark-390_trials_smoke-t-141741-c08b_draft": {
+   "ms": 1433,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "dark-390_trials_smoke-t-141741-c08b_design-review": {
+   "ms": 3069,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "dark-390_trials_smoke-t-141741-c08b_recruitment": {
+   "ms": 2198,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "dark-390_trials_smoke-t-141741-c08b_screening": {
+   "ms": 2854,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "dark-390_trials_smoke-t-141741-c08b_dosing": {
+   "ms": 2326,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "dark-390_trials_smoke-t-141741-c08b_follow-up": {
+   "ms": 2411,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "dark-390_trials_smoke-t-141741-c08b_report": {
+   "ms": 2045,
+   "h_overflow_px": 0,
+   "trial_lost_screen": false
+  },
+  "dark-390-console_errors": [],
+  "dark-390-failed_requests": []
+ },
+ "problems": []
+}
