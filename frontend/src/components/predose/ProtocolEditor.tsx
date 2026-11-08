@@ -131,10 +131,10 @@ export function ProtocolEditor({ protocol, versions, enrolled }: ProtocolEditorP
   const lineCount = text ? text.split("\n").length : 0;
 
   return (
-    <section className="paper editor" aria-labelledby="editor-title">
+    <section className="st-block editor" aria-labelledby="editor-title">
       <div className="stack stack--tight">
-        <div className="eyebrow">Protocol co-designer</div>
-        <h2 className="t-heading-sm" id="editor-title">Protocol</h2>
+        <div className="st-label">Protocol co-designer</div>
+        <h2 className="st-subtitle" id="editor-title">Protocol</h2>
       </div>
       {versions.length ? (
         <div className="editor__chips" role="group" aria-label="Protocol versions">
@@ -158,7 +158,7 @@ export function ProtocolEditor({ protocol, versions, enrolled }: ProtocolEditorP
 
       <div className="editor__diff">
         <div className="row row--between">
-          <span className="eyebrow">
+          <span className="st-label">
             {shown?.pending ? "Proposed change" : shown?.version ? `Re-check · v${shown.version}` : latest ? `Changes in v${latest.version}` : "Changes"}
           </span>
           {shown?.pending ? <StatusPill tone="watch">Waiting for approval</StatusPill> : null}

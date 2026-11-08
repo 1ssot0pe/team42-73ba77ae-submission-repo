@@ -16,7 +16,7 @@
 .mc-head__now { color: var(--color-smoke); display: flex; gap: var(--space-3); align-items: baseline; flex-wrap: wrap; }
 .mc-head__now--blocked { color: var(--color-graphite); }
 .mc-head__flag {
-  font: var(--text-label); letter-spacing: var(--track-label); text-transform: uppercase;
+  font: var(--text-label); letter-spacing: var(--track-label); text-transform: none;
   color: var(--status-watch-fg); background: var(--status-watch-bg);
   padding: 3px var(--space-2); border-radius: var(--radius-pill); flex: none;
 }
@@ -54,7 +54,7 @@
 .mc-phase {
   display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 var(--space-3);
   border-radius: var(--radius-pill);
-  font: var(--text-label); letter-spacing: var(--track-label); text-transform: uppercase;
+  font: var(--text-label); letter-spacing: var(--track-label); text-transform: none;
 }
 .mc-phase--done { color: var(--color-graphite); box-shadow: inset 0 0 0 1px var(--color-stone); }
 .mc-phase--current { color: var(--color-eggshell); background: var(--color-ink); }

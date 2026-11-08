@@ -1,4 +1,4 @@
-/* Base: reset, bench canvas, specimen field, type scale, layout primitives, forms, focus, motion.
+/* Base: reset, plain canvas, type scale, layout primitives, forms, focus, motion.
    design.md Sections 5, 6, 7, 8.18, 10, 12. */
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -8,30 +8,16 @@ ul[role="list"], ol[role="list"] { list-style: none; padding: 0; }
 img, svg { display: block; max-width: 100%; }
 button, input, select, textarea { font: inherit; color: inherit; }
 
-/* 6.2 Graph-paper canvas */
+/* Plain canvas (design-v2.md Colour): no grid, no field. Every number is tabular. */
 body {
   min-height: 100vh;
   color: var(--color-ink);
   font: var(--text-body);
   letter-spacing: var(--track-body);
+  font-variant-numeric: tabular-nums;
   -webkit-font-smoothing: antialiased;
-  background-color: var(--color-eggshell);
-  background-image:
-    linear-gradient(var(--color-grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--color-grid) 1px, transparent 1px);
-  background-size: 24px 24px;
+  background: var(--color-eggshell);
 }
-
-/* 6.1 Specimen field */
-.specimen-field { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
-.specimen-field span { position: absolute; border-radius: 50%; filter: blur(80px); opacity: var(--field-opacity, 0.16); }
-.specimen-field .v { width: 46vw; height: 46vw; left: -8vw; top: -10vw; background: radial-gradient(circle, var(--color-spark-violet), transparent 65%); }
-.specimen-field .e { width: 40vw; height: 40vw; right: -10vw; top: 18vh; background: radial-gradient(circle, var(--color-spark-ember), transparent 65%); }
-.specimen-field .p { width: 36vw; height: 36vw; left: 30vw; bottom: -14vw; background: radial-gradient(circle, var(--color-field-pink), transparent 65%); opacity: 0.10; }
-@media (prefers-reduced-motion: no-preference) {
-  .specimen-field span { animation: drift 48s ease-in-out infinite alternate; }
-}
-@keyframes drift { to { transform: translate3d(3vw, 2vh, 0) scale(1.06); } }
 
 /* ------------------------------------------------------------ type scale (Section 5) */
 .t-display    { font: var(--text-display);    letter-spacing: var(--track-display); text-wrap: balance; }
@@ -44,9 +30,10 @@ body {
 .t-readout-xl { font: var(--text-readout-xl); letter-spacing: var(--track-readout-xl); font-variant-numeric: tabular-nums; }
 .t-readout    { font: var(--text-readout);    letter-spacing: var(--track-readout); font-variant-numeric: tabular-nums; }
 .t-mono       { font: var(--text-mono);       letter-spacing: var(--track-mono); font-variant-numeric: tabular-nums; }
-.t-label      { font: var(--text-label);      letter-spacing: var(--track-label); text-transform: uppercase; }
+.t-id         { font: var(--text-id);         letter-spacing: var(--track-id); font-variant-numeric: tabular-nums; }
+.t-label      { font: var(--text-label);      letter-spacing: var(--track-label); text-transform: none; color: var(--color-smoke); }
 .t-caption    { font: var(--text-caption);    letter-spacing: var(--track-caption); }
-.num          { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.num          { font-variant-numeric: tabular-nums; }
 
 .c-ink { color: var(--color-ink); }
 .c-graphite { color: var(--color-graphite); }
@@ -54,12 +41,19 @@ body {
 .c-ash { color: var(--color-ash); }
 
 h1, h2, h3 { font-weight: 300; }
+strong, b { font-weight: 600; }
 p { max-width: 68ch; }
 a { color: inherit; text-underline-offset: 3px; }
 .link-smoke { color: var(--color-smoke); text-decoration: underline; text-decoration-thickness: 1px; }
 
 /* ------------------------------------------------------------ layout primitives (Sections 6, 7) */
-.app { position: relative; min-height: 100vh; }
+.app { position: relative; min-height: 100vh; display: flex; flex-direction: column; }
+.app__main { flex: 1; min-width: 0; }
+.app__footer {
+  padding: var(--space-8) var(--gutter) calc(env(safe-area-inset-bottom, 0px) + var(--space-8));
+  text-align: center; font: var(--text-body-sm); color: var(--color-smoke);
+}
+.app__footer p { max-width: none; }
 .page {
   width: 100%;
   max-width: calc(var(--page-max) + 2 * var(--gutter));
@@ -79,12 +73,12 @@ a { color: inherit; text-underline-offset: 3px; }
 .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-6); align-items: start; }
 @media (max-width: 1100px) { .grid-2, .grid-5-7, .grid-3 { grid-template-columns: 1fr; } }
 
-/* L1 notebook sheet, L1b paper document */
+/* Sheet and paper: kept for legacy markup, but flatter (design-v2.md: fewer cards). */
 .sheet { background: var(--color-taupe); border-radius: var(--radius-sheet); padding: var(--space-6); }
 .sheet--flush { padding: 0; overflow: hidden; }
 .paper { background: var(--color-eggshell); border: 1px solid var(--color-stone); border-radius: var(--radius-sheet); padding: var(--space-8); }
 .panel { padding: var(--space-5); }          /* glass slip padding */
-.eyebrow { font: var(--text-label); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--color-graphite); }
+.eyebrow { font: var(--text-label); letter-spacing: var(--track-label); text-transform: none; color: var(--color-smoke); }
 .hairline { height: 1px; background: var(--color-stone); border: 0; margin: 0; }
 
 .visually-hidden {
@@ -94,7 +88,7 @@ a { color: inherit; text-underline-offset: 3px; }
 
 /* ------------------------------------------------------------ forms (8.18) */
 .field { display: flex; flex-direction: column; gap: var(--space-2); }
-.field__label { font: var(--text-body-sm); font-weight: 500; color: var(--color-graphite); }
+.field__label { font: var(--text-body-sm); font-weight: 600; color: var(--color-graphite); }
 .field__help { font: var(--text-caption); color: var(--color-ash); }
 .input, .select, .textarea {
   width: 100%;
@@ -148,5 +142,4 @@ a { color: inherit; text-underline-offset: 3px; }
    this is a backstop. Simple opacity fades stay. */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .specimen-field span { animation: none !important; }
 }

@@ -1,11 +1,11 @@
 /**
  * Chart parts (design.md 8.16), used with chartTheme.ts.
  * ChartFrame props: title; children (the recharts chart); caption (default "Synthetic data.");
- *   legend (optional [{label, index}] using seriesStyle(index) swatches); tag (default "SYNTHETIC", top right).
+ *   legend (optional [{label, index}] using seriesStyle(index) swatches); tag (default "Synthetic", top right).
  * ChartTooltip: pass as <Tooltip content={<ChartTooltip />} />; optional props xLabel (prefix such as "D+"), digits.
  * endpointDot(lastIndex): a recharts `dot` renderer that draws only the emphasised endpoint (5px, 2px eggshell ring).
  * ViewLineChart props: chart (a ViewChart from a module view model); height (default 240).
- *   Renders a LineChart per the contract: series keys, connectNulls, legend, glass tooltip, SYNTHETIC tag.
+ *   Renders a LineChart per the contract: series keys, connectNulls, legend, flat tooltip, Synthetic note.
  */
 import type { ReactNode } from "react";
 import { CartesianGrid, Line, LineChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
@@ -43,7 +43,7 @@ export interface ChartFrameProps {
   tag?: string;
 }
 
-export function ChartFrame({ title, children, caption = "Synthetic data.", legend, tag = "SYNTHETIC" }: ChartFrameProps) {
+export function ChartFrame({ title, children, caption = "Synthetic data.", legend, tag = "Synthetic" }: ChartFrameProps) {
   return (
     <figure className="chart">
       <div className="chart__head">

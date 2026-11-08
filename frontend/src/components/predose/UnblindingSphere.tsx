@@ -99,8 +99,8 @@ export interface RiskCardProps {
 export function RiskCard({ risk, baseline, atEnrolment }: RiskCardProps) {
   if (!risk) {
     return (
-      <section className="sheet risk">
-        <div className="eyebrow">Predicted unblinding</div>
+      <section className="st-block risk">
+        <div className="st-label">Predicted unblinding</div>
         <p className="t-body-sm c-smoke">The protocol co-designer has not scored this protocol yet.</p>
       </section>
     );
@@ -109,18 +109,18 @@ export function RiskCard({ risk, baseline, atEnrolment }: RiskCardProps) {
   const moved = baseline && baseline.u !== risk.u;
   const frozen = atEnrolment && isNum(atEnrolment.u) ? atEnrolment : null;
   return (
-    <section className="sheet risk" aria-labelledby="risk-title">
+    <section className="st-block risk" aria-labelledby="risk-title">
       <div className="risk__head">
         <div className="stack stack--tight">
-          <div className="eyebrow">Predicted unblinding</div>
-          <h2 className="t-heading-sm" id="risk-title">Blinding risk</h2>
+          <div className="st-label">Predicted unblinding</div>
+          <h2 className="st-subtitle" id="risk-title">Blinding risk</h2>
         </div>
         <SpecimenTag />
       </div>
       <div className="risk__body">
         <div className="risk__sphere">
           <UnblindingSphere u={risk.u} label={`Predicted unblinding u ${formatNumber(risk.u)}, ${risk.band} risk`} />
-          <p className="risk__why">u changes with the comparator and prior use. Rater fixes lower expected bias.</p>
+          <p className="risk__why">Predicted unblinding changes with the comparator and prior use. Rater fixes lower expected bias.</p>
         </div>
         <div className="risk__facts">
           <div className="risk__value">

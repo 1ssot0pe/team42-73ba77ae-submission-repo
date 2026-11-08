@@ -1,34 +1,56 @@
-/* Generic module page (dosing, post-dosing). design.md Section 9 "Dosing and Post-dosing".
-   Tokens only: no literal colours. Sparks stay inside the charts. No glass here except the shared slips,
-   tooltip and toasts. */
+/* Stage content shared by the embedded stage pages (pre-dosing, portal, dosing, follow-up) and the
+   report status. Design v2: flat, hairline-separated sections, sentence-case smoke labels, status as a
+   dot plus a word. Tokens only: no literal colours. Violet and orange stay inside the charts. */
 
-.mpage__head { gap: var(--space-3); }
-.mpage__head .t-display { overflow-wrap: anywhere; }
-.mpage__lede { max-width: 68ch; }
+/* ------------------------------------------------------------ stage primitives */
+.stage-page { display: flex; flex-direction: column; gap: var(--space-8); width: 100%; min-width: 0; }
+.stage-page .num, .stage-page .t-readout, .stage-page .t-readout-xl { font-variant-numeric: tabular-nums; }
+.st-intro { display: flex; flex-direction: column; gap: var(--space-2); min-width: 0; }
+.st-intro:empty { display: none; }
+.st-lead { margin: 0; font: 400 16px/1.6 var(--font-body); color: var(--color-graphite); max-width: 68ch; }
+.st-section {
+  display: flex; flex-direction: column; gap: var(--space-6); min-width: 0;
+  border-top: 1px solid var(--color-stone); padding-top: var(--space-8);
+}
+.st-section--first, .stage-page > .st-section:first-child { border-top: 0; padding-top: 0; }
+.st-head { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--space-4); flex-wrap: wrap; }
+.st-head__text { display: flex; flex-direction: column; gap: var(--space-1); min-width: 0; }
+.st-title { margin: 0; font: 300 32px/1.2 var(--font-display); letter-spacing: -0.4px; color: var(--color-ink); text-wrap: balance; }
+.st-subtitle { margin: 0; font: 600 18px/1.4 var(--font-body); color: var(--color-ink); }
+.st-label {
+  margin: 0; font: 400 13px/1.5 var(--font-body); color: var(--color-smoke);
+  text-transform: none; letter-spacing: 0;
+}
+.st-block { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; background: none; padding: 0; border-radius: 0; }
+.st-status { display: inline-flex; align-items: center; gap: var(--space-2); font: 400 13px/1.5 var(--font-body); color: var(--color-graphite); margin: 0; min-width: 0; }
+.st-dot { width: 8px; height: 8px; border-radius: 50%; flex: none; background: var(--status-neutral-fg); }
+.st-dot--good { background: var(--status-good-fg); }
+.st-dot--watch { background: var(--status-watch-fg); }
+.st-dot--alert { background: var(--status-alert-fg); }
+.st-dot--neutral, .st-dot--outline, .st-dot--ink { background: var(--color-ash); }
+.report-seal__text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-/* ------------------------------------------------------------ cards (L1 sheets, status tints) */
-.mcards {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
-  gap: var(--space-4);
-  align-items: stretch;
+/* Shared ledgers inside a stage: flat, hairline above, own horizontal scroll. */
+.stage-page .ledger { background: none; border-radius: 0; border-top: 1px solid var(--color-stone); max-width: 100%; }
+.stage-page .ledger__scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.stage-page .ledger__title { padding-left: 0; padding-right: 0; }
+.stage-page .ledger th:first-child, .stage-page .ledger td:first-child { padding-left: 0; }
+.stage-page .ledger th { text-transform: none; letter-spacing: 0; font: 400 13px/1.5 var(--font-body); color: var(--color-smoke); }
+.stage-page .eyebrow { text-transform: none; letter-spacing: 0; font: 400 13px/1.5 var(--font-body); color: var(--color-smoke); }
+.stage-page .glass { background: none; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; border: 0; }
+
+
+/* ------------------------------------------------------------ agent notes (compact hairline list) */
+.mnotes { list-style: none; margin: 0; padding: 0; }
+.mnote {
+  display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: var(--space-4); align-items: baseline;
+  padding: var(--space-4) 0; border-top: 1px solid var(--color-stone);
 }
-.mcard {
-  background: var(--color-taupe);
-  border-radius: var(--radius-sheet);
-  padding: var(--space-5) var(--space-6);
-  display: flex; flex-direction: column; gap: var(--space-2);
-  min-width: 0;
-}
-.mcard--warn { background: var(--status-watch-bg); }
-.mcard--bad  { background: var(--status-alert-bg); }
-.mcard--good { background: var(--status-good-bg); }
-.mcard__head { display: flex; gap: var(--space-2); align-items: center; }
-.mcard__title { font: 500 16px/1.4 var(--font-body); color: var(--color-ink); overflow-wrap: anywhere; }
-.mcard--warn .mcard__title { color: var(--status-watch-fg); }
-.mcard--bad  .mcard__title { color: var(--status-alert-fg); }
-.mcard--good .mcard__title { color: var(--status-good-fg); }
-.mcard__body { font: var(--text-body-sm); letter-spacing: var(--track-body-sm); color: var(--color-graphite); max-width: 68ch; overflow-wrap: anywhere; }
+.mnote:first-child { border-top: 0; padding-top: 0; }
+.mnote__main { display: flex; flex-direction: column; gap: var(--space-1); min-width: 0; }
+.mnote__title { margin: 0; font: 600 16px/1.5 var(--font-body); color: var(--color-ink); overflow-wrap: anywhere; }
+.mnote__body { margin: 0; font: 400 15px/1.6 var(--font-body); color: var(--color-graphite); max-width: 68ch; overflow-wrap: anywhere; }
+@media (max-width: 560px) { .mnote { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } }
 
 /* ------------------------------------------------------------ charts */
 .mcharts {
@@ -37,32 +59,28 @@
   gap: var(--space-4);
   align-items: start;
 }
-.mcharts > .chart { min-width: 0; }
+.mcharts > * { min-width: 0; }
 .mchart__empty { font: var(--text-body-sm); color: var(--color-smoke); padding: var(--space-6) 0; }
 
-/* ------------------------------------------------------------ forms (L1b paper documents) */
-.mforms {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 560px), 1fr));
-  gap: var(--space-6);
-  align-items: start;
-}
+/* ------------------------------------------------------------ forms (flat, hairline between) */
+.mforms { display: flex; flex-direction: column; }
+.mforms > .mform + .mform { border-top: 1px solid var(--color-stone); padding-top: var(--space-8); margin-top: var(--space-8); }
 .mform { display: flex; flex-direction: column; gap: var(--space-6); min-width: 0; }
 .mform__head { display: flex; flex-direction: column; gap: var(--space-2); }
-.mform__title { font: var(--text-heading-sm); letter-spacing: var(--track-heading-sm); text-wrap: balance; }
+.mform__title { margin: 0; font: 600 18px/1.4 var(--font-body); text-wrap: balance; }
 .mform__desc { font: var(--text-body-sm); color: var(--color-smoke); max-width: 68ch; }
 .mform__fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4) var(--space-5); }
 .mform__field { min-width: 0; }
 .mform__field--wide { grid-column: 1 / -1; }
-.mform__num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.mform__num { font-variant-numeric: tabular-nums; }
 .mform__foot { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-3); border-top: 1px solid var(--color-stone); padding-top: var(--space-5); }
 .mform__result { font: var(--text-body-sm); letter-spacing: var(--track-body-sm); color: var(--color-graphite); display: flex; gap: var(--space-2); align-items: baseline; flex-wrap: wrap; max-width: 68ch; overflow-wrap: anywhere; }
-.mform__result-word {
-  font: var(--text-label); letter-spacing: var(--track-label); text-transform: uppercase;
-  padding: 2px var(--space-2); border-radius: var(--radius-pill); flex: none;
-}
-.mform__result--good .mform__result-word { color: var(--status-good-fg); background: var(--status-good-bg); }
-.mform__result--alert .mform__result-word { color: var(--status-alert-fg); background: var(--status-alert-bg); }
+.mform__result-word { display: inline-flex; align-items: center; gap: var(--space-2); font-weight: 600; flex: none; }
+.mform__result-word::before { content: ""; width: 8px; height: 8px; border-radius: 50%; }
+.mform__result--good .mform__result-word { color: var(--status-good-fg); }
+.mform__result--good .mform__result-word::before { background: var(--status-good-fg); }
+.mform__result--alert .mform__result-word { color: var(--status-alert-fg); }
+.mform__result--alert .mform__result-word::before { background: var(--status-alert-fg); }
 
 /* ------------------------------------------------------------ tables */
 .mtables { display: flex; flex-direction: column; gap: var(--space-4); }
@@ -74,6 +92,5 @@
 
 @media (max-width: 720px) {
   .mform__fields { grid-template-columns: 1fr; }
-  .paper.mform { padding: var(--space-6) var(--space-5); }
-  .mcard { padding: var(--space-5); }
+  .st-title { font-size: 26px; }
 }
