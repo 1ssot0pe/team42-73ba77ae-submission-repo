@@ -27,3 +27,15 @@ All of spec section 4 is implemented with the names and types given there. Addit
 - `normalise.ts`: also exports `chartIdFor(title, id?)`, `splitSyntheticTitle(raw)` and `CHART_IDS`. Any parenthetical containing SYNTHETIC is stripped: "(blinded, SYNTHETIC)" gives `titleNote` "blinded", "(SYNTHETIC, information only)" gives "information only". `REF_LABEL` includes `truth`, so "Planted truth" lands in `refs` as `{ y, label: "Planted truth -4" }` (read `y`, not the label text).
 - `module/index.ts` exports `ModuleChartComponentProps` and `GenericLineChart`.
 - `useRecordSections` keeps the previous data while a refetch after a tick is in flight (`loading` true, `data` still set), so charts do not flash empty; `data` is null only before the first load.
+
+## DOSING
+
+### Requests to CORE (DOSING)
+
+- `frontend/src/types.ts` (off limits to builders): add `simulated_truth?: { synthetic: boolean; label: "simulated"; drift_site: string; drift_onset_day: number } | null` to `TrialState`. The master now sends it (`Master.simulated_truth()`, `master/orchestrator.py`); `CusumChart` reads it through a local cast until then. Not blocking.
+- Tooltip touch rule: `SiteSmallMultiples.tsx` exports `useTooltipDismiss()` (closes the recharts tooltip and active dot on scroll or a tap outside, reopens on mouse move inside). If CORE wants this in `ChartTooltip` for every chart, move it to `shared/`; not blocking.
+
+### Requests to teammates (DOSING)
+
+- R3 still open (dosing, Izzy): the Site B alert stays `action_approved` with `resolved_day: None` at D90 although the rolling value went back to about 50%, so no "Drift stopped" marker is drawn. Both dosing charts draw it as soon as `resolved_day` is set.
+- R1 not needed: rolling counts are rebuilt from `window_correct`/`window_decisive` with the monitor's reset rule and match `rolling_accuracy` at every Site B point checked. Note for dosing: after a reset the first post-action batch (`window_from` equal to the action day) is excluded from later rolling windows (`window_from > reset_day`), so D56 Site B rolling is 2 of 4, not 5 of 9. Possibly an off-by-one; the chart reproduces it as recorded.

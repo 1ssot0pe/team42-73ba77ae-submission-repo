@@ -5,7 +5,8 @@ and a trial walked with tests/e2e/visuals/walk_dosing.py (psilocybin, seed 42, 5
 
     python tests/e2e/visuals/shoot_dosing.py <trial_id> [suffix]
 
-suffix "" shoots the D62 set, "-d90" the D90 variants of the key chart and the CUSUM. Files land in
+suffix "" shoots the D62 set, "-d90" the D90 variants of the key chart and the CUSUM, "-predecision" the key chart
+while the drift approval is still pending. Files land in
 docs/testing/visuals/after/<chart id><suffix>-{1440-light,1440-dark,390}.png (element crops, each under 400 KB).
 """
 import json
@@ -20,7 +21,7 @@ BASE = "http://127.0.0.1:5713"
 SETTINGS = [
     ("1440-light", dict(viewport={"width": 1440, "height": 900}, color_scheme="light"), "light"),
     ("1440-dark", dict(viewport={"width": 1440, "height": 900}, color_scheme="dark"), "dark"),
-    ("390", dict(viewport={"width": 390, "height": 844}, color_scheme="light", device_scale_factor=2, is_mobile=True,
+    ("390", dict(viewport={"width": 390, "height": 1800}, color_scheme="light", device_scale_factor=2, is_mobile=True,
                  has_touch=True), "light"),
 ]
 DRAWER = ["rater-accuracy-by-rater", "cusum-site", "participant-accuracy-site"]
@@ -31,7 +32,7 @@ def main(tid: str, suffix: str = "") -> None:
     project = [{"id": "p-dosing", "name": "Psilocybin TRD (visuals)", "createdAt": "2026-11-08T10:00:00.000Z",
                 "updatedAt": "2026-11-08T10:00:00.000Z", "template": "psilocybin", "draft": "", "trialId": tid,
                 "status": "running"}]
-    drawer = ["cusum-site"] if suffix == "-d90" else DRAWER
+    drawer = ["cusum-site"] if suffix == "-d90" else [] if suffix == "-predecision" else DRAWER
     with sync_playwright() as p:
         b = p.chromium.launch()
         for tag, kw, theme in SETTINGS:
