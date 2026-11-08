@@ -65,10 +65,17 @@ def dumps(obj: Any) -> bytes:
 
 
 def loads(blob: bytes) -> Any:
-    blob = bytes(blob)
-    if blob.startswith(_MAGIC):
-        blob = zlib.decompress(blob[len(_MAGIC):])
-    return pickle.loads(blob)
+    """Decode a snapshot. A snapshot this code can no longer read (corrupt, or written by an
+    older deploy whose classes changed) counts as a missing trial: the API answers 404
+    "trial not found" and the UI offers to start again, instead of a 500."""
+    try:
+        blob = bytes(blob)
+        if blob.startswith(_MAGIC):
+            blob = zlib.decompress(blob[len(_MAGIC):])
+        return pickle.loads(blob)
+    except (pickle.UnpicklingError, zlib.error, EOFError, AttributeError, ImportError,
+            IndexError, TypeError, ValueError) as e:
+        raise TrialNotFound(f"unreadable snapshot ({type(e).__name__})") from e
 
 
 def valid_id(trial_id: str) -> bool:

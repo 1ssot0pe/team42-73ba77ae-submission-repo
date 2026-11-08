@@ -218,3 +218,12 @@ def test_database_url_prefers_pooled(monkeypatch):
     assert store_mod.database_url().startswith("postgres://u:p@ep-x-pooler")
     monkeypatch.delenv("POSTGRES_URL")
     assert store_mod.database_url() is None
+
+
+def test_unreadable_snapshot_is_trial_not_found(tmp_path):
+    """A corrupt or incompatible blob must read as a missing trial (API 404), never a 500."""
+    import pytest
+    from unblind.platform.store import TrialNotFound, loads, _MAGIC
+    for blob in (b"garbage", _MAGIC + b"not zlib", _MAGIC + __import__("zlib").compress(b"\x80\x05not a pickle")):
+        with pytest.raises(TrialNotFound):
+            loads(blob)
