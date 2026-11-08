@@ -114,4 +114,4 @@ Modules: predose: stub, dosing: stub, postdose: real. With the stub dosing modul
 
 FDA checklist on this run: Blinding questionnaire given to participants = met; Blinding questionnaire given to outcome raters = met; Expectancy measured before randomisation = not met; Expectancy measured at end of treatment = met; Central blinded raters = not met; Alternative or active control considered = not assessable; Blinding monitored during the trial, with decisions logged = met; Effect reported with an expectancy-adjusted estimate = not met.
 
-_Runtime 5 s._
+_Runtime 7 s._
