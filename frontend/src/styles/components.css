@@ -107,10 +107,36 @@
   .nav { gap: var(--space-3); }
   .nav__links { gap: 0; }
 }
-@media (max-width: 440px) {
-  .nav__mark { font-size: 16px; }
-  .nav__link { padding: 0 6px; font-size: 13px; }
-  .nav__long { display: none; }
+/* Phone nav: under 600px the bar holds only the wordmark and a "Menu" text button. Menu opens a
+   flat full width panel under the bar (canvas, hairline, no glass); the bar stays the only glass. */
+.nav__menu-btn, .nav-phone { display: none; }
+@media (max-width: 599.98px) {
+  .nav__links, .nav__more { display: none; }
+  .nav__menu-btn {
+    display: inline-flex; align-items: center; justify-content: center; margin-left: auto; flex: none;
+    min-height: 44px; min-width: 44px; padding: 0 var(--space-3); margin-right: calc(-1 * var(--space-2));
+    border: 0; border-radius: var(--radius-plate); background: transparent; cursor: pointer;
+    font: 400 15px/1 var(--font-body); color: var(--color-ink); white-space: nowrap;
+  }
+  .nav__menu-btn:hover, .nav__menu-btn[aria-expanded="true"] { background: var(--color-taupe); }
+  .nav-phone {
+    display: block; position: absolute; left: 0; right: 0; top: 100%; z-index: 60;
+    max-height: calc(100dvh - var(--nav-h) - env(safe-area-inset-top, 0px)); overflow-y: auto; overscroll-behavior: contain;
+    background: var(--color-eggshell); border-top: 1px solid var(--color-stone); border-bottom: 1px solid var(--color-stone);
+    padding: var(--space-2) 0 var(--space-3);
+  }
+  .nav-phone[hidden] { display: none; }
+  .nav-phone__links { list-style: none; margin: 0; padding: 0; }
+  .nav-phone__link {
+    display: flex; align-items: center; min-height: 48px; padding: 0 var(--gutter);
+    font: 400 16px/1.4 var(--font-body); color: var(--color-graphite); text-decoration: none;
+    white-space: normal; overflow-wrap: anywhere;
+  }
+  .nav-phone__link:hover { background: var(--color-taupe); color: var(--color-ink); }
+  .nav-phone__link.is-active { color: var(--color-ink); font-weight: 600; box-shadow: inset 2px 0 0 var(--color-ink); }
+  .nav-phone .nav-menu__rule { margin: var(--space-2) var(--gutter); }
+  .nav-phone .nav-menu__row { min-height: 48px; padding: 0 var(--gutter); font-size: 15px; }
+  .nav-phone .nav-menu__dev { padding: var(--space-1) var(--gutter) var(--space-2); }
 }
 
 /* ------------------------------------------------------------ 8.5 Readout tile and grid */
