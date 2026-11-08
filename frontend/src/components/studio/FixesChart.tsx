@@ -6,7 +6,7 @@
 import type { Fix } from "./report";
 import { fmt } from "./report";
 import { wrap } from "./BlindingMeter";
-import { niceTicks } from "./EffectChart";
+import { decimals, niceTicks } from "./EffectChart";
 import { TipBubble, usePointTip, useWidth } from "./PointTip";
 
 const VIOLET = "var(--color-spark-violet)";
@@ -63,7 +63,8 @@ export function FixesChart({ fx }: { fx: Fix[] }) {
   const narrow = W < 520;
   const L = 24, R = narrow ? 10 : 200;
   const maxBefore = Math.max(0.1, ...fx.flatMap((f) => [f.before, f.after]).filter(has));
-  const { ticks } = niceTicks(0, maxBefore, 4);
+  const { ticks, step } = niceTicks(0, maxBefore, 5);
+  const dp = decimals(step);
   const hi = ticks[ticks.length - 1];
   const x = (v: number) => L + (v / hi) * (W - L - R);
 
@@ -71,7 +72,7 @@ export function FixesChart({ fx }: { fx: Fix[] }) {
   let y = 22;
   const laid = rows.map((r, i) => {
     const labelY = y;
-    const trackY = labelY + (r.lines.length - 1) * 16 + 24;
+    const trackY = labelY + (r.lines.length - 1) * 16 + 22;
     const valueY = trackY + 24;
     y = (narrow ? valueY + 16 : trackY + 20) + (i === 0 ? 14 : 8);
     return { ...r, labelY, trackY, valueY };
@@ -110,8 +111,8 @@ export function FixesChart({ fx }: { fx: Fix[] }) {
               </g>
               {i === 0 && bx !== null && ax !== null ? (
                 <>
-                  <text x={bx + 2} y={trackY - 11} textAnchor="start" className="st-label st-label--small">Before</text>
-                  <text x={ax - 2} y={trackY - 11} textAnchor="end" className="st-label st-label--small">After</text>
+                  <text x={bx + (ax <= bx ? 11 : -11)} y={trackY + 4} textAnchor={ax <= bx ? "start" : "end"} className="st-label st-label--small">Before</text>
+                  <text x={ax + (ax <= bx ? -11 : 11)} y={trackY + 4} textAnchor={ax <= bx ? "end" : "start"} className="st-label st-label--small">After</text>
                 </>
               ) : null}
               {narrow ? (
@@ -132,7 +133,7 @@ export function FixesChart({ fx }: { fx: Fix[] }) {
         {ticks.map((t) => (
           <g key={`t${t}`}>
             <line x1={x(t)} x2={x(t)} y1={axisY} y2={axisY + 4} className="st-axis" />
-            <text x={x(t)} y={axisY + 18} textAnchor="middle" className="st-tick">{t === 0 ? "0" : fmt(t, 1)}</text>
+            <text x={x(t)} y={axisY + 18} textAnchor="middle" className="st-tick">{t === 0 ? "0" : fmt(t, dp)}</text>
           </g>
         ))}
         <text x={L + (W - L - R) / 2} y={axisY + 36} textAnchor="middle" className="st-label">Expected bias (g)</text>

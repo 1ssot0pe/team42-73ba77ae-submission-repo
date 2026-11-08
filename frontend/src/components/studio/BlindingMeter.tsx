@@ -59,8 +59,8 @@ export function BlindingMeter({ b }: { b: Blinding }) {
   const trackY = 50;
   const tickY = trackY + 22;
   const wordY = tickY + 26;
-  const narrow = W < 520;
-  const endY = wordY + (narrow ? 40 : 26);
+  const bandLines = BLINDING_BANDS.map((band) => wrap(band.word, x(Math.min(1, band.below)) - x(band.from) - 8, 6.2));
+  const endY = wordY + (Math.max(...bandLines.map((l) => l.length)) - 1) * 13 + 24;
   const H = endY + 6;
   const valueText = `u ${fmt(b.u)}${b.uSd !== null ? `, ± 1 SD ${fmt(b.uSd)}` : ""}`;
   const valueX = Math.max(L + 70, Math.min(W - R - 70, x(u)));
@@ -70,9 +70,9 @@ export function BlindingMeter({ b }: { b: Blinding }) {
     <div ref={ref} className="st-meter">
       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height={H} focusable="false">
         {/* band spans with their words, cut-offs as faint dotted rules */}
-        {BLINDING_BANDS.map((band) => {
+        {BLINDING_BANDS.map((band, bi) => {
           const a = x(band.from), z = x(Math.min(1, band.below));
-          const lines = wrap(band.word, z - a - 8);
+          const lines = bandLines[bi];
           return (
             <text key={band.word} x={(a + z) / 2} y={wordY} textAnchor="middle" className="st-sub">
               {lines.map((ln, i) => <tspan key={i} x={(a + z) / 2} dy={i ? 13 : 0}>{ln}</tspan>)}
@@ -82,7 +82,9 @@ export function BlindingMeter({ b }: { b: Blinding }) {
         {cuts.map((c) => (
           <g key={c}>
             <line x1={x(c)} x2={x(c)} y1={trackY - 16} y2={wordY + 16} className="st-cut" />
-            <text x={x(c)} y={trackY - 20} textAnchor="middle" className="st-label st-label--small">{fmt(c)}</text>
+            {TICKS.includes(c) ? null : (
+              <text x={x(c)} y={trackY - 20} textAnchor="middle" className="st-label st-label--small">{fmt(c)}</text>
+            )}
           </g>
         ))}
         <line x1={L} x2={W - R} y1={trackY} y2={trackY} className="st-track" />

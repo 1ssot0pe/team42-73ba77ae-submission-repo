@@ -65,26 +65,28 @@ export function effectAria(e: Effect, f: EffectFlags): string {
   return `Forest plot, Hedges' g. ${rep}. ${adj}. Positive favours the drug.${f.signOff ? ` ${f.signOff}.` : ""}`;
 }
 
+const r3 = (v: number | null) => (v === null ? null : Number(v.toFixed(3)));
+
 export function effectTable(e: Effect, f: EffectFlags) {
   return {
     columns: [
       { key: "row", label: "Row" },
       { key: "est", label: "Estimate (g)", align: "right" as const },
-      { key: "lo", label: "95% low (g)", align: "right" as const, derived: true },
-      { key: "hi", label: "95% high (g)", align: "right" as const, derived: true },
+      { key: "lo", label: "95% low (g)", align: "right" as const },
+      { key: "hi", label: "95% high (g)", align: "right" as const },
       { key: "source", label: "Source" },
       { key: "note", label: "Note" },
     ],
     rows: [
       {
-        row: "Reported", est: e.reported, lo: e.reportedLo, hi: e.reportedHi,
+        row: "Reported", est: e.reported, lo: r3(e.reportedLo), hi: r3(e.reportedHi),
         source: f.reportedImputed ? "imputed" : e.reportedStatus || "observed",
-        note: has(e.se) ? `Interval is g ± 1.96 × SE, SE ${fmt(e.se, 3)}${e.seStatus === "imputed" ? " (imputed from estimated arm sizes)" : ""}` : "No SE in the report, so no interval",
+        note: has(e.se) ? `Interval computed in the browser: g ± 1.96 × SE, SE ${fmt(e.se, 3)}${e.seStatus === "imputed" ? " (imputed from estimated arm sizes)" : ""}` : "No SE in the report, so no interval",
       },
       {
         row: "Bias-adjusted", est: e.adjusted, lo: e.adjustedLo, hi: e.adjustedHi,
         source: "model",
-        note: `Reported g minus bias ${has(e.bias) ? fmt(e.bias) : "n/a"}; interval from the correction model${f.uImputed ? ", u imputed from design" : ""}${e.extrapolated ? ", extrapolated" : ""}`,
+        note: `Reported g minus bias ${has(e.bias) ? fmt(e.bias, 3) : "n/a"}; interval from the correction model${f.uImputed ? ", u imputed from design" : ""}${e.extrapolated ? ", extrapolated" : ""}`,
       },
     ],
     note: "Reported interval is computed in the browser as g ± 1.96 × se_g from the report. Bias-adjusted estimate and interval are the report's correction values. Values rounded to 3 decimals in the report.",

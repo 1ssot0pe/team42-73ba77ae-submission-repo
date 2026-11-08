@@ -25,24 +25,31 @@ export function useWidth(initial = 560) {
 }
 
 export function usePointTip() {
-  const [tip, setTip] = useState<Tip | null>(null);
-  const close = useCallback(() => setTip(null), []);
+  const [tip, setTipState] = useState<Tip | null>(null);
+  const openedAt = useRef(0);
+  const setTip = useCallback((next: Tip | null | ((t: Tip | null) => Tip | null)) => {
+    openedAt.current = Date.now();
+    setTipState(next);
+  }, []);
+  const close = useCallback(() => setTipState(null), []);
   useEffect(() => {
     if (!tip) return;
+    // Focusing a mark can scroll it into view; only a later, deliberate scroll closes the tooltip.
+    const onScroll = () => { if (Date.now() - openedAt.current > 400) close(); };
     const onDown = (e: PointerEvent) => {
       const t = e.target as Element | null;
-      if (!t?.closest?.("[data-tip]")) setTip(null);
+      if (!t?.closest?.("[data-tip]")) close();
     };
     const onKey = (e: globalThis.KeyboardEvent) => { if (e.key === "Escape") setTip(null); };
     window.addEventListener("pointerdown", onDown);
-    window.addEventListener("scroll", close, { passive: true, capture: true });
+    window.addEventListener("scroll", onScroll, { passive: true, capture: true });
     window.addEventListener("keydown", onKey);
     return () => {
       window.removeEventListener("pointerdown", onDown);
-      window.removeEventListener("scroll", close, { capture: true });
+      window.removeEventListener("scroll", onScroll, { capture: true });
       window.removeEventListener("keydown", onKey);
     };
-  }, [tip, close]);
+  }, [tip, close, setTip]);
 
   /** Props for a tabbable mark centred at (x, y) in SVG user units (= CSS px, the viewBox follows width). */
   const markProps = (x: number, y: number, text: string) => ({
@@ -68,7 +75,7 @@ export function TipBubble({ tip, width }: { tip: Tip | null; width: number }): R
   const maxW = Math.min(280, width - 8);
   const left = Math.max(4, Math.min(tip.x - maxW / 2, width - maxW - 4));
   return (
-    <div className="st-tip" role="status" style={{ left, top: tip.y + 14, maxWidth: maxW }}>
+    <div className="chart-tooltip st-tip" role="status" style={{ left, top: tip.y + 14, maxWidth: maxW }}>
       {tip.text}
     </div>
   );
