@@ -1,7 +1,8 @@
 /**
  * UnblindingSphere (design.md 8.6). A 220px sphere driven by the CSS custom property --u (0 to 1):
  * stone at u = 0, violet blooming from the centre and ember from the lower rim as u rises.
- * RiskCard wraps it with the value, band, meaning, expected bias, calibration and before vs after.
+ * RiskCard wraps it with the value, band, meaning, a one-line reason under the sphere, calibration,
+ * before vs after for u, and expected bias (Hedges g) before and now as two small readouts.
  */
 import type { CSSProperties } from "react";
 import { SpecimenTag, StatusPill, formatNumber, toneForStatus } from "../shared";
@@ -38,6 +39,45 @@ function UScale({ u, baseline }: { u: number; baseline?: number | null }) {
   );
 }
 
+const isNum = (v: unknown): v is number => typeof v === "number" && Number.isFinite(v);
+
+/** Expected bias (Hedges g) before the approved fixes and now, as two small readouts. Lower is better. */
+function BiasReadouts({ before, now }: { before: number | null | undefined; now: number | null | undefined }) {
+  if (!isNum(now)) return null;
+  const hasBefore = isNum(before);
+  let arrow: { glyph: string; tone: "good" | "alert" | "neutral"; text: string } | null = null;
+  if (hasBefore) {
+    if (now === before) arrow = { glyph: "=", tone: "neutral", text: "no change" };
+    else if (now < before) arrow = { glyph: "↓", tone: "good", text: "moved the right way" };
+    else arrow = { glyph: "↑", tone: "alert", text: "moved the wrong way" };
+  }
+  return (
+    <div className="risk__bias" role="group" aria-labelledby="risk-bias-label">
+      <div className="risk__bias-head">
+        <span className="readout__label" id="risk-bias-label">Expected bias (Hedges g)</span>
+        {arrow ? (
+          <span className={`readout__arrow readout__arrow--${arrow.tone} num`}>
+            <span aria-hidden="true">{arrow.glyph}</span>{arrow.glyph !== "=" ? ` ${formatNumber(Math.abs(now - (before as number)))} g` : ""}
+            <span className="visually-hidden"> {arrow.text}</span>
+          </span>
+        ) : null}
+      </div>
+      <div className="risk__bias-pair">
+        {hasBefore ? (
+          <div className="risk__bias-tile">
+            <span className="risk__bias-label">before</span>
+            <span className="risk__bias-value"><span className="risk__bias-num">{formatNumber(before)}</span><span className="readout__unit risk__bias-unit">g</span></span>
+          </div>
+        ) : null}
+        <div className="risk__bias-tile">
+          <span className="risk__bias-label">now</span>
+          <span className="risk__bias-value"><span className="risk__bias-num">{formatNumber(now)}</span><span className="readout__unit risk__bias-unit">g</span></span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function RiskCard({ risk, baseline }: { risk: Risk | null | undefined; baseline: Risk | null | undefined }) {
   if (!risk) {
     return (
@@ -59,7 +99,10 @@ export function RiskCard({ risk, baseline }: { risk: Risk | null | undefined; ba
         <SpecimenTag />
       </div>
       <div className="risk__body">
-        <UnblindingSphere u={risk.u} label={`Predicted unblinding u ${formatNumber(risk.u)}, ${risk.band} risk`} />
+        <div className="risk__sphere">
+          <UnblindingSphere u={risk.u} label={`Predicted unblinding u ${formatNumber(risk.u)}, ${risk.band} risk`} />
+          <p className="risk__why">u changes with the comparator and prior use. Rater fixes lower expected bias.</p>
+        </div>
         <div className="risk__facts">
           <div className="risk__value">
             <span className="t-readout-xl">u = {formatNumber(risk.u)}</span>
@@ -71,10 +114,6 @@ export function RiskCard({ risk, baseline }: { risk: Risk | null | undefined; ba
             <div>
               <dt>Uncertainty</dt>
               <dd className="num">&plusmn; {formatNumber(risk.u_sd)} u (1 sd)</dd>
-            </div>
-            <div>
-              <dt>Expected bias</dt>
-              <dd className="num">{formatNumber(risk.expected_bias_g)} g (Hedges)</dd>
             </div>
             {baseline ? (
               <div>
@@ -89,13 +128,8 @@ export function RiskCard({ risk, baseline }: { risk: Risk | null | undefined; ba
                 </dd>
               </div>
             ) : null}
-            {baseline ? (
-              <div>
-                <dt>Bias before</dt>
-                <dd className="num">{formatNumber(baseline.expected_bias_g)} g &rarr; {formatNumber(risk.expected_bias_g)} g</dd>
-              </div>
-            ) : null}
           </dl>
+          <BiasReadouts before={baseline?.expected_bias_g} now={risk.expected_bias_g} />
           <p className="t-caption c-ash">
             {synthetic ? "Predicted from a SYNTHETIC calibration. " : ""}
             {risk.calibration || "Calibration not stated."}

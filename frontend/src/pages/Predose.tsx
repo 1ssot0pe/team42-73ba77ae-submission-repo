@@ -126,11 +126,9 @@ export default function Predose() {
                   <SectionHead eyebrow="Protocol co-designer" title="Edit, save and re-check" />
                   <div className="grid-pd">
                     <ProtocolEditor protocol={data.protocol} versions={versions} enrolled={enrolledN > 0} />
-                    <div className="stack stack--loose">
-                      <DraftedSection md={dr?.blinding_section_md} />
-                      <VersionHistory versions={versions} />
-                    </div>
+                    <DraftedSection md={dr?.blinding_section_md} />
                   </div>
+                  <VersionHistory versions={versions} />
                 </section>
 
                 <section className="section">

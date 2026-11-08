@@ -3,7 +3,7 @@
  * behavioural-targeting note. Plus the measurement plan ledger (UNBLIND-BLIND-1 instruments).
  */
 import { LedgerTable, StatusPill, formatNumber, humanise } from "../shared";
-import type { MeasurementPlan, Recruitment } from "../../types";
+import type { Instrument, MeasurementPlan, Recruitment } from "../../types";
 import { parkedText } from "./types";
 
 /** Flesch reading ease bands, so the number has context. */
@@ -70,6 +70,31 @@ export function RecruitmentAds({ recruitment }: { recruitment: Recruitment | nul
   );
 }
 
+/** A day relative to dosing day as words: -1 "before randomisation", 0 "dosing day", 7 "week 1". */
+export function formatTimepointDay(d: number): string {
+  if (d === -1) return "baseline / before randomisation";
+  if (d < 0) return `day ${d}`;
+  if (d === 0) return "dosing day";
+  if (d === 1) return "dosing +1";
+  if (d % 7 === 0) return `week ${d / 7}`;
+  return `day ${d}`;
+}
+
+/** Prefer the backend's human labels; otherwise format timepoints_days (integers or older label strings). */
+function timepointLabels(ins: Instrument): string[] {
+  const days = ins.timepoints_days ?? [];
+  const labels = Array.isArray(ins.timepoints) ? ins.timepoints : [];
+  if (labels.length > 0) return labels.map((l, i) => (l ? String(l) : fallbackLabel(days[i])));
+  return days.map(fallbackLabel);
+}
+
+function fallbackLabel(t: number | string | undefined): string {
+  if (t === undefined || t === null) return "";
+  if (typeof t === "number" && Number.isFinite(t)) return formatTimepointDay(Math.round(t));
+  const n = typeof t === "string" && /^-?\d+$/.test(t.trim()) ? Number(t.trim()) : NaN;
+  return Number.isFinite(n) ? formatTimepointDay(n) : String(t);
+}
+
 export function MeasurementPlanLedger({ plan }: { plan: MeasurementPlan | null | undefined }) {
   if (!plan || !Array.isArray(plan.instruments) || plan.instruments.length === 0) {
     return (
@@ -81,7 +106,7 @@ export function MeasurementPlanLedger({ plan }: { plan: MeasurementPlan | null |
     <span className="num">{ins.id}</span>,
     humanise(ins.who),
     <ul className="mplan__list">{(ins.questions ?? []).map((q, i) => <li key={i}>{q}</li>)}</ul>,
-    <span className="mplan__times">{(ins.timepoints_days ?? []).map((t, i) => <StatusPill key={i} tone="neutral">{String(t)}</StatusPill>)}</span>,
+    <span className="mplan__times">{timepointLabels(ins).map((t, i) => <StatusPill key={i} tone="neutral">{t}</StatusPill>)}</span>,
     <span className="c-smoke">{ins.purpose}</span>,
   ]);
   return (

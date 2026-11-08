@@ -96,7 +96,7 @@ export function StartTrial() {
               {shortTitle(p)}
             </button>
           ))}
-          <button type="button" className="tab" aria-pressed={example === null && !edited} onClick={() => void pick(null)}>
+          <button type="button" className="tab" aria-pressed={protocols !== null && example === null && !edited} onClick={() => void pick(null)}>
             Blank page
           </button>
         </div>

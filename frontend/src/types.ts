@@ -391,7 +391,10 @@ export interface Instrument {
   id: string;
   who: string;
   questions: string[];
-  timepoints_days: Array<string | number>;
+  /** Integer days relative to dosing day (-1, 0, 1, 7, ...). Older plans hold label strings here. */
+  timepoints_days: Array<number | string>;
+  /** Human labels parallel to timepoints_days ("before randomisation", "week 1"). Optional. */
+  timepoints?: string[];
   purpose: string;
 }
 

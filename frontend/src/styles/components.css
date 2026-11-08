@@ -57,24 +57,34 @@
   overflow-x: auto; scrollbar-width: none;
 }
 .nav__links::-webkit-scrollbar { display: none; }
-.nav__link { height: 34px; padding: 0 var(--space-3); }
+.nav__link { height: 36px; padding: 0 var(--space-3); }
 .nav__link.is-active { color: var(--color-ink); }
 .nav__link.is-active::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--color-ink); }
 .nav__ext { font: var(--text-label); letter-spacing: var(--track-label); color: var(--color-ash); }
 .nav__meta { display: flex; align-items: center; gap: var(--space-2); flex: none; }
 .nav__chip { font: 400 12px/1 var(--font-mono); font-variant-numeric: tabular-nums; color: var(--color-graphite); padding: 0 var(--space-2); }
 .nav__day { font: 500 13px/1 var(--font-mono); font-variant-numeric: tabular-nums; color: var(--color-ink); padding: 0 var(--space-2); }
-.nav__theme { width: 34px; padding: 0; }
+.nav__theme { width: 36px; padding: 0; }
 .nav__theme svg { width: 16px; height: 16px; }
 @media (max-width: 1100px) { .nav__chip { display: none; } }
+/* Phones: the links collapse into a Menu pill that opens a glass list. The list is a sibling of the nav
+   (position: absolute inside the sticky .nav-wrap), so glass never sits on glass. */
+.nav__menu-btn { display: none; height: 36px; padding: 0 var(--space-3); gap: var(--space-2); }
+.nav__menu-glyph { position: relative; width: 12px; height: 8px; border-top: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; }
+.nav-menu { display: none; }
 @media (max-width: 720px) {
-  .nav { padding-left: var(--space-4); gap: var(--space-2); }
-  .nav__links {
-    -webkit-mask-image: linear-gradient(90deg, var(--mask-fade) calc(100% - 32px), transparent);
-    mask-image: linear-gradient(90deg, var(--mask-fade) calc(100% - 32px), transparent);
-    padding-right: var(--space-6);
-  }
+  .nav { padding-left: var(--space-4); gap: var(--space-2); justify-content: space-between; }
+  .nav__links { display: none; }
   .nav__day { display: none; }
+  .nav__menu-btn { display: inline-flex; }
+  .nav-menu:not([hidden]) {
+    display: block; position: absolute; top: calc(56px + var(--space-2)); right: var(--gutter);
+    width: min(280px, calc(100vw - 2 * var(--gutter))); padding: var(--space-2);
+  }
+  .nav-menu__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+  .nav-menu__link { width: 100%; justify-content: flex-start; height: 40px; padding: 0 var(--space-4); color: var(--color-ink); }
+  .nav-menu__link.is-active::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--color-ink); }
+  .nav-menu__link:not(.is-active) { padding-left: calc(var(--space-4) + 6px + var(--space-2)); }
 }
 
 /* ------------------------------------------------------------ 8.2 Synthetic specimen band */
@@ -109,7 +119,7 @@
 .readout__arrow--good { color: var(--status-good-fg); background: var(--status-good-bg); }
 .readout__arrow--alert { color: var(--status-alert-fg); background: var(--status-alert-bg); }
 .readout__arrow--neutral { color: var(--status-neutral-fg); background: var(--status-neutral-bg); }
-.readout__note { font: var(--text-caption); letter-spacing: var(--track-caption); color: var(--color-smoke); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.readout__note { font: var(--text-caption); letter-spacing: var(--track-caption); color: var(--color-graphite); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .readout__chips { display: flex; gap: var(--space-1); flex-wrap: wrap; }
 .readout__chips .pill { white-space: normal; height: auto; min-height: 22px; padding-block: 3px; max-width: 100%; }
 
