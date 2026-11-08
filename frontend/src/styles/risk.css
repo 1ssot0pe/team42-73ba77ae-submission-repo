@@ -1,0 +1,88 @@
+/* Predicted unblinding (Design review): a quiet 0 to 1 scale. Owned by UnblindingSphere.tsx.
+   Tokens only, so light and dark both follow the theme. No gradients, no glass, no violet or orange. */
+
+.rk { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
+.rk__head { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-3); }
+
+.rk__value { display: flex; align-items: baseline; flex-wrap: wrap; gap: var(--space-2) var(--space-4); }
+.rk__u {
+  font: var(--text-readout-xl); letter-spacing: var(--track-readout-xl);
+  font-variant-numeric: tabular-nums; color: var(--color-ink); white-space: nowrap;
+}
+.rk__band { display: inline-flex; align-items: center; gap: var(--space-2); font: 400 16px/1.4 var(--font-body); color: var(--color-ink); }
+.rk__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-smoke); flex: none; }
+.rk__band--good .rk__dot { background: var(--status-good-fg); }
+.rk__band--watch .rk__dot { background: var(--status-watch-fg); }
+.rk__band--alert .rk__dot { background: var(--status-alert-fg); }
+
+/* ---------------------------------------------------------------- the scale */
+.rk-scale { display: flex; flex-direction: column; gap: var(--space-2); max-width: 720px; min-width: 0; }
+.rk-scale__field {
+  --rk-line: calc(var(--rk-above, 12px) + 6px);
+  position: relative;
+  height: calc(var(--rk-above, 12px) + 12px + var(--rk-below, 12px));
+  margin: 0 6px;
+}
+.rk-scale__line {
+  position: absolute; left: 0; right: 0; top: var(--rk-line); height: 1px;
+  background: var(--color-graphite); transform: translateY(-0.5px);
+}
+.rk-scale__tick {
+  position: absolute; top: var(--rk-line); width: 1px; height: 9px;
+  background: var(--color-graphite); transform: translate(-0.5px, -50%);
+}
+.rk-scale__tick--start { left: 0; }
+.rk-scale__tick--end { left: 100%; }
+.rk-scale__marker {
+  position: absolute; top: var(--rk-line); width: 11px; height: 11px; border-radius: 50%;
+  box-sizing: border-box; background: var(--color-eggshell); border: 1.5px solid var(--color-graphite);
+  transform: translate(-50%, -50%);
+}
+.rk-scale__marker--current { background: var(--color-ink); border-color: var(--color-ink); width: 12px; height: 12px; }
+@media (prefers-reduced-motion: no-preference) { .rk-scale__marker { transition: left 180ms var(--ease-out, ease-out); } }
+
+.rk-scale__stem { position: absolute; width: 1px; height: var(--rk-stem); background: var(--color-ash); transform: translateX(-0.5px); }
+.rk-scale__stem--up { top: calc(var(--rk-line) - 7px - var(--rk-stem)); }
+.rk-scale__stem--down { top: calc(var(--rk-line) + 7px); }
+
+.rk-scale__label {
+  --rk-tx: -50%;
+  position: absolute; top: var(--rk-line);
+  display: flex; flex-direction: column; align-items: center;
+  font: 400 12px/1.35 var(--font-body); color: var(--color-graphite); white-space: nowrap;
+}
+.rk-scale__label--up { transform: translate(var(--rk-tx), calc(-100% - var(--rk-offset))); }
+.rk-scale__label--down { transform: translate(var(--rk-tx), var(--rk-offset)); }
+.rk-scale__label--start { --rk-tx: -6px; align-items: flex-start; }
+.rk-scale__label--end { --rk-tx: calc(-100% + 6px); align-items: flex-end; }
+.rk-scale__label--current { color: var(--color-ink); }
+.rk-scale__label--current .rk-scale__label-num { font-weight: 600; }
+.rk-scale__label-text { color: var(--color-smoke); }
+.rk-scale__label-num { font-variant-numeric: tabular-nums; }
+
+.rk-scale__ends {
+  display: flex; justify-content: space-between; gap: var(--space-3);
+  font: 400 13px/1.5 var(--font-body); color: var(--color-smoke); font-variant-numeric: tabular-nums;
+}
+
+/* ---------------------------------------------------------------- words */
+.rk__why { margin: 0; max-width: 60ch; font: var(--text-body-sm); color: var(--color-graphite); }
+
+.rk__facts { display: flex; flex-direction: column; margin: 0; }
+.rk__facts > div {
+  display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: var(--space-1) var(--space-3); align-items: baseline;
+  border-top: 1px solid var(--color-stone); padding: var(--space-2) 0;
+}
+.rk__facts dt { font: 400 13px/1.5 var(--font-body); color: var(--color-smoke); }
+.rk__facts dd {
+  margin: 0; font: 400 13px/1.5 var(--font-body); color: var(--color-ink); font-variant-numeric: tabular-nums;
+  display: flex; flex-wrap: wrap; gap: 0 var(--space-3); align-items: baseline; min-width: 0;
+}
+@media (max-width: 560px) { .rk__facts > div { grid-template-columns: minmax(0, 1fr); } }
+
+.rk-delta { font-weight: 600; white-space: nowrap; }
+.rk-delta--good { color: var(--status-good-fg); }
+.rk-delta--alert { color: var(--status-alert-fg); }
+.rk-delta--neutral { color: var(--color-smoke); font-weight: 400; }
+
+.rk__note { margin: 0; font: 400 12px/1.5 var(--font-body); color: var(--color-smoke); }
