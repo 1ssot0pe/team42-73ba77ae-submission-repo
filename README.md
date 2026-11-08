@@ -166,12 +166,22 @@ python -m unblind run NCT03866174
 streamlit run app/app.py
 ```
 
-## Sources
+## References
 
-1. JAMA Psychiatry 2026 systematic review: https://doi.org/10.1001/jamapsychiatry.2026.0255
-2. FDA rejection of MDMA-assisted therapy: https://www.biospace.com/drug-development/fda-rejects-lykos-mdma-assisted-ptsd-therapy-after-negative-adcomm
-3. Advisory committee votes: https://www.hcplive.com/view/live-updates-fda-psychopharmacologic-advisory-committee-meeting-mdma-ptsd
-4. Szigeti et al. 2026: https://www.ucsf.edu/news/2026/03/431651/are-psychedelics-better-antidepressants-new-study-says-no
-5. FDA final guidance: https://www.appliedclinicaltrialsonline.com/view/fda-finalizes-guidance-clinical-trial-design-psychedelic-drug-development
-6. Compass COMP006: https://ir.compasspathways.com/News--Events-/news/news-details/2026/Compass-Pathways-Successfully-Achieves-Primary-Endpoint-in-Second-Phase-3-Trial-Evaluating-COMP360-Psilocybin-for-Treatment-Resistant-Depression/default.aspx
-7. Compass COMP005: https://www.biospace.com/press-releases/compass-pathways-successfully-achieves-primary-endpoint-in-first-phase-3-trial-evaluating-comp360-psilocybin-for-treatment-resistant-depression
+1. ICH. *E9(R1) Addendum on Estimands and Sensitivity Analysis in Clinical Trials.* FDA guidance, May 2021.
+2. FDA. *Psychedelic Drugs: Considerations for Clinical Investigations.* Final guidance, July 2026. [Coverage](https://www.appliedclinicaltrialsonline.com/view/fda-finalizes-guidance-clinical-trial-design-psychedelic-drug-development)
+3. Orsini DK, Wong S, Di Luch S, et al. Blinding integrity in psychedelic randomized clinical trials: a systematic review. *JAMA Psychiatry* 2026;83(7):755–769. [doi:10.1001/jamapsychiatry.2026.0255](https://doi.org/10.1001/jamapsychiatry.2026.0255)
+4. Compass Pathways. COMP005 primary endpoint, 23 Jun 2025 ([release](https://www.biospace.com/press-releases/compass-pathways-successfully-achieves-primary-endpoint-in-first-phase-3-trial-evaluating-comp360-psilocybin-for-treatment-resistant-depression)); COMP006 primary endpoint, 17 Feb 2026 ([release](https://ir.compasspathways.com/News--Events-/news/news-details/2026/Compass-Pathways-Successfully-Achieves-Primary-Endpoint-in-Second-Phase-3-Trial-Evaluating-COMP360-Psilocybin-for-Treatment-Resistant-Depression/default.aspx)).
+5. FDA Psychopharmacologic Drugs Advisory Committee, midomafetamine for PTSD, 4 Jun 2024 ([live coverage](https://www.hcplive.com/view/live-updates-fda-psychopharmacologic-advisory-committee-meeting-mdma-ptsd)); Complete Response Letter to Lykos Therapeutics, Aug 2024 ([coverage](https://www.biospace.com/drug-development/fda-rejects-lykos-mdma-assisted-ptsd-therapy-after-negative-adcomm)).
+6. FDA. *Considerations for the Use of Artificial Intelligence to Support Regulatory Decision-Making for Drug and Biological Products.* Draft guidance, Jan 2025.
+7. Szigeti B, et al., 2026 — reported in UCSF, "Are psychedelics better antidepressants? New study says no," Mar 2026. [ucsf.edu](https://www.ucsf.edu/news/2026/03/431651/are-psychedelics-better-antidepressants-new-study-says-no)
+
+## Data sources
+
+| Source | Licence |
+|---|---|
+| [ClinicalTrials.gov API v2](https://clinicaltrials.gov/data-api/api) (US NLM) | Public domain |
+| [Europe PMC](https://europepmc.org/) | Per-article, recorded with each record |
+| [JulesCan/clinicaltrial-protocol-corpus](https://huggingface.co/datasets/JulesCan/clinicaltrial-protocol-corpus) | CC0-1.0 |
+
+No patient data is used. All performance figures in this repository are generated from synthetic simulations with planted ground truth and are not evidence of real-world performance.
