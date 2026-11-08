@@ -7,7 +7,8 @@
  *   state        latest TrialState from the API, or null
  *   tick         increments after every successful refresh/adopt; put it in useEffect deps to refetch
  *   setTrialId   switch trial (null clears it); triggers a refresh
- *   refresh      refetch /state (one request in flight at a time)
+ *   refresh      refetch /state (one request in flight at a time; a call made while one runs queues
+ *                one fresh follow-up instead of reusing the possibly stale request in flight)
  *   adopt        accept a TrialState you already have (from step, decide or action responses) without refetching
  *   error        last refresh error message (backend down, etc.), or null
  *   lost         true once the server has confirmed twice that it no longer has the trial
@@ -76,6 +77,8 @@ export function TrialProvider({ children }: { children: ReactNode }) {
 
   const idRef = useRef(trialId); // the current id, for async callbacks that outlive a render
   const inflight = useRef<{ id: string; p: Promise<void> } | null>(null);
+  const queued = useRef<{ id: string; p: Promise<void> } | null>(null);
+  const adopted = useRef(0); // bumps on every adopt; a refresh that saw one land while it ran is stale
   const checking = useRef<string | null>(null);
 
   useEffect(() => {
@@ -135,23 +138,40 @@ export function TrialProvider({ children }: { children: ReactNode }) {
       setState(null);
       return;
     }
-    if (inflight.current?.id === id) return inflight.current.p; // never overlap
-    const p = (async () => {
-      try {
-        const s = await api.state(id);
-        if (idRef.current === id) healthy(s);
-      } catch (e) {
-        if (idRef.current !== id) return;
-        // "trial not found" is handled by confirmLost (via onTrialMissing); never clear the id here
-        if (!(e instanceof ApiError && e.trialMissing)) failed(e);
+    const run = (): Promise<void> => {
+      const seen = adopted.current;
+      const p = (async () => {
+        try {
+          const s = await api.state(id);
+          // Skip a response overtaken by a newer state from a step, decision or action (N-1)
+          if (idRef.current === id && adopted.current === seen) healthy(s);
+        } catch (e) {
+          if (idRef.current !== id) return;
+          // "trial not found" is handled by confirmLost (via onTrialMissing); never clear the id here
+          if (!(e instanceof ApiError && e.trialMissing)) failed(e);
+        }
+      })();
+      inflight.current = { id, p };
+      void p.finally(() => {
+        if (inflight.current?.p === p) inflight.current = null;
+      });
+      return p;
+    };
+    if (inflight.current?.id === id) {
+      // Never overlap, but don't reuse the running request either: it may have been sent before a
+      // change the caller just made (an approval saved by another instance), and its answer would be
+      // stale (N-1). Queue exactly one follow-up refresh; later callers share it.
+      if (queued.current?.id !== id) {
+        const after = inflight.current.p;
+        const q = { id, p: after.then(() => {
+          queued.current = null;
+          return run();
+        }) };
+        queued.current = q;
       }
-    })();
-    inflight.current = { id, p };
-    try {
-      await p;
-    } finally {
-      if (inflight.current?.p === p) inflight.current = null;
+      return queued.current!.p;
     }
+    return run();
   }, [trialId, healthy, failed]);
 
   const adopt = useCallback(
@@ -161,6 +181,7 @@ export function TrialProvider({ children }: { children: ReactNode }) {
         idRef.current = s.trial_id;
         setTrialIdRaw(s.trial_id);
       }
+      adopted.current += 1;
       healthy(s);
     },
     [healthy],
