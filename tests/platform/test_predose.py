@@ -283,7 +283,7 @@ def test_recruitment_ads_pass_checks_and_targeting_is_parked():
 
 
 # ---------------------------------------------------------------- Phase 4: measurement planner, wiring, end to end
-from unblind.platform.predose.agents import INSTRUMENTS, SCHEDULE_KINDS  # noqa: E402
+from unblind.platform.predose.agents import INSTRUMENTS, SCHEDULE_KINDS, plan_instruments  # noqa: E402
 
 OWNER = {"dosing_session": "dosing", "monitor_debrief": "dosing", "participant_checkin": "dosing",
          "rater_assessment": "dosing", "followup": "postdose"}
@@ -306,7 +306,8 @@ def test_schedule_has_only_the_five_kinds_with_correct_owners():
     assert len({s["id"] for s in sched}) == len(sched)
     assert {s["participant"] for s in sched} == {p["id"] for p in m.rec["enrolled"]}
     mp = m.rec["measurement_plan"]
-    assert mp["standard"] == "UNBLIND-BLIND-1" and mp["primary_week"] == 6 and mp["instruments"] == INSTRUMENTS
+    assert mp["standard"] == "UNBLIND-BLIND-1" and mp["primary_week"] == 6 and mp["instruments"] == plan_instruments(6)
+    assert [i["id"] for i in mp["instruments"]] == [i["id"] for i in INSTRUMENTS]
 
 
 def test_schedule_every_rater_assessment_has_rater_and_visit_week():
@@ -586,16 +587,30 @@ def test_rater_ids_default_run_match_the_old_formula():
     assert set(got.values()) == {"R-A1", "R-A2", "R-B1", "R-B2", "R-C1", "R-C2"}
 
 
-def test_rater_ids_follow_sorted_enrolled_sites():
-    enrolled = [{"id": f"P{i}", "site": s, "dosing_day": 1 + i, "name": "x"}
-                for i, s in enumerate(["Leeds", "Bristol", "Cardiff", "Leeds", "Bristol", "Cardiff"])]
-    rec = {"protocol": {"primary_endpoint": {"week": 6}}, "enrolled": enrolled}
+def _raters_by_site(protocol_sites, sites):
+    enrolled = [{"id": f"P{i}", "site": x, "dosing_day": 1 + i, "name": "x"} for i, x in enumerate([x for x in sites for _ in (0, 1)])]
+    rec = {"protocol": {"primary_endpoint": {"week": 6}, "sites": protocol_sites}, "enrolled": enrolled}
     ra = [s for s in build_schedule(rec) if s["kind"] == "rater_assessment"]
+    assert not any(s["rater_id"] == "R-X1" for s in ra)
     by_site = {}
     for s in ra:
         by_site.setdefault(s["site"], set()).add(s["rater_id"])
-    assert by_site == {"Bristol": {"R-A1", "R-A2"}, "Cardiff": {"R-B1", "R-B2"}, "Leeds": {"R-C1", "R-C2"}}
-    assert not any(s["rater_id"] == "R-X1" for s in ra)
+    return by_site
+
+
+def test_rater_ids_follow_protocol_site_order_then_sorted_extras():
+    # protocol order first (Leeds, Bristol), then enrolled sites the protocol does not list, sorted (Cardiff)
+    assert _raters_by_site(["Leeds", "Bristol"], ["Leeds", "Bristol", "Cardiff"]) == {
+        "Leeds": {"R-A1", "R-A2"}, "Bristol": {"R-B1", "R-B2"}, "Cardiff": {"R-C1", "R-C2"}}
+    # no site list in the protocol: sorted enrolled sites
+    assert _raters_by_site([], ["Leeds", "Bristol", "Cardiff"]) == {
+        "Bristol": {"R-A1", "R-A2"}, "Cardiff": {"R-B1", "R-B2"}, "Leeds": {"R-C1", "R-C2"}}
+
+
+def test_rater_ids_site_a_and_c_only_gives_site_c_the_b_letter():
+    # documented behaviour: the letter is the site's position in the protocol list, not its own name
+    assert _raters_by_site(["Site A (London)", "Site C (Bristol)"], ["Site A (London)", "Site C (Bristol)"]) == {
+        "Site A (London)": {"R-A1", "R-A2"}, "Site C (Bristol)": {"R-B1", "R-B2"}}
 
 
 def test_recheck_after_enrolment_not_applied_if_protocol_changed_since():
@@ -665,3 +680,60 @@ def test_fix_not_applied_if_protocol_edited_since_but_sibling_fixes_are_fine():
     assert m.rec["protocol"]["text"] == text and len(m.rec["protocol_versions"]) == n
     assert m.rec["protocol"]["comparator"] != "low_dose_same_drug"
     assert any(e["level"] == "warn" and "changed since this edit was proposed" in e["text"] for e in m.rec["events"])
+
+
+# ---------------------------------------------------------------- Phase 8.1: timepoints contract, PTSD screening
+def test_measurement_plan_timepoints_are_int_days_aligned_with_labels():
+    m = enrolled_master()
+    wk = m.rec["protocol"]["primary_endpoint"]["week"]
+    for ins in m.rec["measurement_plan"]["instruments"]:
+        days, labels = ins["timepoints_days"], ins["timepoints"]
+        assert days and all(type(d) is int for d in days) and len(days) == len(labels)
+        assert all(isinstance(t, str) for t in labels)
+    by = {i["id"]: dict(zip(i["timepoints"], i["timepoints_days"])) for i in m.rec["measurement_plan"]["instruments"]}
+    assert by["UB1-EXP0"] == {"before randomisation": -1} and by["UB1-MD"] == {"dosing day": 0}
+    assert by["UB1-PG"] == {"dosing +1": 1, "week 1": 7, "week 3": 21, f"week {wk}": 7 * wk}
+    assert by["MADRS"]["baseline"] == -1 and by["UB1-FU"] == {"week 8": 56, "week 12": 84}
+    assert plan_instruments(8)[2]["timepoints_days"] == [7, 21, 56]   # the primary week comes from the protocol
+
+
+def test_default_psilocybin_funnel_numbers_unchanged():
+    m = Master("TEST-" + uuid.uuid4().hex[:6], auto_approve=True)
+    m.setup()
+    f = m.rec["recruitment"]["funnel"]
+    assert (f["auto_eligible"], f["needs_clinician"], f["enrolled"]) == (49, 56, 49)
+    hid = next(k for k in m.kpis()["predose"] if k["label"] == "Hidden free-text exclusions caught")
+    assert hid["value"] == 29
+
+
+def test_mdma_ptsd_example_enrols_people():
+    text = (PROTOCOLS / "example_mdma_ptsd.md").read_text()
+    m = Master("TEST-" + uuid.uuid4().hex[:6], protocol={"text": text}, auto_approve=True)
+    m.setup()
+    assert m.rec["protocol"]["indication"] == "ptsd"
+    dx = [a["self_reported_diagnosis"] for a in m.rec["applicants"]]
+    assert dx.count("post-traumatic stress disorder") > len(dx) / 2
+    assert len(m.rec["enrolled"]) > 10
+    ok = [a for a in m.rec["applicants"] if a["screening"]["decision"] == "eligible"]
+    assert all(a["self_reported_diagnosis"] == "post-traumatic stress disorder" for a in ok)
+    assert not any("antidepressants" in r for a in m.rec["applicants"] for r in a["screening"]["reasons"])
+
+
+def test_long_form_ptsd_indication_enrols_people():
+    text = (PROTOCOLS / "example_mdma_ptsd.md").read_text()
+    m = Master("TEST-" + uuid.uuid4().hex[:6], protocol={"text": text})
+    # the parser writes "ptsd"; force the long form (mixed case, padded) to check the normalisation
+    pre = m.modules["predose"]
+    orig = pre.parser.run
+
+    def run(t, ctx):
+        p = orig(t, ctx)
+        p["indication"] = " Post-Traumatic Stress Disorder "
+        return p
+    pre.parser.run = run
+    m.rec["config"]["auto_approve"] = True
+    m.setup()
+    assert m.rec["protocol"]["indication"] == " Post-Traumatic Stress Disorder "
+    dx = [a["self_reported_diagnosis"] for a in m.rec["applicants"]]
+    assert dx.count("post-traumatic stress disorder") > len(dx) / 2
+    assert len(m.rec["enrolled"]) > 10

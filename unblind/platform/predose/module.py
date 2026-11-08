@@ -51,7 +51,7 @@ class Module(BaseModule):
         self.recruiter.run(rec, ctx)
         rec["phase"] = "recruitment"
         n = int((rec.get("config") or {}).get("n_applicants", 500))
-        self.screener.run(rec, ctx, ctx.world.applicants(n))
+        self.screener.run(rec, ctx, ctx.world.applicants(n, indication=rec["protocol"].get("indication")))
         self._request_shortlist(rec, ctx, SHORTLIST_RATIONALE)
 
     def _request_shortlist(self, rec: TrialRecord, ctx: Ctx, rationale: str) -> dict:

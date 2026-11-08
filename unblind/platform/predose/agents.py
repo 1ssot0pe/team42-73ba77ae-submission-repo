@@ -5,11 +5,13 @@ Rules first, Gemini as an optional refinement. Every Gemini answer is validated
 """
 from __future__ import annotations
 
+import copy
 import re
 from typing import Any, Dict, List, Optional
 
 from ... import model as ubmodel          # existing UNBLIND model (calibration, counterfactuals)
 from ..core import Ctx, TrialRecord, digest
+from ..world import PTSD_INDICATIONS
 
 M = "predose"
 SITES = ["Site A (London)", "Site B (Manchester)", "Site C (Bristol)"]
@@ -501,7 +503,8 @@ class RecruitmentAgent:
 CRITERIA = [  # id, label, rule, why
     ("age", "Age", "18 to 65", "Typical adult trial range"),
     ("uk_mobile", "UK mobile", "+44 7 number", "Check-ins run through the UK chatbot"),
-    ("diagnosis", "Diagnosis", "MDD or TRD; TRD needs at least 2 failed antidepressants", "Matches the protocol population"),
+    ("diagnosis", "Diagnosis", "Follows the protocol indication: MDD or TRD for depression (TRD needs at least 2 failed "
+     "antidepressants); PTSD for PTSD", "Matches the protocol population"),
     ("psychosis_bipolar", "Psychosis, personal bipolar", "Exclude", "Safety; standard psychedelic exclusion"),
     ("cardio", "Uncontrolled cardiovascular condition", "Exclude", "Blood pressure rises during sessions"),
     ("pregnancy", "Pregnancy or breastfeeding", "Exclude", "Safety"),
@@ -516,6 +519,7 @@ CRITERIA = [  # id, label, rule, why
 DISCLOSURE = re.compile(r"bipolar|psychos|psychotic|schizo|cardiolog|heart|blood pressure|pregnan|suicid|self[- ]harm|seizure|epilep", re.I)
 SSRI_SNRI = re.compile(r"\bssri\b|\bsnri\b|sertraline|escitalopram|citalopram|fluoxetine|paroxetine|venlafaxine|duloxetine", re.I)
 DEPRESSION_DX = ("major depressive disorder", "treatment-resistant depression")
+PTSD_DX = ("post-traumatic stress disorder", "ptsd")
 AGE_BANDS = [("18-30", 18, 30), ("31-45", 31, 45), ("46-65", 46, 65), ("65+", 66, 200)]
 CRITERION_LABEL = {c[0]: c[1] for c in CRITERIA}
 
@@ -549,7 +553,7 @@ class PreScreeningAgent:
         elif not phone.startswith("+447"):
             excl.append(("uk_mobile", "Not a UK mobile (+44 7) number; check-ins run through the UK chatbot"))
 
-        ind = protocol.get("indication", "")
+        ind = str(protocol.get("indication") or "").strip().lower()
         dx = a.get("self_reported_diagnosis")
         if ind in DEPRESSION_DX:
             if dx is None:
@@ -562,6 +566,11 @@ class PreScreeningAgent:
                     flags.append(("diagnosis", "Number of failed antidepressants not stated"))
                 elif int(fails) < 2:
                     excl.append(("diagnosis", f"{fails} failed antidepressants; treatment-resistant depression needs at least 2"))
+        elif ind in PTSD_INDICATIONS:     # the TRD rule (failed antidepressants) does not apply to PTSD
+            if dx is None:
+                flags.append(("diagnosis", "Diagnosis not stated"))
+            elif str(dx).strip().lower() not in PTSD_DX:
+                excl.append(("diagnosis", f"Diagnosis '{dx}' does not match the protocol population (PTSD)"))
         elif dx is not None:
             flags.append(("diagnosis", f"Diagnosis '{dx}' needs a clinician check against the protocol population ({ind or 'unknown'})"))
 
@@ -716,13 +725,44 @@ class Enroller:
 # Phase 4: measurement planner (UNBLIND-BLIND-1 instruments and the shared schedule)
 # ---------------------------------------------------------------------------
 INSTRUMENTS = [
-    {"id": "UB1-EXP0", "who": "participant", "questions": ["How much do you expect to improve? (0 to 10)"], "timepoints_days": ["before randomisation"], "purpose": "Baseline expectancy (FDA July 2026)"},
-    {"id": "UB1-PG", "who": "participant", "questions": ["Which group do you think you are in? (drug, control, don't know)", "How sure are you? (0 to 100)", "How much do you expect to improve? (0 to 10)"], "timepoints_days": ["dosing +1", "week 1", "week 3", "week 6"], "purpose": "Participant blinding and expectancy"},
-    {"id": "UB1-RG", "who": "rater", "questions": ["Which group do you think this participant is in?", "How sure are you? (0 to 100)"], "timepoints_days": ["week 1", "week 3", "week 6"], "purpose": "Rater blinding (central raters)"},
-    {"id": "UB1-MD", "who": "monitor", "questions": ["Free-text debrief: effects, adverse events, anything that could reveal the arm"], "timepoints_days": ["dosing day"], "purpose": "Safety and unblinding cues"},
-    {"id": "MADRS", "who": "rater", "questions": ["MADRS total (0 to 60)"], "timepoints_days": ["baseline", "week 1", "week 3", "week 6"], "purpose": "Primary outcome"},
-    {"id": "UB1-FU", "who": "participant", "questions": ["Follow-up check-in and end-of-treatment guess and expectancy"], "timepoints_days": ["week 8", "week 12"], "purpose": "Durability and end-of-treatment blinding"},
+    {"id": "UB1-EXP0", "who": "participant", "questions": ["How much do you expect to improve? (0 to 10)"], "timepoints": ["before randomisation"], "purpose": "Baseline expectancy (FDA July 2026)"},
+    {"id": "UB1-PG", "who": "participant", "questions": ["Which group do you think you are in? (drug, control, don't know)", "How sure are you? (0 to 100)", "How much do you expect to improve? (0 to 10)"], "timepoints": ["dosing +1", "week 1", "week 3", "week {primary}"], "purpose": "Participant blinding and expectancy"},
+    {"id": "UB1-RG", "who": "rater", "questions": ["Which group do you think this participant is in?", "How sure are you? (0 to 100)"], "timepoints": ["week 1", "week 3", "week {primary}"], "purpose": "Rater blinding (central raters)"},
+    {"id": "UB1-MD", "who": "monitor", "questions": ["Free-text debrief: effects, adverse events, anything that could reveal the arm"], "timepoints": ["dosing day"], "purpose": "Safety and unblinding cues"},
+    {"id": "MADRS", "who": "rater", "questions": ["MADRS total (0 to 60)"], "timepoints": ["baseline", "week 1", "week 3", "week {primary}"], "purpose": "Primary outcome"},
+    {"id": "UB1-FU", "who": "participant", "questions": ["Follow-up check-in and end-of-treatment guess and expectancy"], "timepoints": ["week 8", "week 12"], "purpose": "Durability and end-of-treatment blinding"},
 ]
+
+
+def _timepoint_day(label: str) -> int:
+    """Day relative to the participant's dosing day: -1 before randomisation or baseline, 0 dosing day,
+    1 the day after, 7 * N for week N."""
+    if label in ("before randomisation", "baseline"):
+        return -1
+    if label == "dosing day":
+        return 0
+    m = re.fullmatch(r"dosing \+(\d+)", label)
+    if m:
+        return int(m.group(1))
+    m = re.fullmatch(r"week (\d+)", label)
+    if m:
+        return 7 * int(m.group(1))
+    raise ValueError(f"unknown timepoint label {label!r}")
+
+
+def plan_instruments(primary_week: int) -> List[dict]:
+    """INSTRUMENTS for one protocol: human labels in `timepoints` and, 1:1 with them, integer days relative to
+    the dosing day in `timepoints_days`. '{primary}' becomes the protocol's primary week."""
+    out = []
+    for ins in INSTRUMENTS:
+        labels = list(dict.fromkeys(t.format(primary=primary_week) for t in ins["timepoints"]))
+        d = copy.deepcopy(ins)
+        d["timepoints"] = labels
+        d["timepoints_days"] = [_timepoint_day(t) for t in labels]
+        out.append(d)
+    return out
+
+
 SCHEDULE_KINDS = ("dosing_session", "monitor_debrief", "participant_checkin", "rater_assessment", "followup")
 
 
@@ -736,17 +776,19 @@ def _letter(j: int) -> str:
     return out
 
 
-def rater_ids(enrolled: List[dict]) -> Dict[str, List[str]]:
-    """Two rater ids per site, lettered A, B, C... in sorted order of the sites people are enrolled at.
-    For the default sites ("Site A (London)", "Site B (Manchester)", "Site C (Bristol)") this gives the
-    same ids as before (R-A1/R-A2, R-B1/R-B2, R-C1/R-C2)."""
-    sites = sorted({p["site"] for p in enrolled})
+def rater_ids(enrolled: List[dict], protocol_sites: Optional[List[str]] = None) -> Dict[str, List[str]]:
+    """Two rater ids per site, lettered A, B, C... in the order the protocol lists its sites; any enrolled site
+    the protocol does not list is lettered after those, in sorted order. The letter is a position, not the site's
+    own name: a protocol with only Site A and Site C gives Site C the ids R-B1/R-B2. For the default sites
+    ("Site A (London)", "Site B (Manchester)", "Site C (Bristol)") this gives R-A1/R-A2, R-B1/R-B2, R-C1/R-C2."""
+    sites = list(dict.fromkeys(protocol_sites or []))
+    sites += sorted({p["site"] for p in enrolled} - set(sites))
     return {s: ["R-" + _letter(j) + "1", "R-" + _letter(j) + "2"] for j, s in enumerate(sites)}
 
 
 def build_schedule(rec):
     wk = int(rec["protocol"].get("primary_endpoint", {}).get("week", 6))
-    raters = rater_ids(rec["enrolled"])          # e.g. R-A1, R-B2
+    raters = rater_ids(rec["enrolled"], rec["protocol"].get("sites"))          # e.g. R-A1, R-B2
     sched = []
     for i, p in enumerate(rec["enrolled"]):
         d, pid, site = p["dosing_day"], p["id"], p["site"]
@@ -774,7 +816,7 @@ class MeasurementPlanner:
             rec.event(self.name, "schedule already exists; not rebuilt", "info", M)
             return rec["schedule"]
         wk = int(rec["protocol"].get("primary_endpoint", {}).get("week", 6))
-        rec["measurement_plan"] = {"standard": "UNBLIND-BLIND-1", "instruments": [dict(i) for i in INSTRUMENTS],
+        rec["measurement_plan"] = {"standard": "UNBLIND-BLIND-1", "instruments": plan_instruments(wk),
                                    "primary_week": wk}
         rec["schedule"] = build_schedule(rec)
         n = len(rec["enrolled"])
