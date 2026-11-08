@@ -27,12 +27,21 @@ export { AgentLog } from "./AgentLog";
 export type { AgentLogProps } from "./AgentLog";
 export { useReviewer } from "./useReviewer";
 export {
-  chartColors, chartFont, chartMargin, gridProps, axisProps, seriesStyle, primaryLine, secondaryLine,
-  primaryArea, thresholdLine, driftMarker, refLabel,
+  chartTokens, lineStyles, stepType, chartColors, chartFont, chartMargin, gridProps, axisProps, seriesStyle, flagStyle,
+  primaryLine, secondaryLine, primaryArea, chanceLine, thresholdLine, zeroLine, driftMarker, eventLine, refLabel,
 } from "./chartTheme";
 export type { SeriesStyle } from "./chartTheme";
-export { ChartFrame, ChartLegend, ChartTooltip, ViewLineChart, endpointDot } from "./ChartParts";
-export type { ChartFrameProps, ChartTooltipProps, ViewLineChartProps, LegendItem } from "./ChartParts";
+export { ChartFrame, ChartLegend, ChartDataTable } from "./ChartFrame";
+export type { ChartFrameProps, ChartEmpty, ChartStatus, DataColumn, DataTable, Cell, LegendItem } from "./ChartFrame";
+export {
+  ChartTooltip, EndLabel, EventMarkers, ChartNotes, endpointDot, eventsTopMargin, usePointTip, pointTipHandlers, PointTip,
+} from "./ChartParts";
+export type { ChartTooltipProps, EndLabelProps, EventMarkersProps, ChartEvent, PointTipApi, PointTipState } from "./ChartParts";
+export {
+  formatPct, formatSigned, formatInterval, formatBracket, formatDayTick, dayTicks, niceDomain, wilson,
+  WILSON_MIN_N, VAULT_MIN_N, ROLLING_BATCHES,
+} from "./chartFormat";
+export { useRecordSections } from "./useRecordSections";
 export { formatDay, formatNumber, moduleLabel, humanise, dotJoin, MODULE_LABELS } from "./format";
 export { applyTheme, getThemePref } from "./theme";
 export type { ThemePref } from "./theme";

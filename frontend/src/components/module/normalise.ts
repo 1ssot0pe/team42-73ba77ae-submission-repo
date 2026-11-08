@@ -21,6 +21,8 @@ const num = (v: unknown): number | null => {
   return null;
 };
 const arr = (v: unknown): unknown[] => (Array.isArray(v) ? v : []);
+/** Number as text with the Unicode minus for negatives. */
+const signed = (n: number): string => (n < 0 ? `\u2212${String(-n)}` : String(n));
 
 /** Any cell value as something React can print. Objects and lists become compact text. */
 export function toScalar(v: unknown): Scalar {
@@ -78,8 +80,24 @@ export interface Marker {
   x: number | string;
   label: string;
 }
+export type ChartId =
+  | "rater-accuracy-site" | "rater-accuracy-by-rater" | "cusum-site" | "participant-accuracy-site"
+  | "effect-estimates" | "madrs-by-week" | "report-rater-accuracy-site" | "generic";
+
+export const CHART_IDS: readonly ChartId[] = [
+  "rater-accuracy-site", "rater-accuracy-by-rater", "cusum-site", "participant-accuracy-site",
+  "effect-estimates", "madrs-by-week", "report-rater-accuracy-site", "generic",
+];
+
 export interface Chart {
+  /** from c.id if present, else matched on the backend title (chartIdFor) */
+  id: ChartId;
+  /** backend title with "(SYNTHETIC...)" removed */
   title: string;
+  /** text that was inside the parentheses after SYNTHETIC, e.g. "information only" */
+  titleNote: string;
+  /** true when the backend title said SYNTHETIC */
+  synthetic: boolean;
   x: string;
   series: ChartSeries[];
   data: Array<Record<string, number | string | null>>;
@@ -89,7 +107,47 @@ export interface Chart {
   yLabel: string;
 }
 
-const REF_LABEL = /expected|alarm|threshold|reference|target|limit|chance|baseline|line/i;
+const REF_LABEL = /expected|alarm|threshold|reference|target|limit|chance|baseline|line|truth/i;
+
+/** Id matching on the backend title (docs/visuals-spec.md 4.2), first match wins. */
+const ID_RULES: Array<[RegExp, ChartId]> = [
+  [/^Rater guess accuracy by site, last/, "rater-accuracy-site"],
+  [/^Rater guess accuracy (at .+, )?by rater/, "rater-accuracy-by-rater"],
+  [/^Drift score \(CUSUM\)/, "cusum-site"],
+  [/^Participant guess accuracy by site/, "participant-accuracy-site"],
+  [/^Effect estimates/, "effect-estimates"],
+  [/^Mean MADRS by visit week/, "madrs-by-week"],
+  [/as recorded in the report/, "report-rater-accuracy-site"],
+];
+
+export function chartIdFor(title: string, id?: unknown): ChartId {
+  if (typeof id === "string" && (CHART_IDS as readonly string[]).includes(id)) return id as ChartId;
+  for (const [re, cid] of ID_RULES) if (re.test(title)) return cid;
+  return "generic";
+}
+
+/**
+ * Split "Rater guess accuracy (SYNTHETIC, information only)" into the clean title, the note after SYNTHETIC and
+ * the synthetic flag. Also handles "SYNTHETIC: ..." prefixes and a bare "(synthetic)".
+ */
+export function splitSyntheticTitle(raw: string): { title: string; titleNote: string; synthetic: boolean } {
+  let synthetic = false;
+  let titleNote = "";
+  // A parenthetical that contains the word SYNTHETIC: "(SYNTHETIC, information only)", "(blinded, SYNTHETIC)".
+  let title = raw.replace(/\s*\(([^()]*\bSYNTHETIC\b[^()]*)\)/i, (_m, inner: string) => {
+    synthetic = true;
+    titleNote = inner
+      .replace(/\bSYNTHETIC\b/i, "")
+      .split(/[,;:]/)
+      .map((t) => t.trim())
+      .filter(Boolean)
+      .join(", ");
+    return "";
+  });
+  title = title.replace(/^\s*SYNTHETIC\s*[:.\u2013-]\s*/i, () => { synthetic = true; return ""; });
+  title = title.replace(/\s{2,}/g, " ").replace(/\s+([,.;:])/g, "$1").trim();
+  return { title: title || raw.trim(), titleNote, synthetic };
+}
 
 /** A series is a reference line when every row has the same value and its name says so. */
 function constantValue(data: Array<Record<string, unknown>>, key: string): number | null {
@@ -129,14 +187,14 @@ export function readCharts(v: unknown): Chart[] {
 
     const refs: RefLine[] = [];
     const t = num(c.threshold);
-    if (t !== null) refs.push({ y: t, label: `Threshold ${t}` });
+    if (t !== null) refs.push({ y: t, label: `Threshold ${signed(t)}` });
     for (const r of [...arr(c.thresholds), ...arr(c.reference_lines), ...arr(c.refs)]) {
       if (isObj(r)) {
         const y = num(r.y ?? r.value);
-        if (y !== null) refs.push({ y, label: str(r.label) || `Threshold ${y}` });
+        if (y !== null) refs.push({ y, label: str(r.label) || `Threshold ${signed(y)}` });
       } else {
         const y = num(r);
-        if (y !== null) refs.push({ y, label: `Threshold ${y}` });
+        if (y !== null) refs.push({ y, label: `Threshold ${signed(y)}` });
       }
     }
     // Constant "reference" series (the dosing view sends its expected and alarm lines this way).
@@ -145,7 +203,7 @@ export function readCharts(v: unknown): Chart[] {
         if (!REF_LABEL.test(s.label) && !REF_LABEL.test(s.key)) return true;
         const y = constantValue(data, s.key);
         if (y === null) return true;
-        refs.push({ y, label: `${s.label} ${Number.isInteger(y) ? y : Number(y.toFixed(3))}` });
+        refs.push({ y, label: `${s.label} ${signed(Number.isInteger(y) ? y : Number(y.toFixed(3)))}` });
         return false;
       });
     }
@@ -163,8 +221,14 @@ export function readCharts(v: unknown): Chart[] {
     const hi = num(d[1]);
     const yDomain: [number, number] | null = lo !== null && hi !== null && hi > lo ? [lo, hi] : null;
 
+    const rawTitle = str(c.title) || `Chart ${ci + 1}`;
+    const { title, titleNote, synthetic } = splitSyntheticTitle(rawTitle);
+
     return {
-      title: str(c.title) || `Chart ${ci + 1}`,
+      id: chartIdFor(rawTitle, c.id),
+      title,
+      titleNote,
+      synthetic,
       x,
       series,
       data,

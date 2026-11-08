@@ -1,0 +1,83 @@
+/* Chart frame and parts (docs/visuals-spec.md 1 and 4.1). Tokens only, no literal colours.
+   Imported by components/shared/ChartFrame.tsx. The base .chart surface rules live in components.css 8.16. */
+
+.chart { font-variant-numeric: tabular-nums; }
+.chart__head { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-3); flex-wrap: wrap; }
+.chart__heading { flex: 1 1 16rem; min-width: 0; display: flex; flex-direction: column; gap: var(--space-1); }
+.chart__title { font: 600 15px/1.4 var(--font-body); letter-spacing: 0; color: var(--color-ink); margin: 0; text-wrap: balance; }
+.chart__subtitle { font: 400 13px/1.45 var(--font-body); color: var(--color-smoke); margin: 0; }
+.chart__synthetic { flex: 0 0 auto; font: 400 12px/1.4 var(--font-body); color: var(--color-smoke); white-space: nowrap; padding-top: 2px; }
+
+.chart__status { display: inline-flex; align-items: center; gap: 6px; margin: 0; font: 400 13px/1.4 var(--font-body); color: var(--color-graphite); }
+.chart__status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--status-neutral-fg); flex: none; }
+.chart__status--good .chart__status-dot { background: var(--status-good-fg); }
+.chart__status--watch .chart__status-dot { background: var(--status-watch-fg); }
+.chart__status--alert .chart__status-dot { background: var(--status-alert-fg); }
+
+.chart__body { width: 100%; min-width: 0; }
+.chart__body svg { overflow: visible; }
+.chart__body .recharts-surface:focus, .chart__body .recharts-wrapper:focus { outline: none; }
+.chart__body text { font-family: var(--font-body); font-variant-numeric: tabular-nums; }
+
+.chart__empty { padding: var(--space-6) 0; display: flex; flex-direction: column; gap: var(--space-1); }
+.chart__empty-title { margin: 0; font: 600 14px/1.4 var(--font-body); color: var(--color-graphite); }
+.chart__empty-body { margin: 0; font: 400 13px/1.45 var(--font-body); color: var(--color-smoke); }
+
+.chart__foot { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-3); flex-wrap: wrap; }
+.chart__footnotes { flex: 1 1 16rem; min-width: 0; font: 400 12px/1.5 var(--font-body); color: var(--color-smoke); }
+.chart__footnotes p { margin: 0; }
+.chart__footnotes p + p { margin-top: var(--space-1); }
+.chart__notes { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px; }
+.chart__data-btn { flex: 0 0 auto; margin-left: auto; }
+
+/* Direct labels, reference labels and event labels */
+.chart-endlabel { font: 400 11px var(--font-body); font-variant-numeric: tabular-nums; }
+.chart-events__label { font: 400 11px var(--font-body); font-variant-numeric: tabular-nums; }
+.chart .recharts-reference-line text, .chart .recharts-label { font-family: var(--font-body); font-size: 11px; }
+
+/* Tooltip: flat surface, one sentence in words */
+.chart-tooltip {
+  background: var(--color-eggshell); border: 1px solid var(--color-stone); border-radius: 10px;
+  padding: var(--space-2) var(--space-3); max-width: 280px; min-width: 0;
+  font: 400 12px/1.45 var(--font-body); font-variant-numeric: tabular-nums; color: var(--color-ink);
+  box-shadow: none;
+}
+.chart-tooltip__text { margin: 0; }
+.chart__body, .chart-svgwrap { position: relative; }
+.chart-pointtip {
+  position: absolute; z-index: 2; pointer-events: none; width: max-content; max-width: min(260px, 70vw);
+  transform: translate(-50%, calc(-100% - 10px));
+}
+[data-pointtip]:focus { outline: none; }
+[data-pointtip]:focus-visible { outline: 2px solid var(--color-graphite); outline-offset: 2px; }
+
+/* Legacy legend (only for charts with more than 4 series that cannot be labelled directly) */
+.chart-legend { list-style: none; margin: 0; padding: 0; }
+
+/* View data drawer table */
+.chart-data { display: flex; flex-direction: column; gap: var(--space-3); }
+.chart-data__scroll { overflow-x: auto; max-width: 100%; }
+.chart-data__scroll:focus-visible { outline: 2px solid var(--color-graphite); outline-offset: 2px; }
+.chart-data__table { width: 100%; border-collapse: collapse; font: 400 13px/1.45 var(--font-body); font-variant-numeric: tabular-nums; color: var(--color-ink); }
+.chart-data__caption { text-align: left; font: 600 13px/1.45 var(--font-body); color: var(--color-graphite); padding-bottom: var(--space-2); }
+.chart-data__table th { text-align: left; font-weight: 600; color: var(--color-smoke); padding: var(--space-2) var(--space-3) var(--space-2) 0; border-bottom: 1px solid var(--color-stone); white-space: nowrap; vertical-align: bottom; }
+.chart-data__table td { padding: var(--space-2) var(--space-3) var(--space-2) 0; border-bottom: 1px solid var(--color-stone); vertical-align: top; }
+.chart-data__table .is-num { text-align: right; }
+.chart-data__derived { font-weight: 400; }
+.chart-data__none { color: var(--color-smoke); }
+.chart-data__note { margin: 0; font: 400 12px/1.5 var(--font-body); color: var(--color-smoke); }
+
+/* Mount: a short opacity fade, only for people who have not asked for reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .chart__body, .chart__empty { animation: chart-fade 160ms ease-out both; }
+}
+@keyframes chart-fade { from { opacity: 0; } to { opacity: 1; } }
+
+/* 390 px: the Synthetic note wraps under the title, never clipped */
+@media (max-width: 520px) {
+  .chart { padding: var(--space-4) var(--space-4) var(--space-3); }
+  .chart__head { flex-direction: column; gap: var(--space-1); }
+  .chart__heading { flex-basis: auto; }
+  .chart__synthetic { padding-top: 0; white-space: normal; }
+  .chart-tooltip { max-width: 220px; }
+}
