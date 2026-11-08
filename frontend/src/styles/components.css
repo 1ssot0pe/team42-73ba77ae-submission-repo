@@ -327,8 +327,8 @@
 /* ------------------------------------------------------------ 8.16 Chart frame */
 .chart { background: var(--color-taupe); border-radius: var(--radius-sheet); padding: var(--space-5) var(--space-5) var(--space-4); position: relative; display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; font-variant-numeric: tabular-nums; }
 .chart__head { display: flex; justify-content: space-between; gap: var(--space-3); align-items: flex-start; flex-wrap: wrap; }
-.chart__title { font: 600 15px/1.4 var(--font-body); letter-spacing: 0; color: var(--color-ink); margin: 0; }
-.chart__caption { font: var(--text-caption); color: var(--color-smoke); }
+.chart__title { font: 600 15px/1.4 var(--font-body); font-variant-numeric: tabular-nums; letter-spacing: 0; color: var(--color-ink); margin: 0; }
+.chart__caption { font: var(--text-caption); font-variant-numeric: tabular-nums; color: var(--chart-text, var(--color-smoke)); }
 .chart__body { width: 100%; min-width: 0; }
 .chart-tooltip { padding: var(--space-2) var(--space-3); border-radius: 10px; background: var(--color-eggshell); border: 1px solid var(--color-stone); font: 400 12px/1.45 var(--font-body); font-variant-numeric: tabular-nums; color: var(--color-ink); max-width: 280px; }
 .chart-tooltip__label { font: 400 12px/1.4 var(--font-body); color: var(--color-smoke); margin-bottom: var(--space-1); }
@@ -339,7 +339,7 @@
 .chart-legend__swatch { width: 14px; height: 0; border-top-width: 2px; border-top-style: solid; }
 .chart-legend__swatch--dashed { border-top-style: dashed; }
 .chart-legend__swatch--dotted { border-top-style: dotted; }
-.chart .recharts-cartesian-axis-tick text { font-family: var(--font-body); font-size: 11px; fill: var(--color-smoke); font-variant-numeric: tabular-nums; }
+.chart .recharts-cartesian-axis-tick text { font-family: var(--font-body); font-size: 11px; fill: var(--chart-text, var(--color-smoke)); font-variant-numeric: tabular-nums; }
 .chart .recharts-label { font-family: var(--font-body); }
 
 /* Every mono label-style element uses tabular numerals (design.md Section 5). */

@@ -8,7 +8,7 @@
 import { Customized, CartesianGrid, Line, LineChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import {
   ChartFrame, ChartTooltip, EndLabel, EventMarkers, eventsTopMargin, axisProps, chartMargin, chartTokens, dayTicks, formatDayTick,
-  gridProps, refLabel, seriesStyle, thresholdLine,
+  gridProps, niceDomain, refLabel, seriesStyle, thresholdLine,
 } from "../shared";
 import type { DataColumn, DataTable } from "../shared";
 import { CusumChart } from "./charts/CusumChart";
@@ -94,6 +94,15 @@ export function GenericLineChart({ chart, height = 260 }: { chart: Chart; height
   const longest = Math.max(0, ...drawn.map((s) => s.label.length));
   const margin = { ...chartMargin, right: Math.min(120, 16 + longest * 6.2), top: chartMargin.top + eventsTopMargin(events.length) };
   const styleFor = (i: number) => seriesStyle(i);
+  // No y_domain in the payload: the axis always includes 0, so a fallback chart never truncates its baseline and
+  // exaggerates change. Non-negative data runs from 0; data with negatives runs from its minimum to at least 0.
+  const yValues = [
+    ...drawn.flatMap((s) => data.map((r) => r[s.key]).filter(isNum)),
+    ...refs.map((r) => r.y),
+  ];
+  const yMin = yValues.length && Math.min(...yValues) < 0 ? niceDomain(yValues, true)[0] : 0;
+  const yMax = yValues.length ? Math.max(...yValues) : 1;
+  const yDomainWithZero: [number, number | "auto"] = yMax <= 0 ? [yMin, 0] : [yMin, "auto"];
 
   const columns: DataColumn[] = [
     { key: x, label: x === "day" ? "Day" : x.charAt(0).toUpperCase() + x.slice(1), align: numericX ? "right" : "left" },
@@ -141,7 +150,7 @@ export function GenericLineChart({ chart, height = 260 }: { chart: Chart; height
           <YAxis
             {...axisProps}
             width={44}
-            domain={chart.yDomain ?? ["auto", "auto"]}
+            domain={chart.yDomain ?? yDomainWithZero}
             tickFormatter={(v: number) => fmt(v)}
           />
           <Tooltip

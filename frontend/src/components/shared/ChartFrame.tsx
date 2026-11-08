@@ -70,6 +70,11 @@ export interface ChartFrameProps {
   /** when set, replaces children (no axes) */
   empty?: ChartEmpty | null;
   children: ReactNode;
+  /**
+   * true when the body holds focusable or interactive marks (tooltips on focus, buttons): the body is rendered as
+   * role="group" with the same aria-label, so its children stay reachable by assistive tech. Default false (role="img").
+   */
+  interactive?: boolean;
   /** heading element for the title (default 3); use 4 when the chart sits under its own section h3 */
   headingLevel?: 3 | 4;
   /** @deprecated legacy: rendered as a footnote */
@@ -148,7 +153,7 @@ export function ChartDataTable({ table, caption }: { table: DataTable; caption: 
 
 export function ChartFrame({
   id, title, subtitle, synthetic = true, status, ariaLabel, dataTable, dataTitle, footnotes, empty,
-  children, caption, legend, tag, headingLevel = 3,
+  children, caption, legend, tag, headingLevel = 3, interactive = false,
 }: ChartFrameProps) {
   const Heading = headingLevel === 4 ? "h4" : "h3";
   const [open, setOpen] = useState(false);
@@ -180,7 +185,7 @@ export function ChartFrame({
           {empty.body ? <p className="chart__empty-body">{empty.body}</p> : null}
         </div>
       ) : (
-        <div className="chart__body" role="img" aria-label={ariaLabel || title}>{children}</div>
+        <div className="chart__body" role={interactive ? "group" : "img"} aria-label={ariaLabel || title}>{children}</div>
       )}
       {!empty && legend && legend.length > 0 ? <ChartLegend items={legend} /> : null}
       {footnotes || legacyCaption || showData ? (
