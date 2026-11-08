@@ -43,6 +43,7 @@ ROUTES: Dict[str, List[str]] = {
     "question_rejected": [],
 }
 CLOSE_DAY = 90
+SIM_NEVER = 10 ** 9                    # world.py and eval_drift.py use this day for "no drift"
 log = logging.getLogger("parallax.master")
 # Per-trial files other code keeps next to the trial under TRIALS and needs again on later requests.
 # They travel inside the snapshot so a fresh instance (empty /tmp) sees exactly the same values.
@@ -69,6 +70,10 @@ class Master:
         self.vault = Vault(trial_id, seed=seed)
         self._place_drift_from_protocol = world_cfg is None     # an explicit WorldConfig keeps its own drift site
         self.world = World(self.vault, world_cfg or WorldConfig(seed=seed))
+        # Read-only copy of the simulator's planted drift day, for display as simulated truth (simulated_truth()).
+        # The world overwrites cfg.drift_day once remote raters are approved, so it is copied here; nothing reads it
+        # for any decision and it never enters the record.
+        self._planted_drift_day = self.world.cfg.drift_day
         bus = MessageBus(self.rec)
         self.ctx = Ctx(rec=self.rec, bus=bus, approvals=ApprovalQueue(self.rec, bus), vault=self.vault,
                        llm=llm, rng=random.Random(seed), world=self.world, bottlenecks=bottlenecks())
@@ -335,6 +340,19 @@ class Master:
             edges[(m["from"], m["to"])] = edges.get((m["from"], m["to"]), 0) + 1
         return [{"from": a, "to": b, "count": n} for (a, b), n in sorted(edges.items())]
 
+    def simulated_truth(self) -> Optional[dict]:
+        """The simulator's planted rater drift (site and onset day), exposed read-only so charts can mark
+        "Drift began (simulated)". Labelled simulated; no agent reads it and nothing is stored. It is shown only
+        once the trial clock has reached the onset day, so it never reveals a future event; None otherwise, or
+        when no drift was planted."""
+        day = getattr(self, "_planted_drift_day", None)
+        if day is None:                                   # snapshots made before this field existed
+            day = self.world.cfg.drift_day
+        if day is None or day >= SIM_NEVER or self.rec["day"] < day:
+            return None
+        return {"synthetic": True, "label": "simulated", "drift_site": self.world.cfg.drift_site,
+                "drift_onset_day": int(day)}
+
     def state(self) -> dict:
         r = self.rec
         return {
@@ -346,4 +364,5 @@ class Master:
             "auto_approve": r["config"].get("auto_approve", False),
             "gemini": llm.available(),
             "report_status": self.report_status(),
+            "simulated_truth": self.simulated_truth(),
         }
