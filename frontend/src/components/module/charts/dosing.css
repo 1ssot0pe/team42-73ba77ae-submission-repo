@@ -1,0 +1,141 @@
+/* Dosing charts (Builder DOSING): SiteSmallMultiples and CusumChart. Tokens only, so dark mode follows. */
+
+.dchart-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--dchart-cols, 3), minmax(0, 1fr));
+  gap: 16px;
+  width: 100%;
+  min-width: 0;
+}
+.dchart-grid--stack {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+}
+
+.dchart-panel {
+  min-width: 0;
+}
+.dchart-panel__title {
+  margin: 0 0 2px;
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 600;
+  color: var(--color-graphite);
+  font-variant-numeric: tabular-nums;
+}
+.dchart-panel--flag .dchart-panel__title {
+  color: var(--color-ink);
+}
+.dchart-panel--flag .dchart-panel__title::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--color-spark-ember);
+  vertical-align: 1px;
+}
+.dchart-panel__plot {
+  position: relative;
+  width: 100%;
+}
+.dchart-panel__few {
+  position: absolute;
+  inset: 0 0 24px 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0 8px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--color-smoke);
+  pointer-events: none;
+}
+
+.dchart-cusum {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+/* SVG text */
+.dchart-reflabel,
+.dchart-reflabel tspan {
+  fill: var(--color-graphite);
+  font-size: 11px;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  paint-order: stroke;
+  stroke: var(--color-eggshell);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+.dchart-evlabel {
+  fill: var(--color-graphite);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  paint-order: stroke;
+  stroke: var(--color-eggshell);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+.dchart-evlabel--alert {
+  fill: var(--color-ink);
+  font-weight: 600;
+}
+.dchart-endlabel {
+  fill: var(--color-smoke);
+  font-size: 12px;
+  paint-order: stroke;
+  stroke: var(--color-eggshell);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+.dchart-endlabel--flag {
+  fill: var(--color-ink);
+  font-weight: 600;
+}
+.dchart-callout path {
+  stroke: var(--color-graphite);
+  stroke-width: 1;
+}
+.dchart-callout text {
+  fill: var(--color-graphite);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  paint-order: stroke;
+  stroke: var(--color-eggshell);
+  stroke-width: 3px;
+}
+.dchart-detecttick {
+  fill: var(--color-spark-ember);
+}
+.dchart-callout-text {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--color-graphite);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Tooltip: one sentence in words */
+.dchart-tip {
+  max-width: 280px;
+  padding: 8px 10px;
+  border: 1px solid var(--color-stone);
+  border-radius: 6px;
+  background: var(--color-eggshell);
+  color: var(--color-ink);
+  font-size: 13px;
+  line-height: 1.45;
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.08);
+}
+
+@media (max-width: 480px) {
+  .dchart-tip {
+    max-width: 220px;
+    font-size: 12px;
+  }
+}
