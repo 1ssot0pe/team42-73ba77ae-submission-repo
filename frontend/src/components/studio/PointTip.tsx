@@ -27,6 +27,7 @@ export function useWidth(initial = 560) {
 export function usePointTip() {
   const [tip, setTipState] = useState<Tip | null>(null);
   const openedAt = useRef(0);
+  const focusOpenedAt = useRef(0);
   const setTip = useCallback((next: Tip | null | ((t: Tip | null) => Tip | null)) => {
     openedAt.current = Date.now();
     setTipState(next);
@@ -60,9 +61,13 @@ export function usePointTip() {
     className: "st-mark",
     onMouseEnter: () => setTip({ x, y, text }),
     onMouseLeave: close,
-    onFocus: () => setTip({ x, y, text }),
+    onFocus: () => { focusOpenedAt.current = Date.now(); setTip({ x, y, text }); },
     onBlur: close,
-    onClick: () => setTip((t) => (t && t.text === text ? null : { x, y, text })),
+    // A tap fires focus then click: within ~300 ms of a focus-open the click only keeps it open, never toggles it shut.
+    onClick: () => {
+      const justFocused = Date.now() - focusOpenedAt.current < 300;
+      setTip((t) => (t && t.text === text && !justFocused ? null : { x, y, text }));
+    },
     onKeyDown: (e: KeyboardEvent) => { if (e.key === "Escape") close(); },
   });
 

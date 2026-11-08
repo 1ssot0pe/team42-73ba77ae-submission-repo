@@ -121,7 +121,7 @@
 .st-before { fill: var(--color-eggshell); stroke: var(--color-smoke); stroke-width: 1.5; }
 .st-hit { fill: transparent; }
 .st-mark { cursor: pointer; outline: none; }
-.st-mark:focus-visible .st-hit { stroke: var(--color-ink); stroke-width: 1.5; }
+.st-mark:focus-visible .st-hit { stroke: var(--color-graphite); stroke-width: 2; }
 .st-tip { position: absolute; z-index: 5; pointer-events: none; }
 
 .st-tiles { margin-bottom: var(--space-2); }
@@ -197,3 +197,4 @@
   .studio-readout { gap: var(--space-4) var(--space-8); }
   .st-tiles { flex-direction: column; }
 }
+.st-conn, .st-conn-line, .st-arrowhead { pointer-events: none; }
