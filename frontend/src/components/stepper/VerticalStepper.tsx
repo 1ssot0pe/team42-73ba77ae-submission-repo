@@ -1,7 +1,8 @@
 /**
  * VerticalStepper (design-v2.md Structure). Sits on the right of the project workspace, sticky below the nav.
  * One 1px line with a dot per stage: filled ink is done, a ring is current, hollow is upcoming.
- * Hover or focus on a stage shows a small flat card with the stage name, its status note and the trial day.
+ * Hover or focus on a stage shows a small flat card with the stage name, its status note and, once launched,
+ * where the trial is in time ("Before dosing", then "Day N of 90").
  * Below 900px it becomes a horizontal row of dots under the nav (labels hidden, the card still shows).
  * Props: stages (from deriveStages), activeId (the stage being viewed, which may differ from the
  * trial's current stage), onSelect (called with the stage id on click).
@@ -37,7 +38,7 @@ export function VerticalStepper({ stages, activeId, onSelect }: VerticalStepperP
               <span id={tipId} role="tooltip" className="stepper__card">
                 <span className="stepper__card-title">{s.label}</span>
                 <span className="stepper__card-note">{s.note}</span>
-                {s.day != null ? <span className="stepper__card-day">Day {s.day}</span> : null}
+                {s.when ? <span className="stepper__card-day">{s.when}</span> : null}
               </span>
             </li>
           );

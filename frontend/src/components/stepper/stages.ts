@@ -13,8 +13,12 @@ export interface StageInfo {
   status: StageStatus;
   /** Short plain-language status, e.g. "Done", "In progress", "Not started", "Waiting for sign-off" */
   note: string;
-  /** Trial day to show in the hover card, or null before launch */
+  /** Trial day (1 to closeDay) once dosing has started, or null before day 1 and before launch */
   day: number | null;
+  /** Last trial day (state.close_day), or null before launch */
+  closeDay: number | null;
+  /** Where the trial is in time for the hover card: "Before dosing" or "Day 12 of 90"; null before launch */
+  when: string | null;
 }
 
 export const STAGES: Array<{ id: StageId; label: string }> = [
@@ -52,16 +56,28 @@ export function currentStageIndex(launched: boolean, state: TrialState | null): 
   return enrolled > 0 ? 3 : 2;
 }
 
+/**
+ * Plain-language trial time: "Before dosing" until day 1 (the backend reports day -1 or 0 during setup),
+ * then "Day N of close_day". Null when there is no trial state yet.
+ */
+export function trialWhen(state: TrialState | null): string | null {
+  if (!state) return null;
+  if (state.day < 1) return "Before dosing";
+  return `Day ${state.day} of ${state.close_day}`;
+}
+
 /** Status for every stage. Pass launched = project has a trialId. */
 export function deriveStages(launched: boolean, state: TrialState | null): StageInfo[] {
   const cur = currentStageIndex(launched, state);
-  const day = state && state.day >= 0 ? state.day : null;
+  const day = launched && state && state.day >= 1 ? state.day : null;
+  const closeDay = launched && state ? state.close_day : null;
+  const when = launched ? trialWhen(state) : null;
   const report = state?.report_status;
   return STAGES.map((s, i) => {
     const status: StageStatus = i < cur ? "done" : i === cur ? "current" : "upcoming";
     let note = status === "done" ? "Done" : status === "current" ? "In progress" : "Not started";
     if (s.id === "draft" && status === "current") note = "Writing";
     if (s.id === "report" && report && report.status !== "none") note = report.label || note;
-    return { ...s, status, note, day: launched ? day : null };
+    return { ...s, status, note, day, closeDay, when };
   });
 }

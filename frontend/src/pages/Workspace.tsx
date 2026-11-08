@@ -6,7 +6,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { VerticalStepper } from "../components/stepper/VerticalStepper";
-import { currentStageIndex, deriveStages, isStageId, STAGES, type StageId } from "../components/stepper/stages";
+import { currentStageIndex, deriveStages, isStageId, STAGES, trialWhen, type StageId } from "../components/stepper/stages";
 import { DraftEditor } from "../components/projects/DraftEditor";
 import { ReportPanel } from "../components/projects/ReportPanel";
 import { ProjectStatusDot } from "../components/projects/StatusDot";
@@ -117,6 +117,8 @@ function WorkspaceInner({ project }: { project: Project }) {
   const stage: StageId = stageParam;
   const stageLabel = STAGES.find((s) => s.id === stage)?.label ?? "";
   const lost = launched && error && !ours;
+  // The trial's own stage and time, not the stage being viewed: "Design review · Before dosing".
+  const when = trialWhen(ours);
 
   return (
     <div className="page ws">
@@ -127,8 +129,7 @@ function WorkspaceInner({ project }: { project: Project }) {
             <h1 className="ws__title">{project.name}</h1>
             <p className="ws__meta">
               <ProjectStatusDot status={project.status} />
-              {ours && ours.day >= 1 ? <span className="num">Day {ours.day} of {ours.close_day}</span> : null}
-              {ours && ours.day < 1 ? <span>Setup</span> : null}
+              {when ? <span className="num">{`${STAGES[curIdx].label} · ${when}`}</span> : null}
             </p>
             {ours && stage !== "draft" ? <TrialClock state={ours} /> : null}
             {lost ? <p className="ws-quiet ws-quiet--watch">The trial server is not reachable: {error}</p> : null}
