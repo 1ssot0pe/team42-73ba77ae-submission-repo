@@ -69,6 +69,18 @@ export interface TrialState {
   pending_approvals: number;
   auto_approve: boolean;
   gemini: boolean;
+  /** FDA blinding report sign-off. Optional: older backends do not send it. */
+  report_status?: ReportStatus;
+}
+
+export type ReportStatusKind = "none" | "collecting" | "waiting_for_signoff" | "changes_requested" | "signed";
+
+export interface ReportStatus {
+  status: ReportStatusKind;
+  signed_by: string | null;
+  signed_day: number | null;
+  /** plain-language sentence from the server, e.g. "Waiting for sign-off" */
+  label: string;
 }
 
 export interface CreateTrialBody {
@@ -110,7 +122,8 @@ export interface EventsQuery {
   limit?: number;
 }
 
-export type ApprovalStatus = "pending" | "approved" | "rejected";
+/** "expired": a pre-dosing fix that was still pending when dosing started (event "expired: dosing started"). */
+export type ApprovalStatus = "pending" | "approved" | "rejected" | "expired";
 
 export interface Approval {
   id: string;
@@ -302,6 +315,10 @@ export interface DesignReview {
   blinding_section_md: string;
   baseline_risk: Risk;
   baseline_checklist_ok: number;
+  /** Frozen copy of risk taken when enrolment completed. Optional: absent before enrolment and on older backends. */
+  risk_at_enrolment?: Risk | null;
+  /** Set when the primary endpoint week falls outside the 90-day simulation window. Optional. */
+  window_note?: string | null;
 }
 
 export interface RecruitmentAd {

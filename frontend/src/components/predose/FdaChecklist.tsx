@@ -1,18 +1,21 @@
 /**
  * FdaChecklist (design.md 8.7). Taupe sheet of ledger rows: mono item code, item text, a Present or
- * Missing pill, and the evidence quote from the protocol. A summary readout sits above: "2 / 8 → 4 / 8".
+ * Missing pill, the evidence quote from the protocol and any agent note. A summary readout sits above: "2 / 8 → 4 / 8".
+ * windowNote (design_review.window_note) shows as a watch-toned line under the rows when present.
  */
 import { EvidenceQuote, StatusPill } from "../shared";
 import type { ChecklistItem } from "../../types";
 
 export interface FdaChecklistProps {
   items: ChecklistItem[];
+  /** design_review.window_note: primary endpoint week outside the 90-day simulation window. Hidden when empty. */
+  windowNote?: string | null;
   baselineOk?: number | null;
   /** e.g. "protocol v3", used as the evidence source tag */
   source?: string;
 }
 
-export function FdaChecklist({ items, baselineOk, source }: FdaChecklistProps) {
+export function FdaChecklist({ items, baselineOk, source, windowNote }: FdaChecklistProps) {
   const ok = items.filter((c) => c.present).length;
   const n = items.length;
   return (
@@ -39,17 +42,24 @@ export function FdaChecklist({ items, baselineOk, source }: FdaChecklistProps) {
               <span className="checklist__code">FDA-{String(i + 1).padStart(2, "0")}</span>
               <div className="checklist__main">
                 <span className="checklist__item">{c.item}</span>
-                {c.evidence ? (
-                  <EvidenceQuote quote={c.evidence} source={source} />
-                ) : (
-                  <span className="t-caption c-ash">{c.note || "No supporting sentence found in the protocol."}</span>
-                )}
+                {c.evidence ? <EvidenceQuote quote={c.evidence} source={source} /> : null}
+                {c.note?.trim() ? (
+                  <span className="t-caption c-ash">{c.note}</span>
+                ) : !c.evidence ? (
+                  <span className="t-caption c-ash">No supporting sentence found in the protocol.</span>
+                ) : null}
               </div>
               <StatusPill tone={c.present ? "good" : "alert"}>{c.present ? "Present" : "Missing"}</StatusPill>
             </li>
           ))}
         </ol>
       )}
+      {windowNote?.trim() ? (
+        <p className="checklist__window" role="note">
+          <span className="checklist__window-flag">Note</span>
+          <span>{windowNote}</span>
+        </p>
+      ) : null}
     </section>
   );
 }

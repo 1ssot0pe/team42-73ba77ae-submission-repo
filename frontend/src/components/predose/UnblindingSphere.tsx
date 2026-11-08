@@ -3,6 +3,9 @@
  * stone at u = 0, violet blooming from the centre and ember from the lower rim as u rises.
  * RiskCard wraps it with the value, band, meaning, a one-line reason under the sphere, calibration,
  * before vs after for u, and expected bias (Hedges g) before and now as two small readouts.
+ * When design_review.risk_at_enrolment exists (frozen when enrolment completed), a neutral chip beside the
+ * readout shows "At enrolment: u 0.62"; its tooltip adds the frozen bias and band, so later amendments
+ * can be compared with what the enrolled participants signed up to.
  */
 import type { CSSProperties } from "react";
 import { SpecimenTag, StatusPill, formatNumber, toneForStatus } from "../shared";
@@ -78,7 +81,22 @@ function BiasReadouts({ before, now }: { before: number | null | undefined; now:
   );
 }
 
-export function RiskCard({ risk, baseline }: { risk: Risk | null | undefined; baseline: Risk | null | undefined }) {
+/** Tooltip for the at-enrolment chip: u, bias and band, frozen when enrolment completed. */
+function frozenTitle(r: Risk): string {
+  const parts = [`u ${formatNumber(r.u)}`];
+  if (isNum(r.expected_bias_g)) parts.push(`expected bias ${formatNumber(r.expected_bias_g)} g`);
+  if (r.band) parts.push(`${bandWord(r.band).toLowerCase()} risk`);
+  return `At enrolment: ${parts.join(", ")}. Frozen when enrolment completed; later amendments do not change it.`;
+}
+
+export interface RiskCardProps {
+  risk: Risk | null | undefined;
+  baseline: Risk | null | undefined;
+  /** design_review.risk_at_enrolment: frozen when enrolment completed. Absent before then and on older backends. */
+  atEnrolment?: Risk | null;
+}
+
+export function RiskCard({ risk, baseline, atEnrolment }: RiskCardProps) {
   if (!risk) {
     return (
       <section className="sheet risk">
@@ -89,6 +107,7 @@ export function RiskCard({ risk, baseline }: { risk: Risk | null | undefined; ba
   }
   const synthetic = /synthetic/i.test(risk.calibration ?? "");
   const moved = baseline && baseline.u !== risk.u;
+  const frozen = atEnrolment && isNum(atEnrolment.u) ? atEnrolment : null;
   return (
     <section className="sheet risk" aria-labelledby="risk-title">
       <div className="risk__head">
@@ -107,6 +126,11 @@ export function RiskCard({ risk, baseline }: { risk: Risk | null | undefined; ba
           <div className="risk__value">
             <span className="t-readout-xl">u = {formatNumber(risk.u)}</span>
             <StatusPill tone={toneForStatus(risk.band)} size="lg">{bandWord(risk.band)}</StatusPill>
+            {frozen ? (
+              <span className="risk__frozen num" title={frozenTitle(frozen)}>
+                At enrolment: u {formatNumber(frozen.u)}
+              </span>
+            ) : null}
           </div>
           <p className="t-body-sm c-smoke">0 is a coin flip, 1 means everyone knew which group they were in.</p>
           <UScale u={risk.u} baseline={baseline?.u} />

@@ -264,6 +264,28 @@ FIXES = {  # fix id -> (title, structured change, sentence appended to the proto
         "Randomisation will be stratified by site and prior psychedelic use (naive or experienced)."),
 }
 FIXABLE_CHECKS = ("central_raters", "blinding_questionnaire", "expectancy_measure", "alternative_control")
+SIM_WINDOW_DAYS = 90       # the simulated trial closes on day 90 (master.CLOSE_DAY)
+DOSING_DAYS = 20           # Enroller staggers dosing over days 1 to 20 (dosing_day = 1 + i % DOSING_DAYS)
+# The primary locks the day after the last participant's primary visit, which must be before close-out:
+# DOSING_DAYS + 7 * week + 1 <= SIM_WINDOW_DAYS - 1 gives week <= 9 (week 9: last visit day 83, lock day 84).
+SIM_MAX_PRIMARY_WEEK = (SIM_WINDOW_DAYS - 1 - DOSING_DAYS) // 7
+WINDOW_ROW = "durability"  # the checklist row about timing of efficacy carries the note
+
+
+def primary_week(p: dict) -> int:
+    try:
+        return int((p.get("primary_endpoint") or {}).get("week") or 6)
+    except (TypeError, ValueError):
+        return 6
+
+
+def window_note(p: dict) -> str:
+    """Plain-language note when the primary endpoint falls outside the 90-day simulation window, else ''."""
+    wk = primary_week(p)
+    if wk <= SIM_MAX_PRIMARY_WEEK:
+        return ""
+    return (f"Primary endpoint at week {wk} is outside the {SIM_WINDOW_DAYS}-day simulation window: the primary "
+            f"result cannot lock before close-out (weeks 1 to {SIM_MAX_PRIMARY_WEEK} fit).")
 
 
 def new_version(rec: TrialRecord, why: str, changes: List[str]) -> dict:
@@ -362,6 +384,10 @@ class ProtocolCoDesigner:
             ev = ev or _find(text, CHECK_PATTERNS[cid]) or ""
             out.append({"id": cid, "item": item, "present": present, "evidence": ev[:300],
                         "note": "" if present else "Missing or not stated in the protocol"})
+        extra = window_note(p)
+        if extra:
+            row = next(r for r in out if r["id"] == WINDOW_ROW)
+            row["note"] = f"{row['note']}. {extra}" if row["note"] else extra
         return out
 
     def draft_section(self, p):
@@ -393,6 +419,7 @@ class ProtocolCoDesigner:
                            and a["action"].get("type") == "apply_fix" and a["status"] == "rejected"
                            and a["action"].get("fix") in FIXES and not fix_satisfied(p, a["action"]["fix"])})
         prev = rec.get("design_review") or {}
+        expired = {e.get("fix") for e in prev.get("expired_fixes") or []}
         dr = {"risk": risk, "checklist": checklist, "model_fixes": model_fixes, "proposed_fixes": proposed,
               "rejected_fixes": rejected,
               "blinding_section_md": self.draft_section(p),
@@ -403,12 +430,26 @@ class ProtocolCoDesigner:
         rec["design_review"] = dr
         rec.event(self.name, f"{reason}: u={risk['u']} ({risk['band']}), expected bias {risk['expected_bias_g']} g, "
                              f"FDA checklist {ok}/{len(CHECKLIST)}, {len(proposed)} fix{'' if len(proposed) == 1 else 'es'} proposed", "decision", M)
+        note, wk = window_note(p), primary_week(p)
+        dr["window_note"] = note or None                       # the UI renders this; the checklist row carries it too
+        if note and dr.get("window_flagged_week") != wk:      # say it once per primary week, not on every re-check
+            dr["window_flagged_week"] = wk
+            rec.event(self.name, f"{note} Noted on the FDA checklist (durability row); change the primary week in "
+                                 "the protocol to run the full trial.", "decision", M)
+        elif not note:
+            dr.pop("window_flagged_week", None)
 
         pending = {a["action"].get("fix") for a in ctx.approvals.pending(M) if a["action"].get("type") == "apply_fix"}
+        held = []
         for fid in proposed:
             if fid in pending or fid in rejected:   # a human already said no: do not ask again
                 continue
+            if fid in expired:                      # expired when dosing started: changes now go through amendments
+                continue
             if fix_satisfied(p, fid) or _fix_in_flight(rec, fid):   # already in the protocol, or approved and about to apply
+                continue
+            if rec.get("enrolled"):                 # dosing has started: design fixes are closed, amendments only
+                held.append(fid)
                 continue
             title, _change, sentence = FIXES[fid]
             ctx.approvals.request(self.name, M, f"Protocol fix: {title}",
@@ -416,6 +457,10 @@ class ProtocolCoDesigner:
                                   "risk model. Approving adds the sentence below, saves a new protocol version and re-checks.",
                                   {"type": "apply_fix", "fix": fid, **protocol_base(rec)},
                                   evidence={"sentence_to_add": sentence})
+        if held:
+            rec.event(self.name, f"participants are enrolled, so {len(held)} design fix{'' if len(held) == 1 else 'es'} "
+                                 f"({', '.join(held)}) not asked as a design change; edit the protocol to propose an "
+                                 "amendment instead", "info", M)
         return dr
 
     def apply_fix(self, rec: TrialRecord, ctx: Ctx, fid: str, approver: str, amendment_site: Optional[str] = None) -> dict:
@@ -704,7 +749,7 @@ class Enroller:
             prior = a.get("prior_psychedelic_use", "never")
             enrolled.append({"id": a["id"], "name": a["name"], "site": site,
                              "stratum": f"{site}|{'naive' if prior == 'never' else 'experienced'}",
-                             "prior_psychedelic_use": prior, "dosing_day": 1 + (i % 20),
+                             "prior_psychedelic_use": prior, "dosing_day": 1 + (i % DOSING_DAYS),
                              "consents": {"checkins": bool(a.get("consents_to_chatbot_checkins")),
                                           "data_sharing": bool(a.get("consents_to_data_sharing"))}})
         counts = ctx.vault.randomise(enrolled, "stratum")    # allocation stays in the vault; we keep counts only
@@ -734,6 +779,25 @@ INSTRUMENTS = [
 ]
 
 
+OUTCOME_TIMEPOINTS = ["baseline", "week 1", "week 3", "week {primary}"]
+OUTCOME_INSTRUMENTS = {   # protocol primary scale -> the outcome instrument in the plan (MADRS is the default)
+    "MADRS": {"id": "MADRS", "who": "rater", "questions": ["MADRS total (0 to 60)"],
+              "timepoints": OUTCOME_TIMEPOINTS, "purpose": "Primary outcome"},
+    "CAPS-5": {"id": "CAPS-5", "who": "rater",
+               "questions": ["CAPS-5 total severity (0 to 80): a clinician interview about how often and how badly "
+                             "PTSD symptoms affected the participant (unwanted memories and nightmares, avoiding "
+                             "reminders, low mood and negative thoughts, feeling on edge or jumpy)"],
+               "timepoints": OUTCOME_TIMEPOINTS, "purpose": "Primary outcome"},
+    "HAM-D": {"id": "HAM-D", "who": "rater", "questions": ["HAM-D total (17 items, 0 to 52)"],
+              "timepoints": OUTCOME_TIMEPOINTS, "purpose": "Primary outcome"},
+}
+
+
+def outcome_instrument(scale: Optional[str]) -> dict:
+    """The outcome instrument for the protocol's primary scale; MADRS when the scale is MADRS or not supported."""
+    return copy.deepcopy(OUTCOME_INSTRUMENTS.get(str(scale or "").strip().upper(), OUTCOME_INSTRUMENTS["MADRS"]))
+
+
 def _timepoint_day(label: str) -> int:
     """Day relative to the participant's dosing day: -1 before randomisation or baseline, 0 dosing day,
     1 the day after, 7 * N for week N."""
@@ -750,11 +814,14 @@ def _timepoint_day(label: str) -> int:
     raise ValueError(f"unknown timepoint label {label!r}")
 
 
-def plan_instruments(primary_week: int) -> List[dict]:
+def plan_instruments(primary_week: int, scale: Optional[str] = None) -> List[dict]:
     """INSTRUMENTS for one protocol: human labels in `timepoints` and, 1:1 with them, integer days relative to
-    the dosing day in `timepoints_days`. '{primary}' becomes the protocol's primary week."""
+    the dosing day in `timepoints_days`. '{primary}' becomes the protocol's primary week. The outcome instrument
+    (MADRS by default) is swapped for the protocol's primary scale, e.g. CAPS-5 for PTSD; its position is kept."""
     out = []
     for ins in INSTRUMENTS:
+        if ins["id"] == "MADRS":
+            ins = outcome_instrument(scale)
         labels = list(dict.fromkeys(t.format(primary=primary_week) for t in ins["timepoints"]))
         d = copy.deepcopy(ins)
         d["timepoints"] = labels
@@ -788,6 +855,7 @@ def rater_ids(enrolled: List[dict], protocol_sites: Optional[List[str]] = None) 
 
 def build_schedule(rec):
     wk = int(rec["protocol"].get("primary_endpoint", {}).get("week", 6))
+    outcome = outcome_instrument(rec["protocol"].get("primary_endpoint", {}).get("scale"))["id"]
     raters = rater_ids(rec["enrolled"], rec["protocol"].get("sites"))          # e.g. R-A1, R-B2
     sched = []
     for i, p in enumerate(rec["enrolled"]):
@@ -801,7 +869,7 @@ def build_schedule(rec):
         add("monitor_debrief", d, "dosing", "UB1-MD")
         add("participant_checkin", d + 1, "dosing", "UB1-PG")
         for w in sorted({1, 3, wk}):
-            add("rater_assessment", d + 7 * w, "dosing", "MADRS+UB1-RG", rater_id=rid, visit_week=w)
+            add("rater_assessment", d + 7 * w, "dosing", f"{outcome}+UB1-RG", rater_id=rid, visit_week=w)
             add("participant_checkin", d + 7 * w, "dosing", "UB1-PG", visit_week=w)
         for w in (8, 12):
             add("followup", d + 7 * w, "postdose", "UB1-FU", visit_week=w)
@@ -816,15 +884,21 @@ class MeasurementPlanner:
             rec.event(self.name, "schedule already exists; not rebuilt", "info", M)
             return rec["schedule"]
         wk = int(rec["protocol"].get("primary_endpoint", {}).get("week", 6))
-        rec["measurement_plan"] = {"standard": "UNBLIND-BLIND-1", "instruments": plan_instruments(wk),
-                                   "primary_week": wk}
+        scale = rec["protocol"].get("primary_endpoint", {}).get("scale")
+        instruments = plan_instruments(wk, scale)
+        outcome = outcome_instrument(scale)["id"]
+        rec["measurement_plan"] = {"standard": "UNBLIND-BLIND-1", "instruments": instruments, "primary_week": wk}
         rec["schedule"] = build_schedule(rec)
         n = len(rec["enrolled"])
         by: Dict[str, int] = {}
         for s in rec["schedule"]:
             by[s["kind"]] = by.get(s["kind"], 0) + 1
         guesses = by.get("participant_checkin", 0) + by.get("rater_assessment", 0)
-        rec.event(self.name, f"built the UNBLIND-BLIND-1 plan ({len(INSTRUMENTS)} instruments, primary week {wk}) and "
+        if outcome != str(scale or "").strip().upper():
+            rec.event(self.name, f"primary scale '{scale}' has no outcome instrument here; using {outcome} as the "
+                                 "default outcome measure", "warn", M)
+        rec.event(self.name, f"built the UNBLIND-BLIND-1 plan ({len(instruments)} instruments, outcome {outcome} at "
+                             f"primary week {wk}) and "
                              f"{len(rec['schedule'])} scheduled tasks for {n} participants "
                              f"({', '.join(f'{k} {v}' for k, v in by.items())}); "
                              f"{round(guesses / n, 1) if n else 0} blinding check-ins per participant", "decision", M)

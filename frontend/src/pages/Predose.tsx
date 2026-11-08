@@ -116,8 +116,8 @@ export default function Predose() {
                 <section className="section">
                   <SectionHead eyebrow="Design review" title="Blinding risk and the FDA checklist" />
                   <div className="grid-pd">
-                    <RiskCard risk={dr?.risk} baseline={dr?.baseline_risk} />
-                    <FdaChecklist items={dr?.checklist ?? []} baselineOk={dr?.baseline_checklist_ok}
+                    <RiskCard risk={dr?.risk} baseline={dr?.baseline_risk} atEnrolment={dr?.risk_at_enrolment} />
+                    <FdaChecklist items={dr?.checklist ?? []} baselineOk={dr?.baseline_checklist_ok} windowNote={dr?.window_note}
                       source={latest ? `protocol v${latest}` : "protocol"} />
                   </div>
                 </section>

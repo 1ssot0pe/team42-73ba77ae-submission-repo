@@ -9,6 +9,7 @@ apply through the volunteer portal).
 """
 from __future__ import annotations
 
+import copy
 import difflib
 from typing import List
 
@@ -20,6 +21,7 @@ from .agents import (CHECKLIST, CRITERIA, FIXES, M, Enroller, MeasurementPlanner
 DEFAULT_PROTOCOL = DATA / "protocols" / "example_psilocybin_trd.md"
 NUMERIC_FIELDS = ("age", "failed_antidepressants", "months_since_last_psychedelic")
 MINUTES_PER_MANUAL_SCREEN = 20      # ASSUMPTION, not a sourced figure
+EXPIRED_REVIEWER = "nobody (dosing started before sign-off)"   # an expired fix has no human signer
 SHORTLIST_RATIONALE = ("Final eligibility is a clinician's decision. Flagged applicants stay out unless you say otherwise "
                        "in the comment ('include flagged' adds those flagged only for medication washout).")
 
@@ -111,6 +113,11 @@ class Module(BaseModule):
             self._apply_edit(rec, ctx, str(action.get("text") or ""), editor,
                              f"amendment by {editor}, approved by {a.get('reviewer')}")
         elif kind in ("apply_fix", "amendment"):
+            if kind == "apply_fix" and self._expired(rec, a, ctx):      # second guard: never apply an expired fix
+                rec.event(self.codesigner.name, f"fix '{action.get('fix')}' was expired: dosing started before it was "
+                                                "signed, so it is not applied; edit the protocol to propose an "
+                                                "amendment instead", "warn", M)
+                return
             if not approved:
                 rec.event(self.codesigner.name, f"{kind.replace('_', ' ')} '{action.get('fix')}' rejected by "
                                                 f"{a.get('reviewer')}; protocol unchanged"
@@ -141,7 +148,35 @@ class Module(BaseModule):
                     f"and the trial stays blocked until a clinician approves a shortlist. " + SHORTLIST_RATIONALE)
                 return
             self.enroller.run(rec, ctx, a)
+            if rec.get("enrolled"):
+                self._expire_fixes(rec, ctx)
             self.planner.run(rec, ctx)
+
+    # ------------------------------------------------------------------ enrolment closes the design stage
+    def _expire_fixes(self, rec: TrialRecord, ctx: Ctx) -> None:
+        """Dosing starts once people are enrolled: design fixes nobody signed expire (not approved, not applied), and
+        the design risk is frozen as risk_at_enrolment. Later changes go through protocol amendments."""
+        dr = rec.setdefault("design_review", {})
+        if "risk_at_enrolment" not in dr:
+            dr["risk_at_enrolment"] = copy.deepcopy(dr.get("risk"))
+        expired = dr.setdefault("expired_fixes", [])
+        for a in ctx.approvals.pending(M):        # the queue's own dicts: a new status takes them out of pending()
+            action = a.get("action") or {}
+            if action.get("type") != "apply_fix":
+                continue
+            a.update(status="expired", reviewer=EXPIRED_REVIEWER, decided_day=rec["day"],
+                     comment="expired: dosing started")
+            expired.append({"id": a["id"], "fix": action.get("fix"), "day": rec["day"]})
+            rec.event(self.codesigner.name, f"fix '{action.get('fix')}' expired: dosing started before anyone signed it, "
+                                            "so it was not applied. Edit the protocol to propose an amendment instead",
+                      "decision", M)
+
+    @staticmethod
+    def _expired(rec: TrialRecord, a: dict, ctx: Ctx) -> bool:
+        """Was this apply_fix approval expired at enrolment? Checks the payload, the queue's copy and our own log."""
+        live = ctx.approvals.get(a.get("id")) or {}
+        ids = {e.get("id") for e in (rec.get("design_review") or {}).get("expired_fixes") or []}
+        return a.get("status") == "expired" or live.get("status") == "expired" or a.get("id") in ids
 
     # ------------------------------------------------------------------ dosing signals
     @staticmethod

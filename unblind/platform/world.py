@@ -40,6 +40,23 @@ FREE_TEXT_PTSD = [
 ]
 
 
+def _match_site(name: str, known: List[str]) -> str:
+    """`name` as it appears in `known`: exact (ignoring case), then the same 'Site X' prefix, then the same city
+    in brackets. Unmatched names are returned unchanged."""
+    def prefix(s):
+        return s.split(" (")[0].strip().lower()
+
+    def city(s):
+        return s.split("(", 1)[1].rstrip(")").strip().lower() if "(" in s else ""
+    low = name.strip().lower()
+    for test in (lambda k: k.strip().lower() == low, lambda k: prefix(k) == prefix(name),
+                 lambda k: bool(city(name)) and city(k) == city(name)):
+        hit = next((k for k in known if test(k)), None)
+        if hit:
+            return hit
+    return name
+
+
 @dataclass
 class WorldConfig:
     seed: int = 42
@@ -58,6 +75,29 @@ class World:
         self.rng = random.Random(self.cfg.seed)
         self.people: Dict[str, dict] = {}
         self._baseline: Dict[str, float] = {}
+
+    # ------------------------------------------------------------- planted events
+    def place_drift(self, protocol_sites: List[str], enrolled_sites: Optional[List[str]] = None) -> str:
+        """Plant the rater drift at the protocol's second site (its first if it lists only one), so it happens where
+        participants are. The name is matched onto the site names participants are enrolled under (exact, then by
+        the 'Site X' prefix or the city), then onto SITES; with no protocol sites the default is kept. Returns the
+        drift site. Called by the master before the first participant enters the simulator."""
+        sites = [str(s).strip() for s in protocol_sites or [] if str(s).strip()]
+        if not sites:
+            return self.cfg.drift_site
+        want = sites[1] if len(sites) > 1 else sites[0]
+        enrolled = list(dict.fromkeys(str(s) for s in (enrolled_sites or []) if s))
+        known = enrolled + SITES
+        self.cfg.drift_site = _match_site(want, known)
+        # missing data goes to a different site where people are, so the two planted problems stay separable;
+        # the default run (drift at Site B, missing data at Site C) is unchanged
+        here = enrolled or [_match_site(s, known) for s in sites]
+        if self.cfg.missing_site == self.cfg.drift_site or self.cfg.missing_site not in here:
+            other = [s for s in dict.fromkeys(_match_site(s, known) for s in sites + here) if s in here
+                     and s != self.cfg.drift_site]
+            if other:
+                self.cfg.missing_site = other[0]
+        return self.cfg.drift_site
 
     # ------------------------------------------------------------- recruitment
     def applicants(self, n: int, start_id: int = 1, indication: Optional[str] = None) -> List[dict]:
