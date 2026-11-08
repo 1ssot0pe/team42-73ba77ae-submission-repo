@@ -1,0 +1,28 @@
+{
+  "id": "J9",
+  "title": "Drift action approved vs rejected",
+  "env": "preview-j9-wait",
+  "base_url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app",
+  "passed": true,
+  "error": null,
+  "duration_s": 85.2,
+  "timings": {
+    "create_trial": 0.82,
+    "decide:confirm shortlist": 0.33,
+    "play_to_drift:approved": 24.52,
+    "decide:raters to remote": 0.62,
+    "play_to_drift:rejected": 27.27
+  },
+  "failures": [],
+  "notes": [
+    "[approved] drift decided at day 49; pending slips after +20 days: ['Add to reference data: MAPP1 (Mitchell 2021)', 'Site C: add SMS reminders and a coordinator call']",
+    "[rejected] drift decided at day 49; pending slips after +20 days: ['Add to reference data: MAPP1 (Mitchell 2021)', 'Site C: add SMS reminders and a coordinator call']"
+  ],
+  "console_errors": [],
+  "console_error_count": 0,
+  "network_failures": [],
+  "network_failure_count": 0,
+  "api_calls": 492,
+  "toasts": [],
+  "shots": []
+}

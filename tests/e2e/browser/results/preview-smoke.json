@@ -1,0 +1,47 @@
+{
+  "base_url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app",
+  "env": "preview-smoke",
+  "at": "2026-11-08 13:34:18",
+  "results": [
+    {
+      "id": "J15",
+      "title": "Every nav link, including Evidence engine",
+      "env": "preview-smoke",
+      "base_url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app",
+      "passed": false,
+      "error": null,
+      "duration_s": 10.2,
+      "timings": {
+        "create_trial": 1.33
+      },
+      "failures": [
+        {
+          "t": 10.18,
+          "msg": "Evidence engine link points at http://localhost:8501, which only works on the developer's machine",
+          "shot": "docs/testing/screenshots/preview-smoke-J15-1.png",
+          "url": "https://parallax-5daiofb6w-dannybudiada-7381s-projects.vercel.app/dosing"
+        },
+        {
+          "t": 10.24,
+          "msg": "Evidence engine tab did not load (url chrome-error://chromewebdata/, title '')",
+          "shot": "docs/testing/screenshots/preview-smoke-J15-2.png",
+          "url": "chrome-error://chromewebdata/"
+        }
+      ],
+      "notes": [
+        "Evidence engine href: http://localhost:8501",
+        "Evidence engine tab url after click: chrome-error://chromewebdata/"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 29,
+      "toasts": [],
+      "shots": [
+        "docs/testing/screenshots/preview-smoke-J15-1.png (Evidence engine link points at http://lo)",
+        "docs/testing/screenshots/preview-smoke-J15-2.png (Evidence engine tab did not load (url ch)"
+      ]
+    }
+  ]
+}
