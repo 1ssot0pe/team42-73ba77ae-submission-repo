@@ -15,7 +15,7 @@
 .rk-value__band--good .rk-value__dot { background: var(--status-good-fg); }
 .rk-value__band--watch .rk-value__dot { background: var(--status-watch-fg); }
 .rk-value__band--alert .rk-value__dot { background: var(--status-alert-fg); }
-.rk-value__g { flex-basis: 100%; font: 400 13px/1.5 var(--font-body); color: var(--color-smoke); }
+.rk-value__g { flex-basis: 100%; font: 400 13px/1.5 var(--font-body); color: var(--chart-text); }
 
 /* ---------------------------------------------------------------- the line */
 .rk-line { display: flex; flex-direction: column; gap: 0; padding: 0 8px; min-width: 0; }
@@ -23,7 +23,7 @@
 .rk-band {
   position: absolute; top: 0; text-align: center; overflow: hidden; white-space: nowrap; text-overflow: clip;
   display: flex; flex-direction: column; align-items: center;
-  font: 400 12px/1.4 var(--font-body); color: var(--color-smoke);
+  font: 400 12px/1.4 var(--font-body); color: var(--chart-text);
 }
 .rk-band__range { font-size: 11px; line-height: 1.3; }
 .rk-track { position: relative; height: calc(60px + var(--rk-below, 0px)); }
@@ -72,10 +72,10 @@
 .rk-l--now .rk-l__val { font-weight: 600; }
 .rk-l--start { --rk-tx: -8px; align-items: flex-start; }
 .rk-l--end { --rk-tx: calc(-100% + 8px); align-items: flex-end; }
-.rk-l__text { color: var(--color-smoke); }
+.rk-l__text { color: var(--chart-text); }
 .rk-l--now .rk-l__text { color: var(--color-ink); }
 .rk-l__val { font-variant-numeric: tabular-nums; }
-.rk-l__num { font: 600 11px/1 var(--font-body); color: var(--color-smoke); }
+.rk-l__num { font: 600 11px/1 var(--font-body); color: var(--chart-text); }
 .rk--compact .rk-l--trail { top: calc(20px + var(--rk-off, 0px)); }
 
 /* tooltip in words: hover or focus (tap on touch), closes on blur or scroll */
@@ -92,7 +92,7 @@
 
 .rk-ends {
   display: flex; justify-content: space-between; gap: var(--space-3); margin-top: var(--space-2);
-  font: 400 12px/1.4 var(--font-body); color: var(--color-smoke); font-variant-numeric: tabular-nums;
+  font: 400 12px/1.4 var(--font-body); color: var(--chart-text); font-variant-numeric: tabular-nums;
 }
 .rk-ends > span:last-child { text-align: right; }
 

@@ -2,19 +2,19 @@
 .pd-chart { position: relative; width: 100%; min-width: 0; }
 .pd-svg { display: block; overflow: visible; font-family: var(--font-body); font-variant-numeric: tabular-nums; }
 .pd-svg text { font-family: var(--font-body); }
-.pd-tick { font-size: 11px; fill: var(--color-smoke); }
-.pd-axis-title { font-size: 12px; fill: var(--color-smoke); }
+.pd-tick { font-size: 11px; fill: var(--chart-text); }
+.pd-axis-title { font-size: 12px; fill: var(--chart-text); }
 .pd-dir { font-size: 12px; fill: var(--color-graphite); font-weight: 600; }
 .pd-ref { font-size: 12px; fill: var(--color-graphite); paint-order: stroke; stroke: var(--color-taupe); stroke-width: 4px; stroke-linejoin: round; }
 .pd-rowlabel { font-size: 13px; fill: var(--color-ink); }
 .pd-est { font-size: 13px; fill: var(--color-ink); }
 .pd-val { font-size: 12px; fill: var(--color-graphite); paint-order: stroke; stroke: var(--color-taupe); stroke-width: 4px; stroke-linejoin: round; }
-.pd-n { font-size: 11px; fill: var(--color-smoke); }
+.pd-n { font-size: 11px; fill: var(--chart-text); }
 .pd-n--low { fill: var(--color-ink); font-weight: 600; }
 .pd-ev { font-size: 11px; fill: var(--color-graphite); paint-order: stroke; stroke: var(--color-taupe); stroke-width: 4px; stroke-linejoin: round; }
 .pd-panel-title { font-size: 13px; font-weight: 600; fill: var(--color-ink); }
 .pd-panel-title--flag { fill: var(--color-ink); }
-.pd-too-few { font-size: 12px; fill: var(--color-smoke); }
+.pd-too-few { font-size: 12px; fill: var(--chart-text); }
 .pd-point, .pd-hit { cursor: pointer; outline: none; }
 .pd-ring { fill: none; stroke: none; pointer-events: none; }
 /* Keyboard focus on a data mark: a 2px graphite ring (matches [data-pointtip]:focus-visible in charts.css). */
