@@ -10,10 +10,18 @@
  *   overlap and never sit on data. Reserve top margin for them: eventsTopMargin(events.length).
  *   Use as <Customized component={(p) => <EventMarkers events={...} {...p} />} /> inside a recharts chart, or
  *   pass xScale/top/bottom yourself in hand-written SVG.
+ * usePointTip + PointTip + pointTipHandlers: the same sentence tooltip for hand-written SVG. Hover, focus or tap a mark
+ *   to open it; it closes on leave, blur, Escape, a tap outside any mark, or scroll (no sticky tooltip on phones).
+ *     const tip = usePointTip();
+ *     <div className="chart-svgwrap">            (position: relative; .chart__body already is)
+ *       <svg>...<g tabIndex={0} {...pointTipHandlers(tip, "Bias-adjusted: −0.07, ...", cx, cy)}>...</g></svg>
+ *       <PointTip tip={tip.tip} />
+ *     </div>
+ *   x and y are px inside the positioned wrapper (for a viewBox SVG, scale by clientWidth / viewBox width).
  * endpointDot(lastIndex): a recharts `dot` renderer that draws only the emphasised last point.
  * ChartFrame and its types are re-exported from ChartFrame.tsx so old imports keep working.
  */
-import type { ReactNode } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { chartTokens } from "./chartTheme";
 import { formatDayTick } from "./chartFormat";
 import { formatNumber } from "./format";
@@ -184,6 +192,62 @@ export function EventMarkers({
         </text>
       ))}
     </g>
+  );
+}
+
+export interface PointTipState { x: number; y: number; text: string }
+export interface PointTipApi {
+  tip: PointTipState | null;
+  show: (x: number, y: number, text: string) => void;
+  hide: () => void;
+}
+
+/** State for a hand-written SVG tooltip; closes on a tap outside any mark, on scroll and on Escape. */
+export function usePointTip(): PointTipApi {
+  const [tip, setTip] = useState<PointTipState | null>(null);
+  const show = useCallback((x: number, y: number, text: string) => setTip({ x, y, text }), []);
+  const hide = useCallback(() => setTip(null), []);
+  useEffect(() => {
+    if (!tip) return;
+    const onDown = (e: PointerEvent) => {
+      const t = e.target;
+      if (!(t instanceof Element) || !t.closest("[data-pointtip]")) setTip(null);
+    };
+    const onScroll = () => setTip(null);
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setTip(null); };
+    document.addEventListener("pointerdown", onDown, true);
+    window.addEventListener("scroll", onScroll, true);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("pointerdown", onDown, true);
+      window.removeEventListener("scroll", onScroll, true);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [tip]);
+  return { tip, show, hide };
+}
+
+/** Event handlers for a focusable SVG mark that opens the tooltip in words. Also sets aria-label to the sentence. */
+export function pointTipHandlers(api: PointTipApi, text: string, x: number, y: number) {
+  return {
+    "data-pointtip": "",
+    "aria-label": text,
+    role: "img" as const,
+    onPointerEnter: (e: { pointerType?: string }) => { if (e.pointerType === "mouse") api.show(x, y, text); },
+    onPointerLeave: (e: { pointerType?: string }) => { if (e.pointerType === "mouse") api.hide(); },
+    onClick: () => api.show(x, y, text),
+    onFocus: () => api.show(x, y, text),
+    onBlur: () => api.hide(),
+  };
+}
+
+/** The tooltip box for usePointTip, positioned above (x, y) inside a position: relative wrapper. */
+export function PointTip({ tip }: { tip: PointTipState | null }) {
+  if (!tip) return null;
+  return (
+    <div className="chart-tooltip chart-pointtip" role="status" style={{ left: tip.x, top: tip.y }}>
+      <p className="chart-tooltip__text">{tip.text}</p>
+    </div>
   );
 }
 

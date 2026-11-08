@@ -4,6 +4,13 @@ Append-only. Each builder writes under its own heading (docs/visuals-spec.md 4.6
 
 ## Requests to CORE
 
+### CORE replies
+
+(Replies here rather than inline, so the merge of each builder's own lines does not conflict.)
+
+- STUDIO, `ChartFrame` `headingLevel?: 3 | 4`: done. Default 3; pass 4 under a section h3.
+- STUDIO, tooltip helper for hand-written SVG: done. `usePointTip()`, `pointTipHandlers(tip, text, x, y)` and `<PointTip tip={tip.tip} />` from `components/shared` (ChartParts.tsx). Hover (mouse), focus or tap opens it; mouse leave, blur, Escape, a tap outside any `[data-pointtip]` mark or any scroll closes it. x, y are px inside a `position: relative` wrapper (`.chart__body` already is, or use `.chart-svgwrap`); the box sits centred above the point and uses `.chart-tooltip`. The handlers also set `role="img"` and `aria-label` to the sentence on the mark. `PointTip.tsx` can be dropped in favour of it, or kept; either looks the same.
+
 ## Requests to teammates
 
 ## CORE API notes
@@ -12,7 +19,7 @@ All of spec section 4 is implemented with the names and types given there. Addit
 (all backwards compatible with the spec, nothing removed or renamed):
 
 - `ChartTooltip`: `render` is optional (without it the legacy "name value" rows are shown). Use `render` for every new chart; it receives the hovered data row (`payload[0].payload`) and returns one sentence. Return `""` to show nothing.
-- `EventMarkers`: each event is `{ day, label, detected? }`. Pass the label without the day: the component appends "D47" itself ("Alert" becomes "Alert D47"). `detected: true` adds the orange 4px tick on the axis. Inside recharts use `<Customized component={(p) => <EventMarkers events={ev} xAxisMap={p.xAxisMap} offset={p.offset} />} />`; in hand-written SVG pass `xScale`, `top`, `bottom`. Labels in the right half anchor to the left of their rule. Optional `lineHeight` (default 13).
+- `EventMarkers`: each event is `{ day, label, detected? }`. Pass the label without the day: the component appends "D47" itself ("Alert" becomes "Alert D47"). `detected: true` adds the orange 4px tick on the axis. Inside recharts use `<Customized component={(p) => <EventMarkers events={ev} xAxisMap={p.xAxisMap} offset={p.offset} />} />`; in hand-written SVG pass `xScale`, `top`, `bottom`. Labels sit in rows above the plot area (never on the data), placed by their measured width so same-day and near-day events stack; one rule per day. Reserve the room with `chartMargin.top + eventsTopMargin(events.length)`. Labels in the right half end at their rule. Optional `lineHeight` (default 13).
 - `EndLabel`: optional `anchor` ("start" default, "middle", "end") and `weight` (600 default, 400 for context series).
 - `ChartFrame`: also exports `ChartDataTable` (the drawer table, reusable) and `LegendItem`. Cells print null as "n/a" and negatives with the Unicode minus. Columns with `derived: true` get "(derived)" in the header, and the drawer shows `note` (or a default sentence) under the table.
 - `chartTheme`: extra presets `flagStyle()` (orange solid, the group of interest), `chanceLine` (graphite dashed 4 4), `thresholdLine` (graphite dotted 1 3), `zeroLine` (graphite solid 1px), `eventLine` (= `driftMarker`, graphite 1px). `refLabel(text, position)` now carries a halo. Legacy `chartColors.secondary/threshold/drift` are no longer orange (smoke, graphite, graphite).
