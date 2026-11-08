@@ -1,30 +1,28 @@
-/* Surfaces (design-v2.md Surfaces). Glass is used only for the top nav (.glass-nav).
-   Every other .glass surface is flat: canvas background, a hairline at most, no blur, no shadow. */
-.glass-nav {
-  position: relative;
-  background: var(--glass-fill-strong);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
-  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
-  isolation: isolate;
-}
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .glass-nav { background: var(--color-eggshell); }
-}
-@media (prefers-reduced-transparency: reduce) {
-  .glass-nav { background: var(--color-eggshell); backdrop-filter: none; -webkit-backdrop-filter: none; }
-}
-
-/* Legacy glass classes, now flat. Kept so existing markup still lays out. */
+/* Liquid glass (design.md Section 4). Recipe copied exactly. */
 .glass {
   position: relative;
-  background: var(--color-eggshell);
-  box-shadow: inset 0 0 0 1px var(--color-stone);
-  border-radius: var(--radius-sheet);
+  background: var(--glass-fill);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  box-shadow: var(--glass-rim), var(--glass-edge);
+  border-radius: var(--radius-glass);
+  isolation: isolate;
 }
-.glass--float, .glass--strong { background: var(--color-eggshell); }
+.glass::before {               /* specular highlight */
+  content: ""; position: absolute; inset: 0; border-radius: inherit;
+  background: var(--glass-specular); pointer-events: none; z-index: -1;
+}
+.glass--float { box-shadow: var(--glass-rim), var(--glass-edge), var(--glass-depth); }
+.glass--strong { background: var(--glass-fill-strong); }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass { background: var(--glass-fill-strong); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .glass { background: var(--color-eggshell); backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
 
-/* Panels enter with a short fade (design.md Section 10). */
+/* Glass panels enter with a short fade and scale (design.md Section 10). */
 @media (prefers-reduced-motion: no-preference) {
   .glass--enter { animation: glass-enter var(--dur-enter) var(--ease-out) both; }
 }
-@keyframes glass-enter { from { opacity: 0; } to { opacity: 1; } }
+@keyframes glass-enter { from { opacity: 0; transform: scale(0.985); } to { opacity: 1; transform: none; } }

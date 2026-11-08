@@ -31,10 +31,10 @@ function renderMd(md: string): ReactNode[] {
 
 export function DraftedSection({ md }: { md: string | undefined }) {
   return (
-    <section className="st-block drafted" aria-labelledby="drafted-title">
+    <section className="paper drafted" aria-labelledby="drafted-title">
       <div className="stack stack--tight">
-        <div className="st-label">Drafted by the co-designer</div>
-        <h2 className="st-subtitle" id="drafted-title">Blinding section</h2>
+        <div className="eyebrow">Drafted by the co-designer</div>
+        <h2 className="t-heading-sm" id="drafted-title">Blinding section</h2>
       </div>
       {md ? <div className="drafted__body">{renderMd(md)}</div>
         : <p className="t-body-sm c-smoke">The drafted section appears after the first design review.</p>}

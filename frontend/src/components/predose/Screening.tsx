@@ -18,10 +18,10 @@ export function ScreeningFunnel({ funnel }: { funnel: Funnel | null | undefined 
   const f = funnel ?? { applied: 0, auto_eligible: 0, auto_excluded: 0, needs_clinician: 0, enrolled: 0 };
   const max = Math.max(1, f.applied);
   return (
-    <section className="st-block funnel" aria-labelledby="funnel-title">
+    <section className="sheet funnel" aria-labelledby="funnel-title">
       <div className="stack stack--tight">
-        <div className="st-label">Pre-screening agent</div>
-        <h2 className="st-subtitle" id="funnel-title">Screening funnel</h2>
+        <div className="eyebrow">Pre-screening agent</div>
+        <h2 className="t-heading-sm" id="funnel-title">Screening funnel</h2>
       </div>
       <ol className="funnel__stages" role="list">
         {STAGES.map((s) => {
@@ -29,7 +29,7 @@ export function ScreeningFunnel({ funnel }: { funnel: Funnel | null | undefined 
           const pct = (100 * n) / max;
           return (
             <li key={s.key} className={`funnel__stage funnel__stage--${s.tone}`}>
-              <span className="st-label">{s.label}</span>
+              <span className="eyebrow">{s.label}</span>
               <div className="funnel__row">
                 <div className="funnel__track" aria-hidden="true">
                   <span className="funnel__bar" style={{ width: `${Math.max(pct, n > 0 ? 1 : 0)}%` }} />
@@ -52,7 +52,7 @@ export function FlaggedLedger({ applicants }: { applicants: Applicant[] }) {
   const flagged = applicants.filter((a) => a.screening?.decision === "needs_clinician");
   const rows = flagged.slice().reverse().map((a) => [
     <span className="flagged__who">
-      <span className="t-id">{a.id}</span>
+      <span className="num">{a.id}</span>
       <span className="c-graphite">{a.name}</span>
       {a.source === "portal" ? <StatusPill tone="outline">Portal</StatusPill> : null}
     </span>,

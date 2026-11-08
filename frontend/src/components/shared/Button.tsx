@@ -1,5 +1,5 @@
 /**
- * Button (design-v2.md Controls). Filled is the one ink pill per page; outline and ghost are quiet text buttons.
+ * Button (design.md 8.17). Pill buttons, never coloured.
  * Props: variant "filled" (the one primary action per region) | "outline" (secondary) | "ghost" (inline, nav);
  *        size "md" (36px, default) | "dock" (40px) | "sm" (30px);
  *        busy (disables and shows busyLabel, default "Agents working…"); plus every native <button> prop.

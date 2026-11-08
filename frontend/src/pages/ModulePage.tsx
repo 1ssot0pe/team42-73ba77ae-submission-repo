@@ -1,16 +1,18 @@
 /**
- * Generic stage content for dosing and follow-up (design v2). Embedded inside the project workspace,
- * which supplies the heading, trial clock and stepper, so no page chrome is drawn here.
+ * Generic module page for dosing and post-dosing (design.md Section 9, plan.md Phase 8).
  * Rendered entirely from the module's view model (GET /modules/{module}/view), refetched on every trial tick:
- *   stub note -> bottlenecks -> one readout row -> agent notes -> charts -> approvals -> forms -> tables -> agent log.
+ *   STUB band (when the module is a placeholder) -> header -> bottleneck cards -> readouts -> cards -> charts
+ *   -> approval slips for this module -> forms as paper documents -> tables -> agent log for this module.
  * Every view key is optional; normalise.ts reads them defensively.
  */
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { api, errorText } from "../api";
 import { useTrial } from "../trial";
 import type { ViewModel } from "../types";
 import {
-  AgentLog, ApprovalInbox, BottleneckCards, EmptyState, LoadingHairline, ReadoutGrid, loadBottlenecks, moduleLabel,
+  AgentLog, ApprovalInbox, BottleneckCards, EmptyState, LoadingHairline, ReadoutGrid, SpecimenBand, buttonClass,
+  dotJoin, formatDay, loadBottlenecks, moduleLabel,
 } from "../components/shared";
 import {
   ModuleChart, ViewCards, ViewForm, ViewTables, readCards, readCharts, readForms, readKpis, readTables,
@@ -75,98 +77,113 @@ export default function ModulePage({ module }: ModulePageProps) {
 
   if (!trialId) {
     return (
-      <div className="stage-page mpage">
-        <EmptyState
-          title="No trial yet"
-          message={`Launch the trial from this project to start the agents. The ${label.toLowerCase()} stage fills in as the simulated days pass.`}
-        />
-      </div>
+      <>
+        <SpecimenBand />
+        <main className="page">
+          <header className="section mpage__head">
+            <div className="eyebrow">{label}</div>
+            <h1 className="t-display">{label}</h1>
+          </header>
+          <EmptyState
+            title="No trial yet"
+            message={`Create a trial in Mission control to start the agents. The ${label.toLowerCase()} page fills in as the simulated days pass.`}
+            action={<Link className={buttonClass("filled")} to="/">Go to Mission control</Link>}
+          />
+        </main>
+      </>
     );
   }
 
   return (
-    <div className="stage-page mpage">
+    <>
+      <SpecimenBand />
+      {isStub ? (
+        <SpecimenBand
+          variant="stub"
+          label="STUB MODULE"
+          message={`This ${label.toLowerCase()} module is a labelled STUB. It does the minimum so the trial runs end to end.`}
+        />
+      ) : null}
       <LoadingHairline active={loading && !view} />
-      <div className="st-intro">
-        {title !== label ? <h2 className="st-title">{title}</h2> : null}
-        {isStub ? (
-          <p className="st-status"><span className="st-dot st-dot--watch" aria-hidden="true" />
-            Stub module. It does the minimum so the trial runs end to end.</p>
+      <main className="page">
+        <header className="section mpage__head">
+          <div className="eyebrow">
+            {dotJoin(label, trialId, state ? formatDay(state.day) : null, isStub ? "STUB" : null, "SYNTHETIC")}
+          </div>
+          <h1 className="t-display">{title}</h1>
+          {state ? (
+            <p className="t-body c-smoke mpage__lede">
+              Day <span className="num">{state.day}</span> of <span className="num">{state.close_day}</span>, phase {state.phase}.
+              {state.blocked ? ` Blocked: ${state.blocked}` : ""}
+            </p>
+          ) : null}
+        </header>
+
+        {error && !view ? (
+          <EmptyState title="View not available" message={`The ${label.toLowerCase()} view could not be loaded: ${error}. Check that the backend is running, then reload.`} />
         ) : null}
-        {state?.blocked ? (
-          <p className="st-status"><span className="st-dot st-dot--alert" aria-hidden="true" />Blocked: {state.blocked}</p>
+        {view?.error ? <EmptyState title="View not available" message={String(view.error)} /> : null}
+
+        <section className="section" aria-label="Bottlenecks">
+          <BottleneckCards module={module} />
+        </section>
+
+        <section className="section" aria-labelledby="m-readouts">
+          <div className="section__head">
+            <h2 id="m-readouts" className="t-heading-sm">Readouts</h2>
+            <span className="t-label c-ash">Quantified impact</span>
+          </div>
+          <ReadoutGrid kpis={model.kpis} empty={view ? "This module reports no readouts yet." : "Loading readouts."} />
+        </section>
+
+        {model.cards.length > 0 ? (
+          <section className="section" aria-labelledby="m-cards">
+            <div className="section__head">
+              <h2 id="m-cards" className="t-heading-sm">What the agents see</h2>
+              <span className="t-label c-ash"><span className="num">{model.cards.length}</span> {model.cards.length === 1 ? "note" : "notes"}</span>
+            </div>
+            <ViewCards cards={model.cards} />
+          </section>
         ) : null}
-      </div>
 
-      {error && !view ? (
-        <EmptyState title="View not available" message={`The ${label.toLowerCase()} view could not be loaded: ${error}. Check that the backend is running, then reload.`} />
-      ) : null}
-      {view?.error ? <EmptyState title="View not available" message={String(view.error)} /> : null}
-
-      <section className="st-section st-section--first" aria-label="Bottlenecks and readouts">
-        <BottleneckCards module={module} />
-        <ReadoutGrid kpis={model.kpis} empty={view ? "This module reports no readouts yet." : "Loading readouts."} />
-      </section>
-
-      {model.cards.length > 0 ? (
-        <section className="st-section" aria-labelledby="m-cards">
-          <div className="st-head">
-            <div className="st-head__text">
-              <h2 id="m-cards" className="st-title">What the agents see</h2>
-              <p className="st-label"><span className="num">{model.cards.length}</span> {model.cards.length === 1 ? "note" : "notes"}</p>
+        {model.charts.length > 0 ? (
+          <section className="section" aria-labelledby="m-charts">
+            <div className="section__head">
+              <h2 id="m-charts" className="t-heading-sm">Charts</h2>
+              <span className="t-label c-ash">Synthetic data</span>
             </div>
-          </div>
-          <ViewCards cards={model.cards} />
-        </section>
-      ) : null}
-
-      {model.charts.length > 0 ? (
-        <section className="st-section" aria-labelledby="m-charts">
-          <div className="st-head">
-            <div className="st-head__text">
-              <h2 id="m-charts" className="st-title">Charts</h2>
-              <p className="st-label">Synthetic data</p>
+            <div className="mcharts">
+              {model.charts.map((c, i) => <ModuleChart key={`${c.title}-${i}`} chart={c} />)}
             </div>
-          </div>
-          <div className="mcharts">
-            {model.charts.map((c, i) => <ModuleChart key={`${c.title}-${i}`} chart={c} />)}
-          </div>
-        </section>
-      ) : null}
+          </section>
+        ) : null}
 
-      <section className="st-section" aria-label="Approvals">
-        <ApprovalInbox module={module} title="Approvals" />
-      </section>
+        <ApprovalInbox module={module} title={`${label} approvals`} />
 
-      {model.forms.length > 0 ? (
-        <section className="st-section" aria-labelledby="m-forms">
-          <div className="st-head">
-            <div className="st-head__text">
-              <h2 id="m-forms" className="st-title">Act on the trial</h2>
-              <p className="st-label">Synthetic participants</p>
+        {model.forms.length > 0 ? (
+          <section className="section" aria-labelledby="m-forms">
+            <div className="section__head">
+              <h2 id="m-forms" className="t-heading-sm">Act on the trial</h2>
+              <span className="t-label c-ash">Synthetic participants</span>
             </div>
-          </div>
-          <div className="mforms">
-            {model.forms.map((f) => <ViewForm key={f.id} module={module} form={f} />)}
-          </div>
-        </section>
-      ) : null}
-
-      {model.tables.length > 0 ? (
-        <section className="st-section" aria-labelledby="m-tables">
-          <div className="st-head">
-            <div className="st-head__text">
-              <h2 id="m-tables" className="st-title">Ledgers</h2>
-              <p className="st-label"><span className="num">{model.tables.length}</span> {model.tables.length === 1 ? "table" : "tables"}</p>
+            <div className="mforms">
+              {model.forms.map((f) => <ViewForm key={f.id} module={module} form={f} />)}
             </div>
-          </div>
-          <ViewTables tables={model.tables} />
-        </section>
-      ) : null}
+          </section>
+        ) : null}
 
-      <section className="st-section">
-        <AgentLog module={module} title="Agent log" />
-      </section>
-    </div>
+        {model.tables.length > 0 ? (
+          <section className="section" aria-labelledby="m-tables">
+            <div className="section__head">
+              <h2 id="m-tables" className="t-heading-sm">Ledgers</h2>
+              <span className="t-label c-ash"><span className="num">{model.tables.length}</span> {model.tables.length === 1 ? "table" : "tables"}</span>
+            </div>
+            <ViewTables tables={model.tables} />
+          </section>
+        ) : null}
+
+        <AgentLog module={module} title={`${label} agent log`} />
+      </main>
+    </>
   );
 }

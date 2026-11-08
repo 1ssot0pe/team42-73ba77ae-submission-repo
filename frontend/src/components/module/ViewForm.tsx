@@ -1,5 +1,5 @@
 /**
- * ViewForm (design.md 8.18): a module form as a flat section with generic inputs
+ * ViewForm (design.md 8.18): a module form as an L1b paper document with generic inputs
  * (text, number, select, textarea, checkbox). Submit calls api.action(trialId, module, form.action, values),
  * then adopt(res.state) and a toast with result.message, or the error when ok is false.
  * The last result stays printed under the button, because some actions answer with a follow-up question.
@@ -65,10 +65,10 @@ export function ViewForm({ module, form }: ViewFormProps) {
   const fid = (name: string) => `mf-${module}-${form.id}-${name}`;
 
   return (
-    <form className="mform" onSubmit={submit} aria-label={form.title}>
+    <form className="paper mform" onSubmit={submit} aria-label={form.title}>
       <div className="mform__head">
+        <div className="eyebrow">Form · {form.action.replace(/_/g, " ")}</div>
         <h3 className="mform__title">{form.title}</h3>
-        <p className="st-label">Action: {form.action.replace(/_/g, " ")}</p>
         {form.description ? <p className="mform__desc">{form.description}</p> : null}
       </div>
       <div className="mform__fields">
@@ -110,7 +110,7 @@ export function ViewForm({ module, form }: ViewFormProps) {
         })}
       </div>
       <div className="mform__foot">
-        <Button type="submit" variant="outline" busy={busy} busyLabel="Agents working…" disabled={!trialId}>
+        <Button type="submit" variant="filled" busy={busy} busyLabel="Agents working…" disabled={!trialId}>
           {form.submitLabel}
         </Button>
         {result ? (
