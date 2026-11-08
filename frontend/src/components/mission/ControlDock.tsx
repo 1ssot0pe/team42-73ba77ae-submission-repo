@@ -1,6 +1,6 @@
 /**
  * ControlDock (design.md 8.4, L3 floating glass pill at the bottom centre).
- * Left: Next day, +1 week, Play / Pause (2 days every 350 ms; stops when blocked, closed, on error, on a new
+ * Left: Next day, +1 week, Play / Pause (1 day every 350 ms; stops when blocked, closed, on error, on a new
  * trial or on unmount: the useRef loop from plan.md 6.2), then the Auto-approve (demo) switch.
  * Right: FDA report status (signed seal or the server's label, from state.report_status when present), trial id, Gemini on/off, module real/stub status and New trial. Wraps to rows on phones.
  * Publishes its height as --dock-h on <html> so the page and toasts keep clear of it.
@@ -15,7 +15,7 @@ import { ReportStatusChip } from "./ReportStatus";
 import { isSigned, signedText } from "./reportText";
 import { useElementSize } from "./useElementSize";
 
-const PLAY_DAYS = 2;
+const PLAY_DAYS = 1; // Play advances one day per step
 const PLAY_MS = 350;
 
 export function ControlDock({ state }: { state: TrialState }) {
