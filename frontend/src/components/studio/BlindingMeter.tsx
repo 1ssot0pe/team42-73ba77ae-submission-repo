@@ -1,7 +1,7 @@
 /**
  * BlindingMeter (blinding-meter): the unblinding u on a 0 to 1 scale with its ± 1 SD bar.
- * The verdict word's cut-offs (report.ts BLINDING_BANDS: 0.25 and 0.55) are drawn as they are in code,
- * so the word has visible boundaries. The bar is the SD the report carries, not a confidence interval.
+ * The band cut-offs are the backend's (report.ts BLINDING_BANDS, from predose/agents.py: 0.35 and 0.6),
+ * so Studio and Pre-dose classify u the same way. When the ± 1 SD range crosses a cut-off, no single band is claimed. The bar is the SD the report carries, not a confidence interval.
  */
 import type { Blinding } from "./report";
 import { BLINDING_BANDS, bandWord, fmt } from "./report";
@@ -33,20 +33,32 @@ function sdRange(b: Blinding): [number, number] | null {
   return b.u !== null && b.uSd !== null ? [Math.max(0, b.u - b.uSd), Math.min(1, b.u + b.uSd)] : null;
 }
 
+/** Bands the ± 1 SD range touches (or the estimate's band when there is no SD). */
+export function spannedBands(b: Blinding): typeof BLINDING_BANDS {
+  const r = sdRange(b);
+  if (!r) return b.u === null ? [] : BLINDING_BANDS.filter((band) => b.u! >= band.from && b.u! < band.below);
+  return BLINDING_BANDS.filter((band) => r[1] >= band.from && r[0] < band.below);
+}
+
 export function blindingTitle(b: Blinding): string {
+  const r = sdRange(b);
+  const spanned = spannedBands(b);
+  const prefix = b.observed ? "Observed" : "Imputed";
+  if (r && spanned.length > 1) {
+    const words = `${spanned[0].band} to ${spanned[spanned.length - 1].band} unblinding`;
+    return `${prefix} u ${fmt(b.u)} (± 1 SD ${fmt(r[0])} to ${fmt(r[1])}): ${words}`;
+  }
   return `${b.word}: u ${fmt(b.u)} (${statusPhrase(b.status)})`;
 }
 
-export function blindingSubtitle(b: Blinding): string {
-  const base = "Share who could tell their arm (u), 0 to 1. The bar is ± 1 SD, not a confidence interval";
-  const r = sdRange(b);
-  if (!r) return `${base}.`;
-  const words = BLINDING_BANDS.filter((band) => r[1] >= band.from && r[0] < band.below).map((band) => band.word.toLowerCase());
-  return words.length > 1 ? `${base}; the ± 1 SD range spans ${words.join(" to ")}.` : `${base}.`;
+export function blindingSubtitle(): string {
+  return "Share who could tell their arm (u), 0 to 1. The bar is ± 1 SD, not a confidence interval. Bands at 0.35 and 0.6 are the ones the Pre-dose risk check uses.";
 }
 
 export function blindingAria(b: Blinding): string {
-  return `Unblinding u ${fmt(b.u)}, SD ${fmt(b.uSd)}, ${statusPhrase(b.status)}. ${b.word}.`;
+  const sp = spannedBands(b);
+  const verdict = sp.length > 1 ? `The ± 1 SD range spans ${sp.map((x) => x.band).join(" to ")} unblinding` : b.word;
+  return `Unblinding u ${fmt(b.u)}, SD ${fmt(b.uSd)}, ${statusPhrase(b.status)}. ${verdict}.`;
 }
 
 export function BlindingMeter({ b }: { b: Blinding }) {
@@ -98,7 +110,7 @@ export function BlindingMeter({ b }: { b: Blinding }) {
         ))}
         {r ? (
           <g>
-            <line x1={x(r[0])} x2={x(r[1])} y1={trackY} y2={trackY} strokeWidth={3} style={{ stroke: VIOLET, opacity: 0.55 }} />
+            <line x1={x(r[0])} x2={x(r[1])} y1={trackY} y2={trackY} strokeWidth={3} style={{ stroke: VIOLET, opacity: 0.8 }} />
             <line x1={x(r[0])} x2={x(r[0])} y1={trackY - 6} y2={trackY + 6} strokeWidth={2} style={{ stroke: VIOLET }} />
             <line x1={x(r[1])} x2={x(r[1])} y1={trackY - 6} y2={trackY + 6} strokeWidth={2} style={{ stroke: VIOLET }} />
           </g>
@@ -131,10 +143,11 @@ export function blindingTable(b: Blinding, participants: number | null, raters: 
       { item: "Unblinding u (0 to 1)", value: b.u, note: `${statusPhrase(b.status)}. ${b.note}`.trim() },
       { item: "SD of u", value: b.uSd, note: "Standard deviation, not a confidence interval" },
       { item: "± 1 SD range", value: r ? `${fmt(r[0])} to ${fmt(r[1])}` : null, note: "u ± SD, clipped to 0 to 1 (computed in the browser)" },
-      { item: "Verdict word", value: b.u !== null ? bandWord(b.u) : null, note: "u below 0.25: blinding largely held; below 0.55: partly unblinded; else largely unblinded" },
+      { item: "Band of the estimate", value: b.u !== null ? bandWord(b.u) : null, note: "Backend bands (predose/agents.py): u below 0.35 low, below 0.6 medium, else high" },
+      { item: "Bands within ± 1 SD", value: spannedBands(b).map((x) => x.band).join(" to ") || null, note: "No single band is claimed when this spans more than one" },
       { item: "Participant guess accuracy", value: participants, note: participants === null ? "Not reported" : "" },
       { item: "Rater guess accuracy", value: raters, note: raters === null ? "Not reported" : "" },
     ],
-    note: "From the report's facts u, u_sd and guess_acc_*. Cut-offs as used by the Studio's verdict word.",
+    note: "From the report's facts u, u_sd and guess_acc_*. Band cut-offs duplicated from the backend's risk bands.",
   };
 }

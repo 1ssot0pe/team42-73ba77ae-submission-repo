@@ -71,6 +71,8 @@ export interface Fix {
   feasibility: number | null;
   /** counterfactuals[].score = reduction × feasibility; the pipeline ranks by it. */
   score: number | null;
+  /** counterfactuals[].u_sd: SD of the predicted u under this change. */
+  uSd: number | null;
 }
 
 export interface TraceRow {
@@ -182,13 +184,14 @@ export function effect(r: EvidenceReport): Effect | null {
 }
 
 /**
- * Word boundaries for the unblinding u, exactly as the verdict uses them (u < 0.25, u < 0.55, else).
- * The blinding meter draws these cut-offs so the verdict has visible boundaries.
+ * Bands for the unblinding u, duplicated from the backend so Studio and Pre-dose agree:
+ * unblind/platform/predose/agents.py ProtocolCoDesigner.risk(): band = "high" if u >= 0.6 else "medium" if u >= 0.35 else "low".
+ * Keep these in step with that line. The blinding meter draws these cut-offs.
  */
-export const BLINDING_BANDS: { word: string; tone: Blinding["tone"]; from: number; below: number }[] = [
-  { word: "Blinding largely held", tone: "good", from: 0, below: 0.25 },
-  { word: "Partly unblinded", tone: "watch", from: 0.25, below: 0.55 },
-  { word: "Largely unblinded", tone: "alert", from: 0.55, below: Infinity },
+export const BLINDING_BANDS: { word: string; band: string; tone: Blinding["tone"]; from: number; below: number }[] = [
+  { word: "Low unblinding", band: "low", tone: "good", from: 0, below: 0.35 },
+  { word: "Medium unblinding", band: "medium", tone: "watch", from: 0.35, below: 0.6 },
+  { word: "High unblinding", band: "high", tone: "alert", from: 0.6, below: Infinity },
 ];
 
 export function bandWord(v: number): string {
@@ -240,6 +243,7 @@ export function fixes(r: EvidenceReport): Fix[] {
     after: num(c.expected_bias_after),
     feasibility: num(c.feasibility_weight ?? c.feasibility),
     score: num(c.score),
+    uSd: num(c.u_sd),
   }));
 }
 

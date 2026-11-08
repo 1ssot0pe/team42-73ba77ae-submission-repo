@@ -6,7 +6,7 @@ import { useCallback, useMemo, useState } from "react";
 import type { EvidenceReport } from "../../types";
 import { BlindingMeter, blindingAria, blindingSubtitle, blindingTable, blindingTitle } from "./BlindingMeter";
 import { EffectChart, effectAria, effectFlags, effectTable, effectTitle } from "./EffectChart";
-import { FixesChart, fixesAria, fixesSubtitle, fixesTable, fixesTitle } from "./FixesChart";
+import { FixesChart, fixesAria, fixesFootnote, fixesSubtitle, fixesTable, fixesTitle } from "./FixesChart";
 import { ChartFrame } from "./Frame";
 import { FactDrawer, StatusDot, statusTone, statusWord } from "./FactDrawer";
 import type { FactRow } from "./report";
@@ -101,6 +101,7 @@ export function ReportView({ report, input, onUseFixes }: {
               title={effectTitle(eff)}
               subtitle="Adjusted estimate is conservative, under stated assumptions"
               synthetic={synthetic}
+              tag="Synthetic calibration"
               status={sign ? { label: sign.label, tone: "watch" } : undefined}
               ariaLabel={effectAria(eff, flags)}
               dataTable={effectTable(eff, flags)}
@@ -130,15 +131,16 @@ export function ReportView({ report, input, onUseFixes }: {
           <ChartFrame
             id="blinding-meter"
             title={blindingTitle(bl)}
-            subtitle={blindingSubtitle(bl)}
-            synthetic={false}
+            subtitle={blindingSubtitle()}
+            synthetic={synthetic && !bl.observed}
+            tag="Synthetic calibration"
             ariaLabel={blindingAria(bl)}
             dataTable={blindingTable(bl, accP, accR)}
             empty={bl.u === null ? { title: "Blinding not assessed in the source" } : null}
             footnotes={
               bl.observed
                 ? "Observed: worked out from the trial's own blinding data (how often people guessed their arm)."
-                : "Estimated: the trial did not report blinding data, so u comes from its design. Hollow marker means imputed."
+                : `Estimated: the trial did not report blinding data, so u comes from its design${synthetic ? ", using a design model fitted on the synthetic calibration set" : ""}. Hollow marker means imputed. The 0.35 and 0.6 bands are the backend's risk bands, shared with the Pre-dose page.`
             }
           >
             <BlindingMeter b={bl} />
@@ -185,10 +187,11 @@ export function ReportView({ report, input, onUseFixes }: {
           title={fixes.length ? fixesTitle(fixes) : "No design changes proposed"}
           subtitle={fixes.length ? fixesSubtitle(fixes) : undefined}
           synthetic={synthetic}
+          tag="Synthetic calibration"
           ariaLabel={fixes.length ? fixesAria(fixes) : "No design changes proposed"}
           dataTable={fixes.length ? fixesTable(fixes) : undefined}
           empty={fixes.length ? null : { title: "No design changes proposed" }}
-          footnotes={fixes.length ? "Expected bias is the model's prediction for a new trial with this change, using the same calibration." : undefined}
+          footnotes={fixes.length ? fixesFootnote(fixes) : undefined}
         >
           <FixesChart fx={fixes} />
         </ChartFrame>
