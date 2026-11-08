@@ -91,3 +91,21 @@ The note on the "Debriefs structured automatically" KPI is built in the backend,
 ```
 
 Test to add (`tests/platform/test_dosing.py`): with one debrief holding one adverse event and one cue, assert the note reads "1 adverse event and 1 unblinding cue extracted, each with its quote."
+
+## Visuals pass (feat/visuals): data requests, not applied
+
+The charts work today without these. Where a field is missing, the frontend recomputes it from data that already exists in the record, and checks it against the module's own value before using it. These requests would let the charts read the values directly. Details are in `docs/visuals-requests.md`.
+
+### For Izzy (`unblind/platform/dosing/`)
+- **TP-6 (R3): drift never resolves.** At D90 the Site B alert still has `resolved_day: None`, although Site B's rolling accuracy is back to about 50%, so no "Drift stopped" marker can be drawn. Set `resolved_day` when the rule that raised the alert clears.
+- **TP-7 (possible off-by-one in `monitor.py`).** After a reset, the first batch after the action (`window_from` equal to the action day) is left out of later rolling windows (`window_from > reset_day`). So Site B's rolling value at D56 is 2 of 4, not 5 of 9. Check whether this should be `>=`. The chart shows the value as recorded.
+- **Optional (R1):** send `window_correct` and `window_decisive` on each rolling-accuracy chart point. The frontend currently rebuilds them from `record.blinding_metrics`.
+
+### For Callum (`unblind/platform/postdose/module.py`, `_charts`)
+- **TP-8: planted truth as an explicit simulated field.** "Planted truth" is hard-coded as −4.0 on every effect-estimate row. Send it from the simulator config as a labelled reference, e.g. `refs: [{y, label: "Planted truth (simulated)"}]`.
+- **TP-9: n and SD per MADRS visit week.** The view sends only the mean. The frontend recounts n and SD from `record.outcomes` and `record.followups` with the view's own filter, and shows them only when its mean matches the view's mean.
+- **TP-10: counts, bounds and drift markers on the report's rater-accuracy chart.** Per point: `n_correct`, `n_decisive`, `accuracy_lo` and `accuracy_hi`, plus the drift alert days. These are read from `record.blinding_metrics` and `record.alerts` today.
+
+### For the pipeline owner (Studio)
+- **TP-11: NCT03866174 arm sizes.** The registry enrolment of 347 is used to impute arms of 173/174. If the published analysis had about 104 participants (unverified; recalled from the JAMA 2023 paper), the reported g would be about 0.91 instead of 0.50, and the adjusted estimate would move by about the same amount. This is a statistics question, outside this presentation pass.
+- **TP-12: two sets of blinding cut-offs.** The Studio's blinding words use 0.25 and 0.55; the pre-dosing risk bands use 0.35 and 0.6. Both are drawn as they are in the code. Whether they should match is a decision for the owners.
