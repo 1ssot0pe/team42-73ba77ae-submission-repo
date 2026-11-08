@@ -4,10 +4,27 @@ Append-only. Each builder writes under its own heading (docs/visuals-spec.md 4.6
 
 ## Requests to CORE
 
+### STUDIO
+
+- STUDIO, `components/shared/ChartFrame.tsx`: optional `headingLevel?: 3 | 4` prop (default 3) for the title element. Why: in the Studio each chart sits under a section `<h3>` ("Effect", "How blinded it was", "Design fixes"), so the frame's `<h3>` title is a sibling of its own section heading in the outline. Workaround: none needed visually; the outline is just flat.
+- STUDIO, `components/shared/ChartParts.tsx`: a non-recharts tooltip helper for hand-written SVG (position + sentence, tap/outside/scroll close). Why: `ChartTooltip` is recharts-payload shaped. Workaround: `components/studio/PointTip.tsx` renders a `div.chart-tooltip` so the look matches.
+
 ### POSTDOSE
 
 - **ChartFrame `role="img"` around interactive points** (`components/shared/ChartFrame.tsx`). EffectForest, MadrsByWeek and ReportAccuracy put tabbable points (tooltips on keyboard focus, arrow keys through releases) inside the chart body, which ChartFrame wraps in `role="img"`; assistive tech treats children of an img as presentational. Request: an optional `interactive?: boolean` prop that renders the body as `role="group"` with the same `aria-label`. Workaround: the full summary is in `ariaLabel` and every point has its own `aria-label`.
 - **Shared SVG helpers.** POSTDOSE needed a width hook, a tap/hover/scroll-safe tooltip for hand-written SVG and nice ticks; they live in `module/charts/EffectForest.tsx` (`useWidth`, `useTip`, `ChartTip`, `niceTicks`) to stay inside POSTDOSE's files, which gives 5 react-refresh warnings. If CORE wants them, move them to `shared/` and POSTDOSE will import from there.
+
+### DOSING
+
+- `frontend/src/types.ts` (off limits to builders): add `simulated_truth?: { synthetic: boolean; label: "simulated"; drift_site: string; drift_onset_day: number } | null` to `TrialState`. The master now sends it (`Master.simulated_truth()`, `master/orchestrator.py`); `CusumChart` reads it through a local cast until then. Not blocking.
+- Tooltip touch rule: `SiteSmallMultiples.tsx` exports `useTooltipDismiss()` (closes the recharts tooltip and active dot on scroll or a tap outside, reopens on mouse move inside). If CORE wants this in `ChartTooltip` for every chart, move it to `shared/`; not blocking.
+
+### CORE replies
+
+(Replies here rather than inline, so the merge of each builder's own lines does not conflict.)
+
+- STUDIO, `ChartFrame` `headingLevel?: 3 | 4`: done. Default 3; pass 4 under a section h3.
+- STUDIO, tooltip helper for hand-written SVG: done. `usePointTip()`, `pointTipHandlers(tip, text, x, y)` and `<PointTip tip={tip.tip} />` from `components/shared` (ChartParts.tsx). Hover (mouse), focus or tap opens it; mouse leave, blur, Escape, a tap outside any `[data-pointtip]` mark or any scroll closes it. x, y are px inside a `position: relative` wrapper (`.chart__body` already is, or use `.chart-svgwrap`); the box sits centred above the point and uses `.chart-tooltip`. The handlers also set `role="img"` and `aria-label` to the sentence on the mark. `PointTip.tsx` can be dropped in favour of it, or kept; either looks the same.
 
 ## Requests to teammates
 
@@ -16,6 +33,11 @@ Append-only. Each builder writes under its own heading (docs/visuals-spec.md 4.6
 - **Effect estimates: planted truth as an explicit synthetic field.** The view writes `"Planted truth": -4.0` as a hard-coded constant on every row. Request: send it from the simulator config as a labelled field, e.g. `"refs": [{"y": <truth>, "label": "Planted truth (simulated)"}]`, so the chart cannot drift from the simulator. The frontend draws it now only because it is in the payload, labelled "simulated".
 - **Mean MADRS by visit week: n and SD per week.** The view sends only the mean. The frontend recounts n and SD from `record.outcomes` and `record.followups` with the view's filter and shows them only when its mean matches. Request: add `n` and `sd` to each `data` row.
 - **Rater accuracy in the report: counts and bounds.** The view sends cumulative `accuracy` only, carried forward between releases. Request: per point `n_correct`, `n_decisive`, `accuracy_lo`, `accuracy_hi` (already on the record rows), and the rater drift alert markers (`onset_day_estimate`, `day`, `action_day`, `resolved_day`). The frontend reads them from `record.blinding_metrics` and `record.alerts` today.
+
+### DOSING (for `unblind/platform/dosing/`, Izzy)
+
+- R3 still open (dosing, Izzy): the Site B alert stays `action_approved` with `resolved_day: None` at D90 although the rolling value went back to about 50%, so no "Drift stopped" marker is drawn. Both dosing charts draw it as soon as `resolved_day` is set.
+- R1 not needed: rolling counts are rebuilt from `window_correct`/`window_decisive` with the monitor's reset rule and match `rolling_accuracy` at every Site B point checked. Note for dosing: after a reset the first post-action batch (`window_from` equal to the action day) is excluded from later rolling windows (`window_from > reset_day`), so D56 Site B rolling is 2 of 4, not 5 of 9. Possibly an off-by-one; the chart reproduces it as recorded.
 
 ## CORE API notes
 
@@ -31,16 +53,3 @@ All of spec section 4 is implemented with the names and types given there. Addit
 - `normalise.ts`: also exports `chartIdFor(title, id?)`, `splitSyntheticTitle(raw)` and `CHART_IDS`. Any parenthetical containing SYNTHETIC is stripped: "(blinded, SYNTHETIC)" gives `titleNote` "blinded", "(SYNTHETIC, information only)" gives "information only". `REF_LABEL` includes `truth`, so "Planted truth" lands in `refs` as `{ y, label: "Planted truth -4" }` (read `y`, not the label text).
 - `module/index.ts` exports `ModuleChartComponentProps` and `GenericLineChart`.
 - `useRecordSections` keeps the previous data while a refetch after a tick is in flight (`loading` true, `data` still set), so charts do not flash empty; `data` is null only before the first load.
-
-## DOSING
-
-### Requests to CORE (DOSING)
-
-- `frontend/src/types.ts` (off limits to builders): add `simulated_truth?: { synthetic: boolean; label: "simulated"; drift_site: string; drift_onset_day: number } | null` to `TrialState`. The master now sends it (`Master.simulated_truth()`, `master/orchestrator.py`); `CusumChart` reads it through a local cast until then. Not blocking.
-- Tooltip touch rule: `SiteSmallMultiples.tsx` exports `useTooltipDismiss()` (closes the recharts tooltip and active dot on scroll or a tap outside, reopens on mouse move inside). If CORE wants this in `ChartTooltip` for every chart, move it to `shared/`; not blocking.
-
-### Requests to teammates (DOSING)
-
-- R3 still open (dosing, Izzy): the Site B alert stays `action_approved` with `resolved_day: None` at D90 although the rolling value went back to about 50%, so no "Drift stopped" marker is drawn. Both dosing charts draw it as soon as `resolved_day` is set.
-- R1 not needed: rolling counts are rebuilt from `window_correct`/`window_decisive` with the monitor's reset rule and match `rolling_accuracy` at every Site B point checked. Note for dosing: after a reset the first post-action batch (`window_from` equal to the action day) is excluded from later rolling windows (`window_from > reset_day`), so D56 Site B rolling is 2 of 4, not 5 of 9. Possibly an off-by-one; the chart reproduces it as recorded.
-
