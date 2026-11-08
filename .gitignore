@@ -15,3 +15,5 @@ data/trials/
 frontend/node_modules/
 frontend/dist/
 frontend/screenshots/
+.vercel
+.env*
