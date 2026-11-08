@@ -1,0 +1,871 @@
+{
+ "base": "http://127.0.0.1:8001",
+ "trial": "T-124338-bd5f",
+ "create_ms": 17.6,
+ "checks": [
+  {
+   "name": "health -> 200",
+   "ok": true,
+   "detail": "shape check failed: {\"ok\":true,\"gemini\":false,\"trials\":[\"T-124302-54d3\",\"T-124302-a774\",\"T-124302-c831\",\"T-124304-bd85\",\"T-124304-b7c2\",\"T-124304-7104\"]}"
+  },
+  {
+   "name": "bottlenecks -> 200",
+   "ok": true,
+   "detail": "shape check failed: {\"bottlenecks\":[{\"id\":\"blinding_unmeasured\",\"module\":\"dosing\",\"title\":\"Most psychedelic trials never measure whether blinding held\",\"number\":\"29.5% (33 of 112) randomised psychedelic trials assessed b"
+  },
+  {
+   "name": "protocols -> 200",
+   "ok": true,
+   "detail": "shape check failed: [{\"name\":\"example_mdma_ptsd.md\",\"title\":\"DRAFT protocol (FICTIONAL EXAMPLE): MDMA-assisted therapy for PTSD with an active control\"},{\"name\":\"example_psilocybin_trd.md\",\"title\":\"DRAFT protocol (FICTIO"
+  },
+  {
+   "name": "protocols/{name} valid -> 200",
+   "ok": true,
+   "detail": "shape check failed: {\"name\":\"example_mdma_ptsd.md\",\"text\":\"# DRAFT protocol (FICTIONAL EXAMPLE): MDMA-assisted therapy for PTSD with an active control\\n\\nThis is a fictional draft written for the Parallax demo. It is not"
+  },
+  {
+   "name": "protocols traversal nope.md -> 404",
+   "ok": true,
+   "detail": "404 {\"detail\":\"not found\"}"
+  },
+  {
+   "name": "protocols traversal ..%2F..%2Fbackend%2Fmain.py -> 404",
+   "ok": true,
+   "detail": "404 {\"detail\":\"Not Found\"}"
+  },
+  {
+   "name": "protocols traversal %2E%2E%2F%2E%2E%2FREADME.md -> 404",
+   "ok": true,
+   "detail": "404 {\"detail\":\"Not Found\"}"
+  },
+  {
+   "name": "protocols traversal ..%2Fbottlenecks.json -> 404",
+   "ok": true,
+   "detail": "404 {\"detail\":\"Not Found\"}"
+  },
+  {
+   "name": "protocols traversal %2Fetc%2Fpasswd -> 404",
+   "ok": true,
+   "detail": "404 {\"detail\":\"Not Found\"}"
+  },
+  {
+   "name": "protocols traversal ..%5C..%5CREADME.md -> 404",
+   "ok": true,
+   "detail": "404 {\"detail\":\"not found\"}"
+  },
+  {
+   "name": "protocols traversal %2E -> 404",
+   "ok": true,
+   "detail": "404 {\"detail\":\"not found\"}"
+  },
+  {
+   "name": "protocols traversal %2E%2E -> 404",
+   "ok": true,
+   "detail": "404 {\"detail\":\"not found\"}"
+  },
+  {
+   "name": "protocols traversal ....%2F%2F....%2F%2FREADME.md -> 404",
+   "ok": true,
+   "detail": "404 {\"detail\":\"Not Found\"}"
+  },
+  {
+   "name": "create bad json -> 422",
+   "ok": true,
+   "detail": "status 422 body {\"detail\":[{\"type\":\"json_invalid\",\"loc\":[\"body\",1],\"msg\":\"JSON decode error\",\"input\":{},\"ctx\":{\"error\":\"Expecting property name enclosed in double quotes\"}}]}"
+  },
+  {
+   "name": "create n_applicants=5 -> 422",
+   "ok": true,
+   "detail": "status 422 body {\"detail\":[{\"type\":\"greater_than_equal\",\"loc\":[\"body\",\"n_applicants\"],\"msg\":\"Input should be greater than or equal to 10\",\"input\":5,\"ctx\":{\"ge\":10}}]}"
+  },
+  {
+   "name": "create n_applicants=5000 -> 422",
+   "ok": true,
+   "detail": "status 422 body {\"detail\":[{\"type\":\"less_than_equal\",\"loc\":[\"body\",\"n_applicants\"],\"msg\":\"Input should be less than or equal to 2000\",\"input\":5000,\"ctx\":{\"le\":2000}}]}"
+  },
+  {
+   "name": "create seed='abc' -> 422",
+   "ok": true,
+   "detail": "status 422 body {\"detail\":[{\"type\":\"int_parsing\",\"loc\":[\"body\",\"seed\"],\"msg\":\"Input should be a valid integer, unable to parse string as an integer\",\"input\":\"abc\"}]}"
+  },
+  {
+   "name": "create example unknown -> 404",
+   "ok": true,
+   "detail": "status 404 body {\"detail\":\"not found\"}"
+  },
+  {
+   "name": "create example traversal -> 404",
+   "ok": true,
+   "detail": "status 404 body {\"detail\":\"not found\"}"
+  },
+  {
+   "name": "create with no protocol at all -> 200",
+   "ok": true,
+   "detail": "shape check failed: {\"trial_id\":\"T-124338-5e7b\",\"synthetic\":true,\"day\":-1,\"phase\":\"recruitment\",\"close_day\":90,\"primary_lock_day\":null,\"module_status\":{\"predose\":\"real\",\"dosing\":\"real\",\"postdose\":\"real\"},\"blocked\":\"Waiti"
+  },
+  {
+   "name": "create garbage protocol -> 200",
+   "ok": true,
+   "detail": "shape check failed: {\"trial_id\":\"T-124338-ac7e\",\"synthetic\":true,\"day\":-1,\"phase\":\"recruitment\",\"close_day\":90,\"primary_lock_day\":null,\"module_status\":{\"predose\":\"real\",\"dosing\":\"real\",\"postdose\":\"real\"},\"blocked\":\"Waiti"
+  },
+  {
+   "name": "unknown trial GET state -> 404",
+   "ok": true,
+   "detail": "404 {\"detail\":\"no trial T-NOPE in this server session; create one\"}"
+  },
+  {
+   "name": "unknown trial POST step -> 404",
+   "ok": true,
+   "detail": "404 {\"detail\":\"no trial T-NOPE in this server session; create one\"}"
+  },
+  {
+   "name": "unknown trial POST auto_approve -> 404",
+   "ok": true,
+   "detail": "404 {\"detail\":\"no trial T-NOPE in this server session; create one\"}"
+  },
+  {
+   "name": "unknown trial GET record -> 404",
+   "ok": true,
+   "detail": "404 {\"detail\":\"no trial T-NOPE in this server session; create one\"}"
+  },
+  {
+   "name": "unknown trial GET events -> 404",
+   "ok": true,
+   "detail": "404 {\"detail\":\"no trial T-NOPE in this server session; create one\"}"
+  },
+  {
+   "name": "unknown trial GET approvals -> 404",
+   "ok": true,
+   "detail": "404 {\"detail\":\"no trial T-NOPE in this server session; create one\"}"
+  },
+  {
+   "name": "unknown trial POST approvals/abc -> 404",
+   "ok": true,
+   "detail": "404 {\"detail\":\"no trial T-NOPE in this server session; create one\"}"
+  },
+  {
+   "name": "unknown trial GET kpis -> 404",
+   "ok": true,
+   "detail": "404 {\"detail\":\"no trial T-NOPE in this server session; create one\"}"
+  },
+  {
+   "name": "unknown trial GET messages -> 404",
+   "ok": true,
+   "detail": "404 {\"detail\":\"no trial T-NOPE in this server session; create one\"}"
+  },
+  {
+   "name": "unknown trial GET modules/dosing/view -> 404",
+   "ok": true,
+   "detail": "404 {\"detail\":\"no trial T-NOPE in this server session; create one\"}"
+  },
+  {
+   "name": "unknown trial POST modules/dosing/actions/checkin -> 404",
+   "ok": true,
+   "detail": "404 {\"detail\":\"no trial T-NOPE in this server session; create one\"}"
+  },
+  {
+   "name": "create psilocybin -> 200",
+   "ok": true,
+   "detail": "shape check failed: {\"trial_id\":\"T-124338-bd5f\",\"synthetic\":true,\"day\":-1,\"phase\":\"recruitment\",\"close_day\":90,\"primary_lock_day\":null,\"module_status\":{\"predose\":\"real\",\"dosing\":\"real\",\"postdose\":\"real\"},\"blocked\":\"Waiti"
+  },
+  {
+   "name": "list trials -> 200",
+   "ok": true,
+   "detail": "shape check failed: [{\"trial_id\":\"T-124302-54d3\",\"synthetic\":true,\"day\":-1,\"phase\":\"recruitment\",\"close_day\":90,\"primary_lock_day\":null,\"module_status\":{\"predose\":\"real\",\"dosing\":\"real\",\"postdose\":\"real\"},\"blocked\":\"Wait"
+  },
+  {
+   "name": "state -> 200",
+   "ok": true,
+   "detail": "shape check failed: {\"trial_id\":\"T-124338-bd5f\",\"synthetic\":true,\"day\":-1,\"phase\":\"recruitment\",\"close_day\":90,\"primary_lock_day\":null,\"module_status\":{\"predose\":\"real\",\"dosing\":\"real\",\"postdose\":\"real\"},\"blocked\":\"Waiti"
+  },
+  {
+   "name": "step while blocked -> 200",
+   "ok": true,
+   "detail": "shape check failed: {\"advanced\":false,\"blocked\":\"Waiting for a human: Protocol fix: Move outcome raters to central, remote, blinded assessment; Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants a"
+  },
+  {
+   "name": "step days='abc' -> 422",
+   "ok": true,
+   "detail": "status 422 body {\"detail\":[{\"type\":\"int_parsing\",\"loc\":[\"body\",\"days\"],\"msg\":\"Input should be a valid integer, unable to parse string as an integer\",\"input\":\"abc\"}]}"
+  },
+  {
+   "name": "step no body -> 422",
+   "ok": true,
+   "detail": "status 422 body {\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\"],\"msg\":\"Field required\",\"input\":null}]}"
+  },
+  {
+   "name": "approvals pending -> 200",
+   "ok": true,
+   "detail": "shape check failed: [{\"id\":\"48216aa2\",\"day\":-1,\"agent\":\"protocol co-designer\",\"module\":\"predose\",\"title\":\"Protocol fix: Move outcome raters to central, remote, blinded assessment\",\"rationale\":\"The co-designer found this "
+  },
+  {
+   "name": "approvals all -> 200",
+   "ok": true,
+   "detail": "shape check failed: [{\"id\":\"48216aa2\",\"day\":-1,\"agent\":\"protocol co-designer\",\"module\":\"predose\",\"title\":\"Protocol fix: Move outcome raters to central, remote, blinded assessment\",\"rationale\":\"The co-designer found this "
+  },
+  {
+   "name": "approvals status=bogus -> 200",
+   "ok": true,
+   "detail": "shape check failed: []"
+  },
+  {
+   "name": "decide bad decision -> 400",
+   "ok": true,
+   "detail": "status 400 body {\"detail\":\"decision must be approved | rejected\"}"
+  },
+  {
+   "name": "decide decision 'Approved' (case) -> 400",
+   "ok": true,
+   "detail": "status 400 body {\"detail\":\"decision must be approved | rejected\"}"
+  },
+  {
+   "name": "decide empty reviewer -> 400",
+   "ok": true,
+   "detail": "status 400 body {\"detail\":\"a named reviewer is required\"}"
+  },
+  {
+   "name": "decide whitespace reviewer -> 400",
+   "ok": true,
+   "detail": "status 400 body {\"detail\":\"a named reviewer is required\"}"
+  },
+  {
+   "name": "decide missing reviewer field -> 422",
+   "ok": true,
+   "detail": "status 422 body {\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\",\"reviewer\"],\"msg\":\"Field required\",\"input\":{\"decision\":\"approved\"}}]}"
+  },
+  {
+   "name": "decide reviewer=null -> 422",
+   "ok": true,
+   "detail": "status 422 body {\"detail\":[{\"type\":\"string_type\",\"loc\":[\"body\",\"reviewer\"],\"msg\":\"Input should be a valid string\",\"input\":null}]}"
+  },
+  {
+   "name": "decide unknown aid -> 404",
+   "ok": true,
+   "detail": "status 404 body {\"detail\":\"no pending approval deadbeef\"}"
+  },
+  {
+   "name": "decide ok -> 200",
+   "ok": true,
+   "detail": "shape check failed: {\"approval\":{\"id\":\"48216aa2\",\"day\":-1,\"agent\":\"protocol co-designer\",\"module\":\"predose\",\"title\":\"Protocol fix: Move outcome raters to central, remote, blinded assessment\",\"rationale\":\"The co-designer "
+  },
+  {
+   "name": "decide already decided -> 404",
+   "ok": true,
+   "detail": "status 404 body {\"detail\":\"no pending approval 48216aa2\"}"
+  },
+  {
+   "name": "view predose day -1 -> 200",
+   "ok": true,
+   "detail": "shape check failed: {\"module\":\"predose\",\"title\":\"Pre-dosing: design, recruitment and screening\",\"kpis\":[{\"label\":\"Applicants decided automatically\",\"value\":88.8,\"baseline\":0,\"unit\":\"%\",\"note\":\"444 of 500 SYNTHETIC applic"
+  },
+  {
+   "name": "view dosing day -1 -> 200",
+   "ok": true,
+   "detail": "shape check failed: {\"module\":\"dosing\",\"title\":\"Dosing: live blinding monitor\",\"kpis\":[{\"label\":\"Days from drift onset to alert\",\"value\":null,\"baseline\":62,\"unit\":\"days\",\"bottleneck_id\":\"blinding_failure\",\"note\":\"No drif"
+  },
+  {
+   "name": "view postdose day -1 -> 200",
+   "ok": true,
+   "detail": "shape check failed: {\"module\":\"postdose\",\"title\":\"Post-dosing: follow-up, bias gate and FDA blinding report\",\"kpis\":[{\"label\":\"Reported vs expectancy-adjusted effect\",\"unit\":\"MADRS points\",\"value\":null,\"baseline\":null,\"b"
+  },
+  {
+   "name": "view unknown module -> 4xx",
+   "ok": false,
+   "detail": "200 {\"error\":\"unknown module nosuch\"}"
+  },
+  {
+   "name": "action unknown module -> 4xx",
+   "ok": false,
+   "detail": "200 {\"result\":{\"ok\":false,\"error\":\"unknown module nosuch\"},\"state\":{\"trial_id\":\"T-124338-bd5f\",\"synthetic\":true,\"day\":-1,\"phase\":\"recruitment\",\"close_day\""
+  },
+  {
+   "name": "action predose/nosuch -> 4xx",
+   "ok": false,
+   "detail": "200 {\"result\":{\"ok\":false,\"error\":\"predose has no action 'nosuch'\"},\"state\":{\"trial_id\":\"T-124338-bd5f\",\"synthetic\":true,\"day\":-1,\"phase\":\"recruitment\",\"c"
+  },
+  {
+   "name": "action dosing/nosuch -> 4xx",
+   "ok": false,
+   "detail": "200 {\"result\":{\"ok\":false,\"error\":\"dosing has no action 'nosuch'\"},\"state\":{\"trial_id\":\"T-124338-bd5f\",\"synthetic\":true,\"day\":-1,\"phase\":\"recruitment\",\"cl"
+  },
+  {
+   "name": "action postdose/nosuch -> 4xx",
+   "ok": false,
+   "detail": "200 {\"result\":{\"ok\":false,\"error\":\"postdose has no action 'nosuch'\"},\"state\":{\"trial_id\":\"T-124338-bd5f\",\"synthetic\":true,\"day\":-1,\"phase\":\"recruitment\",\""
+  },
+  {
+   "name": "action body payload not a dict -> 422",
+   "ok": true,
+   "detail": "status 422 body {\"detail\":[{\"type\":\"dict_type\",\"loc\":[\"body\",\"payload\"],\"msg\":\"Input should be a valid dictionary\",\"input\":\"x\"}]}"
+  },
+  {
+   "name": "action no body -> 422",
+   "ok": true,
+   "detail": "status 422 body {\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\"],\"msg\":\"Field required\",\"input\":null}]}"
+  },
+  {
+   "name": "predose recheck before enrolment (applies) -> 200",
+   "ok": true,
+   "detail": "shape check failed: {\"result\":{\"ok\":true,\"diff\":[\"-Outcome ratings will be performed by central blinded raters by videoconference; raters will not attend dosing sessions.\",\"+\",\"+\",\"+E2E edit line.\"],\"risk\":{\"u\":0.786,\"u_"
+  },
+  {
+   "name": "predose recheck empty -> 200",
+   "ok": true,
+   "detail": "shape check failed: {\"result\":{\"ok\":false,\"error\":\"protocol text is empty\"},\"state\":{\"trial_id\":\"T-124338-bd5f\",\"synthetic\":true,\"day\":-1,\"phase\":\"recruitment\",\"close_day\":90,\"primary_lock_day\":null,\"module_status\":{\"pre"
+  },
+  {
+   "name": "predose apply valid -> 200",
+   "ok": true,
+   "detail": "shape check failed: {\"result\":{\"ok\":true,\"applicant\":{\"name\":\"E2E Valid\",\"age\":35,\"phone\":\"+44 7700 900123\",\"nearest_site\":\"Site A (London)\",\"self_reported_diagnosis\":\"treatment-resistant depression\",\"failed_antidepressa"
+  },
+  {
+   "name": "predose apply age='abc' -> 200",
+   "ok": true,
+   "detail": "shape check failed: {\"result\":{\"ok\":false,\"error\":\"'age' must be a whole number\"},\"state\":{\"trial_id\":\"T-124338-bd5f\",\"synthetic\":true,\"day\":-1,\"phase\":\"recruitment\",\"close_day\":90,\"primary_lock_day\":null,\"module_status\""
+  },
+  {
+   "name": "predose apply age='1e400' (overflow) -> 200",
+   "ok": true,
+   "detail": "shape check failed: {\"result\":{\"ok\":false,\"error\":\"module action failed; see timeline\"},\"state\":{\"trial_id\":\"T-124338-bd5f\",\"synthetic\":true,\"day\":-1,\"phase\":\"recruitment\",\"close_day\":90,\"primary_lock_day\":null,\"module_s"
+  },
+  {
+   "name": "predose apply age=1e400 gives a field error, not a generic failure",
+   "ok": false,
+   "detail": "{\"result\":{\"ok\":false,\"error\":\"module action failed; see timeline\"},\"state\":{\"trial_id\":\"T-124338-bd5f\",\"synthetic\":true,\"day\":-1,\"phase\":\"recruitment\",\"close_day\":90,\"primary_lock_day\":null,\"module_s"
+  },
+  {
+   "name": "predose apply applicant=list -> 200",
+   "ok": true,
+   "detail": "status 200 body {\"result\":{\"ok\":true,\"applicant\":{\"applicant\":[1,2],\"id\":\"PORTAL-0002\",\"name\":\"Portal applicant\",\"country\":\"unknown\",\"applied_day\":-1,\"source\":\"portal\",\"screening\":{\"decision\":\"needs_clinician\",\"reaso"
+  },
+  {
+   "name": "dosing checkin before enrolment -> 200",
+   "ok": true,
+   "detail": "shape check failed: {\"result\":{\"ok\":false,\"message\":\"No enrolled participant 'APP-0001'. Try one from the enrolled list.\"},\"state\":{\"trial_id\":\"T-124338-bd5f\",\"synthetic\":true,\"day\":-1,\"phase\":\"recruitment\",\"close_day\":9"
+  },
+  {
+   "name": "postdose draft_report before lock -> 200",
+   "ok": true,
+   "detail": "shape check failed: {\"result\":{\"ok\":false,\"error\":\"The report can only be previewed after the primary endpoint is locked.\"},\"state\":{\"trial_id\":\"T-124338-bd5f\",\"synthetic\":true,\"day\":-1,\"phase\":\"recruitment\",\"close_day\":"
+  },
+  {
+   "name": "postdose sign_off no reviewer -> 200",
+   "ok": true,
+   "detail": "shape check failed: {\"result\":{\"ok\":false,\"error\":\"A named reviewer is required to sign the report.\"},\"state\":{\"trial_id\":\"T-124338-bd5f\",\"synthetic\":true,\"day\":-1,\"phase\":\"recruitment\",\"close_day\":90,\"primary_lock_day\":"
+  },
+  {
+   "name": "postdose ask_question empty -> 200",
+   "ok": true,
+   "detail": "shape check failed: {\"result\":{\"ok\":false,\"error\":\"Please type a question.\"},\"state\":{\"trial_id\":\"T-124338-bd5f\",\"synthetic\":true,\"day\":-1,\"phase\":\"recruitment\",\"close_day\":90,\"primary_lock_day\":null,\"module_status\":{\"pr"
+  },
+  {
+   "name": "events default -> 200",
+   "ok": true,
+   "detail": "shape check failed: [{\"day\":-1,\"t\":1794141818.29917,\"agent\":\"master\",\"module\":\"master\",\"level\":\"info\",\"text\":\"trial created; handing the protocol to the pre-dosing agents\",\"data\":null,\"idx\":0},{\"day\":-1,\"t\":1794141818.29"
+  },
+  {
+   "name": "events limit=0 returns no rows",
+   "ok": false,
+   "detail": "limit=0 returned 27 of 27 rows"
+  },
+  {
+   "name": "events limit=-1 is rejected or empty",
+   "ok": false,
+   "detail": "limit=-1 returned 26 of 27 rows"
+  },
+  {
+   "name": "events limit=abc -> 422",
+   "ok": true,
+   "detail": "status 422 body {\"detail\":[{\"type\":\"int_parsing\",\"loc\":[\"query\",\"limit\"],\"msg\":\"Input should be a valid integer, unable to parse string as an integer\",\"input\":\"abc\"}]}"
+  },
+  {
+   "name": "events since=5 -> 200",
+   "ok": true,
+   "detail": "shape check failed: [{\"day\":-1,\"t\":1794141818.300436,\"agent\":\"protocol co-designer\",\"module\":\"predose\",\"level\":\"decision\",\"text\":\"asked a human to approve: Protocol fix: Measure expectancy before randomisation and at end"
+  },
+  {
+   "name": "events module=predose -> 200",
+   "ok": true,
+   "detail": "shape check failed: [{\"day\":-1,\"t\":1794141818.2998898,\"agent\":\"protocol parser\",\"module\":\"predose\",\"level\":\"decision\",\"text\":\"parsed 'DRAFT protocol (FICTIONAL EXAMPLE): Single-dose psilocybin for treatment-resistant dep"
+  },
+  {
+   "name": "record all -> 200",
+   "ok": true,
+   "detail": "shape check failed: {\"protocol\":{\"title\":\"DRAFT protocol (FICTIONAL EXAMPLE): Single-dose psilocybin for treatment-resistant depression\",\"drug\":\"psilocybin\",\"indication\":\"treatment-resistant depression\",\"comparator\":\"ine"
+  },
+  {
+   "name": "record sections=protocol,kpis -> 200",
+   "ok": true,
+   "detail": "shape check failed: {\"protocol\":{\"title\":\"DRAFT protocol (FICTIONAL EXAMPLE): Single-dose psilocybin for treatment-resistant depression\",\"drug\":\"psilocybin\",\"indication\":\"treatment-resistant depression\",\"comparator\":\"ine"
+  },
+  {
+   "name": "record sections=bogus,events -> 200",
+   "ok": true,
+   "detail": "shape check failed: {}"
+  },
+  {
+   "name": "kpis -> 200",
+   "ok": true,
+   "detail": "shape check failed: {\"predose\":[{\"label\":\"Applicants decided automatically\",\"value\":88.6,\"baseline\":0,\"unit\":\"%\",\"note\":\"445 of 502 SYNTHETIC applicants decided by the pre-screening agent; a clinician still confirms the "
+  },
+  {
+   "name": "messages -> 200",
+   "ok": true,
+   "detail": "shape check failed: {\"edges\":[{\"from\":\"approvals\",\"to\":\"predose\",\"count\":1},{\"from\":\"predose\",\"to\":\"master\",\"count\":2}],\"recent\":[{\"id\":\"e0306a9f\",\"day\":-1,\"from\":\"approvals\",\"to\":\"predose\",\"kind\":\"approval_decided\",\"pay"
+  },
+  {
+   "name": "auto_approve on=abc -> 422",
+   "ok": true,
+   "detail": "status 422 body {\"detail\":[{\"type\":\"bool_parsing\",\"loc\":[\"query\",\"on\"],\"msg\":\"Input should be a valid boolean, unable to interpret input\",\"input\":\"abc\"}]}"
+  },
+  {
+   "name": "auto_approve on=false -> 200",
+   "ok": true,
+   "detail": "shape check failed: {\"trial_id\":\"T-124338-bd5f\",\"synthetic\":true,\"day\":-1,\"phase\":\"recruitment\",\"close_day\":90,\"primary_lock_day\":null,\"module_status\":{\"predose\":\"real\",\"dosing\":\"real\",\"postdose\":\"real\"},\"blocked\":\"Waiti"
+  },
+  {
+   "name": "enrolled after approving setup",
+   "ok": true,
+   "detail": "{'trial_id': 'T-124338-bd5f', 'synthetic': True, 'day': -1, 'phase': 'dosing', 'close_day': 90, 'primary_lock_day': None, 'module_status': {'predose': 'real', 'dosing': 'real', 'postdose': 'real'}, 'blocked': None, 'counts': {'applicants': 502, 'enrolled': 50, 'schedule': 550, 'checkins': 0, 'alerts': 0, 'events': 42, 'messages': 9}, 'pending_approvals': 0, 'auto_approve': False, 'gemini': False, "
+  },
+  {
+   "name": "step 1 -> 200",
+   "ok": true,
+   "detail": "shape check failed: {\"advanced\":true,\"day\":0,\"phase\":\"dosing\",\"state\":{\"trial_id\":\"T-124338-bd5f\",\"synthetic\":true,\"day\":0,\"phase\":\"dosing\",\"close_day\":90,\"primary_lock_day\":null,\"module_status\":{\"predose\":\"real\",\"dosing"
+  },
+  {
+   "name": "predose recheck after enrolment (approval) -> 200",
+   "ok": true,
+   "detail": "shape check failed: {\"result\":{\"ok\":true,\"pending_approval\":\"5c14eb7f\",\"diff\":[\"-E2E edit line.\",\"+Amendment line.\"],\"message\":\"Participants are enrolled, so this edit is a protocol amendment: sent for approval\"},\"state\""
+  },
+  {
+   "name": "dosing checkin valid -> 200",
+   "ok": true,
+   "detail": "shape check failed: {\"result\":{\"ok\":true,\"message\":\"Recorded for APP-0046: drug, confidence 4, expectancy 3.\",\"checkin\":{\"id\":\"CI0001\",\"participant\":\"APP-0046\",\"site\":\"Site C (Bristol)\",\"day\":0,\"who\":\"participant\",\"rater"
+  },
+  {
+   "name": "dosing checkin free text -> 200",
+   "ok": true,
+   "detail": "status 200 body {\"result\":{\"ok\":false,\"needs_reask\":true,\"missing\":[\"confidence\"],\"message\":\"Thanks. Could you also tell us how confident you are, from 0 to 100?\"},\"state\":{\"trial_id\":\"T-124338-bd5f\",\"synthetic\":true"
+  },
+  {
+   "name": "dosing checkin incomplete -> 200",
+   "ok": true,
+   "detail": "shape check failed: {\"result\":{\"ok\":false,\"needs_reask\":true,\"missing\":[\"guess\",\"confidence\",\"expectancy\"],\"message\":\"Thanks. Could you also tell us which group you think you are in (real drug, control, or don't know), a"
+  },
+  {
+   "name": "dosing checkin confidence='abc' -> 200",
+   "ok": true,
+   "detail": "shape check failed: {\"result\":{\"ok\":false,\"needs_reask\":true,\"missing\":[\"confidence\"],\"message\":\"Thanks. Could you also tell us how confident you are, from 0 to 100?\"},\"state\":{\"trial_id\":\"T-124338-bd5f\",\"synthetic\":true"
+  },
+  {
+   "name": "dosing checkin guess='banana' -> 200",
+   "ok": true,
+   "detail": "shape check failed: {\"result\":{\"ok\":false,\"needs_reask\":true,\"missing\":[\"guess\"],\"message\":\"Thanks. Could you also tell us which group you think you are in (real drug, control, or don't know)?\"},\"state\":{\"trial_id\":\"T-12"
+  },
+  {
+   "name": "step days=0 clamps (advanced 1)",
+   "ok": true,
+   "detail": "200 before 24 after 25"
+  },
+  {
+   "name": "step days=-5 clamps (advanced 1)",
+   "ok": true,
+   "detail": "200 before 25 after 26"
+  },
+  {
+   "name": "step days=1000 clamps (advanced 30)",
+   "ok": true,
+   "detail": "200 before 26 after 56"
+  },
+  {
+   "name": "postdose ask_question -> 200",
+   "ok": true,
+   "detail": "status 200 body {\"result\":{\"ok\":true,\"question_id\":\"RQ-001\",\"decision\":\"approve\",\"rewrite\":null,\"message\":\"No unblinding cues, leading wording, personal data, safety or consent issues found. Waiting for an ethics rev"
+  },
+  {
+   "name": "postdose request_export -> 200",
+   "ok": true,
+   "detail": "status 200 body {\"result\":{\"ok\":true,\"message\":\"Export prepared; waiting for a human to approve it.\",\"approval_id\":\"7f8500e2\"},\"state\":{\"trial_id\":\"T-124338-bd5f\",\"synthetic\":true,\"day\":56,\"phase\":\"dosing\",\"close_day"
+  },
+  {
+   "name": "postdose draft_report after lock? -> 200",
+   "ok": true,
+   "detail": "status 200 body {\"result\":{\"ok\":false,\"error\":\"The report can only be previewed after the primary endpoint is locked.\"},\"state\":{\"trial_id\":\"T-124338-bd5f\",\"synthetic\":true,\"day\":56,\"phase\":\"dosing\",\"close_day\":90,\"p"
+  },
+  {
+   "name": "trial closed at day 90",
+   "ok": true,
+   "detail": "{'trial_id': 'T-124338-bd5f', 'synthetic': True, 'day': 90, 'phase': 'closed', 'close_day': 90, 'primary_lock_day': 63, 'module_status': {'predose': 'real', 'dosing': 'real', 'postdose': 'real'}, 'blocked': None, 'counts': {'applicants': 502, 'enrolled': 50, 'schedule': 550, 'checkins': 348, 'alerts': 6, 'events': 447, 'messages': 33}, 'pending_approvals': 0, 'auto_approve': False, 'gemini': False"
+  },
+  {
+   "name": "step after close -> 200",
+   "ok": true,
+   "detail": "shape check failed: {\"advanced\":true,\"day\":90,\"phase\":\"closed\",\"state\":{\"trial_id\":\"T-124338-bd5f\",\"synthetic\":true,\"day\":90,\"phase\":\"closed\",\"close_day\":90,\"primary_lock_day\":63,\"module_status\":{\"predose\":\"real\",\"dosing"
+  },
+  {
+   "name": "postdose sign_off after close (nothing pending) -> 200",
+   "ok": true,
+   "detail": "status 200 body {\"result\":{\"ok\":false,\"error\":\"No report waiting for sign-off (status: final).\"},\"state\":{\"trial_id\":\"T-124338-bd5f\",\"synthetic\":true,\"day\":90,\"phase\":\"closed\",\"close_day\":90,\"primary_lock_day\":63,\"mo"
+  },
+  {
+   "name": "n_applicants=2000 at day 90: GET record under 1 MB",
+   "ok": false,
+   "detail": "record_all 2125690 bytes"
+  },
+  {
+   "name": "privacy: no '_' keys or participant arm at any depth",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "no response over 1 MB",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "privacy": [],
+ "over_1mb": [],
+ "arm_key_paths": [],
+ "sizes_bytes_by_day": {
+  "0": {
+   "state": 462,
+   "record_all": 544978,
+   "events_default": 10709,
+   "events_all": 10709,
+   "approvals_all": 11337,
+   "kpis": 3037,
+   "messages": 13030,
+   "view_predose": 2473,
+   "view_dosing": 6047,
+   "view_postdose": 2742
+  },
+  "45": {
+   "state": 467,
+   "record_all": 772347,
+   "events_default": 78952,
+   "events_all": 78952,
+   "approvals_all": 17646,
+   "kpis": 3047,
+   "messages": 20406,
+   "view_predose": 2473,
+   "view_dosing": 28147,
+   "view_postdose": 4396
+  },
+  "90": {
+   "state": 488,
+   "record_all": 862640,
+   "events_default": 87596,
+   "events_all": 99372,
+   "approvals_all": 21249,
+   "kpis": 3412,
+   "messages": 29337,
+   "view_predose": 2473,
+   "view_dosing": 39872,
+   "view_postdose": 19067
+  },
+  "90_n2000": {
+   "state": 530,
+   "record_all": 2125690,
+   "events_default": 87536,
+   "events_all": 103409,
+   "approvals_all": 25414,
+   "kpis": 3418,
+   "messages": 37466,
+   "view_predose": 2480,
+   "view_dosing": 41024,
+   "view_postdose": 19668
+  }
+ },
+ "latency": [
+  {
+   "endpoint": "GET /api/bottlenecks",
+   "n": 11,
+   "p50_ms": 0.7,
+   "max_ms": 1.6
+  },
+  {
+   "endpoint": "GET /api/health",
+   "n": 11,
+   "p50_ms": 0.6,
+   "max_ms": 4.7
+  },
+  {
+   "endpoint": "GET /api/protocols",
+   "n": 11,
+   "p50_ms": 0.7,
+   "max_ms": 1.8
+  },
+  {
+   "endpoint": "GET /api/protocols/{name}",
+   "n": 21,
+   "p50_ms": 0.7,
+   "max_ms": 1.7
+  },
+  {
+   "endpoint": "GET /api/trials",
+   "n": 11,
+   "p50_ms": 0.8,
+   "max_ms": 1.3
+  },
+  {
+   "endpoint": "GET /api/trials/{tid}/approvals",
+   "n": 22,
+   "p50_ms": 0.9,
+   "max_ms": 1.4
+  },
+  {
+   "endpoint": "GET /api/trials/{tid}/events",
+   "n": 16,
+   "p50_ms": 1.3,
+   "max_ms": 3.7
+  },
+  {
+   "endpoint": "GET /api/trials/{tid}/kpis",
+   "n": 6,
+   "p50_ms": 1.0,
+   "max_ms": 1.1
+  },
+  {
+   "endpoint": "GET /api/trials/{tid}/messages",
+   "n": 6,
+   "p50_ms": 1.3,
+   "max_ms": 1.5
+  },
+  {
+   "endpoint": "GET /api/trials/{tid}/modules/dosing/view",
+   "n": 6,
+   "p50_ms": 2.7,
+   "max_ms": 3.1
+  },
+  {
+   "endpoint": "GET /api/trials/{tid}/modules/nosuch/view",
+   "n": 1,
+   "p50_ms": 0.6,
+   "max_ms": 0.6
+  },
+  {
+   "endpoint": "GET /api/trials/{tid}/modules/postdose/view",
+   "n": 6,
+   "p50_ms": 1.1,
+   "max_ms": 1.2
+  },
+  {
+   "endpoint": "GET /api/trials/{tid}/modules/predose/view",
+   "n": 6,
+   "p50_ms": 0.8,
+   "max_ms": 0.9
+  },
+  {
+   "endpoint": "GET /api/trials/{tid}/record",
+   "n": 9,
+   "p50_ms": 15.5,
+   "max_ms": 65.8
+  },
+  {
+   "endpoint": "GET /api/trials/{tid}/state",
+   "n": 20,
+   "p50_ms": 1.0,
+   "max_ms": 1.1
+  },
+  {
+   "endpoint": "GET approvals",
+   "n": 10,
+   "p50_ms": 1.3,
+   "max_ms": 1.4
+  },
+  {
+   "endpoint": "GET events",
+   "n": 10,
+   "p50_ms": 3.4,
+   "max_ms": 3.7
+  },
+  {
+   "endpoint": "GET kpis",
+   "n": 10,
+   "p50_ms": 0.9,
+   "max_ms": 1.1
+  },
+  {
+   "endpoint": "GET messages",
+   "n": 10,
+   "p50_ms": 1.4,
+   "max_ms": 1.5
+  },
+  {
+   "endpoint": "GET record",
+   "n": 10,
+   "p50_ms": 25.3,
+   "max_ms": 37.0
+  },
+  {
+   "endpoint": "GET state",
+   "n": 10,
+   "p50_ms": 0.6,
+   "max_ms": 0.9
+  },
+  {
+   "endpoint": "GET view dosing",
+   "n": 10,
+   "p50_ms": 3.0,
+   "max_ms": 3.4
+  },
+  {
+   "endpoint": "GET view postdose",
+   "n": 10,
+   "p50_ms": 1.2,
+   "max_ms": 1.4
+  },
+  {
+   "endpoint": "GET view predose",
+   "n": 10,
+   "p50_ms": 0.7,
+   "max_ms": 0.9
+  },
+  {
+   "endpoint": "POST /api/trials",
+   "n": 9,
+   "p50_ms": 0.8,
+   "max_ms": 17.6
+  },
+  {
+   "endpoint": "POST /api/trials/{tid}/approvals/{aid}",
+   "n": 26,
+   "p50_ms": 6.3,
+   "max_ms": 14.2
+  },
+  {
+   "endpoint": "POST /api/trials/{tid}/auto_approve",
+   "n": 2,
+   "p50_ms": 3.4,
+   "max_ms": 6.2
+  },
+  {
+   "endpoint": "POST /api/trials/{tid}/modules/dosing/actions/checkin",
+   "n": 8,
+   "p50_ms": 8.3,
+   "max_ms": 8.4
+  },
+  {
+   "endpoint": "POST /api/trials/{tid}/modules/dosing/actions/nosuch",
+   "n": 1,
+   "p50_ms": 5.9,
+   "max_ms": 5.9
+  },
+  {
+   "endpoint": "POST /api/trials/{tid}/modules/nosuch/actions/x",
+   "n": 1,
+   "p50_ms": 0.7,
+   "max_ms": 0.7
+  },
+  {
+   "endpoint": "POST /api/trials/{tid}/modules/postdose/actions/ask_question",
+   "n": 2,
+   "p50_ms": 9.4,
+   "max_ms": 12.6
+  },
+  {
+   "endpoint": "POST /api/trials/{tid}/modules/postdose/actions/draft_report",
+   "n": 2,
+   "p50_ms": 9.4,
+   "max_ms": 12.6
+  },
+  {
+   "endpoint": "POST /api/trials/{tid}/modules/postdose/actions/nosuch",
+   "n": 1,
+   "p50_ms": 5.9,
+   "max_ms": 5.9
+  },
+  {
+   "endpoint": "POST /api/trials/{tid}/modules/postdose/actions/request_export",
+   "n": 1,
+   "p50_ms": 13.4,
+   "max_ms": 13.4
+  },
+  {
+   "endpoint": "POST /api/trials/{tid}/modules/postdose/actions/sign_off",
+   "n": 2,
+   "p50_ms": 9.6,
+   "max_ms": 13.3
+  },
+  {
+   "endpoint": "POST /api/trials/{tid}/modules/predose/actions/apply",
+   "n": 4,
+   "p50_ms": 6.1,
+   "max_ms": 6.6
+  },
+  {
+   "endpoint": "POST /api/trials/{tid}/modules/predose/actions/nosuch",
+   "n": 1,
+   "p50_ms": 5.9,
+   "max_ms": 5.9
+  },
+  {
+   "endpoint": "POST /api/trials/{tid}/modules/predose/actions/recheck",
+   "n": 3,
+   "p50_ms": 7.0,
+   "max_ms": 8.1
+  },
+  {
+   "endpoint": "POST /api/trials/{tid}/step",
+   "n": 4,
+   "p50_ms": 0.7,
+   "max_ms": 13.6
+  },
+  {
+   "endpoint": "POST step days=-5",
+   "n": 1,
+   "p50_ms": 21.3,
+   "max_ms": 21.3
+  },
+  {
+   "endpoint": "POST step days=0",
+   "n": 1,
+   "p50_ms": 21.0,
+   "max_ms": 21.0
+  },
+  {
+   "endpoint": "POST step days=1",
+   "n": 5,
+   "p50_ms": 15.9,
+   "max_ms": 57.8
+  },
+  {
+   "endpoint": "POST step days=1000",
+   "n": 1,
+   "p50_ms": 352.2,
+   "max_ms": 352.2
+  },
+  {
+   "endpoint": "POST step days=30",
+   "n": 5,
+   "p50_ms": 694.6,
+   "max_ms": 819.9
+  },
+  {
+   "endpoint": "POST step days=7",
+   "n": 3,
+   "p50_ms": 72.7,
+   "max_ms": 81.0
+  },
+  {
+   "endpoint": "POST trials (create)",
+   "n": 3,
+   "p50_ms": 17.5,
+   "max_ms": 17.9
+  },
+  {
+   "endpoint": "POST trials (n=2000)",
+   "n": 1,
+   "p50_ms": 62.8,
+   "max_ms": 62.8
+  },
+  {
+   "endpoint": "unknown trial",
+   "n": 11,
+   "p50_ms": 0.7,
+   "max_ms": 0.9
+  }
+ ],
+ "evidence": null
+}

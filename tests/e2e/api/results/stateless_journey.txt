@@ -1,0 +1,44 @@
+created T-124429-af43 on 127.0.0.1:8002
+  state                                    404 via 127.0.0.1:8001
+  state (again)                            200 via 127.0.0.1:8002
+  approvals                                404 via 127.0.0.1:8001
+  approvals (again)                        200 via 127.0.0.1:8002
+  approve 1832ac79                         404 via 127.0.0.1:8001
+  approve 91d2a264                         200 via 127.0.0.1:8002
+  approve 4497f430                         404 via 127.0.0.1:8001
+  approve 1589d671                         200 via 127.0.0.1:8002
+  approve 497751e7                         404 via 127.0.0.1:8001
+  approve 273bc98b                         200 via 127.0.0.1:8002
+  step 1 (#1)                              404 via 127.0.0.1:8001
+  step 1 (#2)                              200 via 127.0.0.1:8002
+  step 1 (#3)                              404 via 127.0.0.1:8001
+  step 1 (#4)                              200 via 127.0.0.1:8002
+  view predose                             404 via 127.0.0.1:8001
+  view dosing                              200 via 127.0.0.1:8002
+  action dosing/checkin                    404 via 127.0.0.1:8001
+  action predose/apply                     200 via 127.0.0.1:8002
+  action postdose/ask_question             404 via 127.0.0.1:8001
+  record                                   200 via 127.0.0.1:8002
+  events                                   404 via 127.0.0.1:8001
+  kpis                                     200 via 127.0.0.1:8002
+  messages                                 404 via 127.0.0.1:8001
+  auto_approve on                          200 via 127.0.0.1:8002
+  step 30                                  404 via 127.0.0.1:8001
+  state (final)                            200 via 127.0.0.1:8002
+
+[journey via proxy] 27 requests, 13 failed
+  127.0.0.1:8001: {404: 13}
+  127.0.0.1:8002: {200: 14}
+  FAIL GET /api/trials/T-124429-af43/state -> 404 via 127.0.0.1:8001
+  FAIL GET /api/trials/T-124429-af43/approvals -> 404 via 127.0.0.1:8001
+  FAIL POST /api/trials/T-124429-af43/approvals/1832ac79 -> 404 via 127.0.0.1:8001
+  FAIL POST /api/trials/T-124429-af43/approvals/4497f430 -> 404 via 127.0.0.1:8001
+  FAIL POST /api/trials/T-124429-af43/approvals/497751e7 -> 404 via 127.0.0.1:8001
+  FAIL POST /api/trials/T-124429-af43/step -> 404 via 127.0.0.1:8001
+  FAIL POST /api/trials/T-124429-af43/step -> 404 via 127.0.0.1:8001
+  FAIL GET /api/trials/T-124429-af43/modules/predose/view -> 404 via 127.0.0.1:8001
+  FAIL POST /api/trials/T-124429-af43/modules/dosing/actions/checkin -> 404 via 127.0.0.1:8001
+  FAIL POST /api/trials/T-124429-af43/modules/postdose/actions/ask_question -> 404 via 127.0.0.1:8001
+  FAIL GET /api/trials/T-124429-af43/events -> 404 via 127.0.0.1:8001
+  FAIL GET /api/trials/T-124429-af43/messages -> 404 via 127.0.0.1:8001
+  FAIL POST /api/trials/T-124429-af43/step -> 404 via 127.0.0.1:8001

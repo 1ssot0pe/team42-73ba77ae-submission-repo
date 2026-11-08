@@ -1,0 +1,193 @@
+{
+ "base": "https://parallax-two-tau.vercel.app",
+ "at": "2026-11-08 12:54:04",
+ "latency": [
+  {
+   "endpoint": "GET /api/bottlenecks",
+   "n": 9,
+   "p50_ms": 172.9,
+   "max_ms": 513.9
+  },
+  {
+   "endpoint": "GET /api/health",
+   "n": 9,
+   "p50_ms": 323.3,
+   "max_ms": 463.0
+  },
+  {
+   "endpoint": "GET /api/protocols",
+   "n": 9,
+   "p50_ms": 152.2,
+   "max_ms": 1317.4
+  },
+  {
+   "endpoint": "GET /api/protocols/{name}",
+   "n": 9,
+   "p50_ms": 150.1,
+   "max_ms": 366.7
+  },
+  {
+   "endpoint": "GET /api/trials",
+   "n": 9,
+   "p50_ms": 159.0,
+   "max_ms": 731.2
+  },
+  {
+   "endpoint": "GET /api/trials/{tid}/approvals",
+   "n": 3,
+   "p50_ms": 174.1,
+   "max_ms": 185.3
+  },
+  {
+   "endpoint": "GET /api/trials/{tid}/events",
+   "n": 3,
+   "p50_ms": 140.0,
+   "max_ms": 166.5
+  },
+  {
+   "endpoint": "GET /api/trials/{tid}/kpis",
+   "n": 3,
+   "p50_ms": 123.7,
+   "max_ms": 163.6
+  },
+  {
+   "endpoint": "GET /api/trials/{tid}/messages",
+   "n": 17,
+   "p50_ms": 135.9,
+   "max_ms": 325.4
+  },
+  {
+   "endpoint": "GET /api/trials/{tid}/modules/dosing/view",
+   "n": 8,
+   "p50_ms": 127.2,
+   "max_ms": 332.5
+  },
+  {
+   "endpoint": "GET /api/trials/{tid}/modules/postdose/view",
+   "n": 3,
+   "p50_ms": 132.6,
+   "max_ms": 144.9
+  },
+  {
+   "endpoint": "GET /api/trials/{tid}/modules/predose/view",
+   "n": 17,
+   "p50_ms": 158.6,
+   "max_ms": 1683.0
+  },
+  {
+   "endpoint": "GET /api/trials/{tid}/record",
+   "n": 3,
+   "p50_ms": 294.5,
+   "max_ms": 364.3
+  },
+  {
+   "endpoint": "GET /api/trials/{tid}/state",
+   "n": 5,
+   "p50_ms": 366.4,
+   "max_ms": 637.7
+  },
+  {
+   "endpoint": "POST /api/trials",
+   "n": 3,
+   "p50_ms": 458.6,
+   "max_ms": 491.0
+  }
+ ],
+ "latency_ok_only": [
+  {
+   "endpoint": "GET /api/bottlenecks",
+   "n": 9,
+   "p50_ms": 172.9,
+   "max_ms": 513.9
+  },
+  {
+   "endpoint": "GET /api/health",
+   "n": 9,
+   "p50_ms": 323.3,
+   "max_ms": 463.0
+  },
+  {
+   "endpoint": "GET /api/protocols",
+   "n": 9,
+   "p50_ms": 152.2,
+   "max_ms": 1317.4
+  },
+  {
+   "endpoint": "GET /api/protocols/{name}",
+   "n": 9,
+   "p50_ms": 150.1,
+   "max_ms": 366.7
+  },
+  {
+   "endpoint": "GET /api/trials",
+   "n": 9,
+   "p50_ms": 159.0,
+   "max_ms": 731.2
+  },
+  {
+   "endpoint": "GET /api/trials/{tid}/approvals",
+   "n": 3,
+   "p50_ms": 174.1,
+   "max_ms": 185.3
+  },
+  {
+   "endpoint": "GET /api/trials/{tid}/events",
+   "n": 3,
+   "p50_ms": 140.0,
+   "max_ms": 166.5
+  },
+  {
+   "endpoint": "GET /api/trials/{tid}/kpis",
+   "n": 3,
+   "p50_ms": 123.7,
+   "max_ms": 163.6
+  },
+  {
+   "endpoint": "GET /api/trials/{tid}/messages",
+   "n": 2,
+   "p50_ms": 231.2,
+   "max_ms": 325.4
+  },
+  {
+   "endpoint": "GET /api/trials/{tid}/modules/dosing/view",
+   "n": 3,
+   "p50_ms": 127.3,
+   "max_ms": 332.5
+  },
+  {
+   "endpoint": "GET /api/trials/{tid}/modules/postdose/view",
+   "n": 3,
+   "p50_ms": 132.6,
+   "max_ms": 144.9
+  },
+  {
+   "endpoint": "GET /api/trials/{tid}/modules/predose/view",
+   "n": 2,
+   "p50_ms": 125.0,
+   "max_ms": 134.1
+  },
+  {
+   "endpoint": "GET /api/trials/{tid}/record",
+   "n": 3,
+   "p50_ms": 294.5,
+   "max_ms": 364.3
+  },
+  {
+   "endpoint": "GET /api/trials/{tid}/state",
+   "n": 3,
+   "p50_ms": 210.4,
+   "max_ms": 637.7
+  },
+  {
+   "endpoint": "POST /api/trials",
+   "n": 3,
+   "p50_ms": 458.6,
+   "max_ms": 491.0
+  }
+ ],
+ "status_counts": {
+  "GET 200": 70,
+  "POST 200": 3,
+  "GET 404": 37
+ }
+}

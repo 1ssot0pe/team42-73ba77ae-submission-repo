@@ -1,0 +1,124 @@
+[J2     2.4s] created T-124737-f7f1
+[J2     4.0s] attempt 1: TRIAL LOST at right after create; first 404 GET events
+[J2     5.7s] created T-124740-789a
+[J2     7.3s] attempt 2: TRIAL LOST at right after create; first 404 GET events
+[J2     9.2s] created T-124744-cb24
+[J2    10.8s] attempt 3: TRIAL LOST at right after create; first 404 GET approvals
+[J2    11.7s] FAIL journey completed within 3 attempts trial lost every time
+[J2    11.8s] FAIL no trial 404s 13 trial 404s
+[J2] saved: 38 api calls, 18 trial calls, 13 trial 404s, 13 console errors, 2 failed checks
+[J3     2.1s] created T-124751-0dfc
+[J3     3.7s] attempt 1: TRIAL LOST at right after create; first 404 GET approvals
+[J3     5.3s] created T-124754-9f5d
+[J3     6.9s] attempt 2: TRIAL LOST at right after create; first 404 GET approvals
+[J3     8.5s] created T-124757-1a74
+[J3    10.1s] attempt 3: TRIAL LOST at right after create; first 404 GET approvals
+[J3    11.2s] FAIL journey completed within 3 attempts trial lost every time
+[J3] saved: 38 api calls, 18 trial calls, 13 trial 404s, 13 console errors, 1 failed checks
+[J4     1.9s] created T-124804-0479
+[J4     3.5s] attempt 1: TRIAL LOST at right after create; first 404 GET kpis
+[J4     4.8s] created T-124807-e9fd
+[J4     6.3s] attempt 2: TRIAL LOST at right after create; first 404 GET messages
+[J4     7.7s] created T-124810-ddab
+[J4     9.3s] attempt 3: TRIAL LOST at right after create; first 404 GET kpis
+[J4    10.1s] FAIL journey completed within 3 attempts trial lost every time
+[J4] saved: 35 api calls, 18 trial calls, 15 trial 404s, 15 console errors, 1 failed checks
+[J6     4.1s] created T-124818-0914
+[J6     5.7s] attempt 1: TRIAL LOST at right after create; first 404 GET kpis
+[J6     7.7s] created T-124822-0b0b
+[J6    10.4s] attempt 2: TRIAL LOST at portal case valid; first 404 GET events
+[J6    12.4s] created T-124827-1788
+[J6    14.0s] attempt 3: TRIAL LOST at right after create; first 404 GET messages
+[J6    15.1s] FAIL journey completed within 3 attempts trial lost every time
+[J6] saved: 42 api calls, 24 trial calls, 21 trial 404s, 21 console errors, 1 failed checks
+[J7     5.3s] created T-124837-7f09
+[J7     6.9s] attempt 1: TRIAL LOST at right after create; first 404 GET events
+[J7     9.4s] created T-124841-20f2
+[J7    10.9s] attempt 2: TRIAL LOST at right after create; first 404 GET messages
+[J7    14.2s] created T-124845-8077
+[J7    15.8s] attempt 3: TRIAL LOST at right after create; first 404 GET messages
+[J7    17.1s] FAIL journey completed within 3 attempts trial lost every time
+[J7] saved: 37 api calls, 18 trial calls, 13 trial 404s, 13 console errors, 1 failed checks
+[J8     3.4s] created T-124853-5bda
+[J8     5.0s] attempt 1: TRIAL LOST at right after create; first 404 GET state
+[J8     6.6s] created T-124857-7eba
+[J8     8.2s] attempt 2: TRIAL LOST at right after create; first 404 GET kpis
+[J8    10.0s] created T-124900-589d
+[J8    11.5s] FAIL shortlist rejected []
+[J8    13.1s] FAIL re-request appears 
+[J8    13.2s] FAIL re-request approved []
+[J8] saved: 39 api calls, 23 trial calls, 19 trial 404s, 19 console errors, 3 failed checks
+[J9     3.0s] created T-124909-eadc
+[J9     4.6s] attempt 1: TRIAL LOST at right after create; first 404 GET kpis
+[J9     6.4s] created T-124912-6f88
+[J9     8.0s] attempt 2: TRIAL LOST at right after create; first 404 GET approvals
+[J9    10.3s] created T-124916-45c3
+[J9    11.9s] attempt 3: TRIAL LOST at right after create; first 404 GET events
+[J9    12.8s] FAIL journey completed within 3 attempts trial lost every time
+[J9    14.2s] created T-124920-c2d7
+[J9    15.8s] attempt 1: TRIAL LOST at right after create; first 404 GET approvals
+[J9    17.3s] created T-124923-2b70
+[J9    18.9s] attempt 2: TRIAL LOST at right after create; first 404 GET events
+[J9    20.6s] created T-124926-52a3
+[J9    22.2s] attempt 3: TRIAL LOST at right after create; first 404 GET state
+[J9    23.0s] FAIL journey completed within 3 attempts trial lost every time
+[J9] saved: 74 api calls, 36 trial calls, 30 trial 404s, 30 console errors, 2 failed checks
+[J10     2.0s] created T-124933-9d67
+[J10     3.6s] attempt 1: TRIAL LOST at right after create; first 404 GET events
+[J10     5.1s] created T-124936-5e98
+[J10     6.7s] attempt 2: TRIAL LOST at right after create; first 404 GET events
+[J10     8.5s] created T-124939-2d21
+[J10    10.1s] attempt 3: TRIAL LOST at right after create; first 404 GET messages
+[J10    10.9s] FAIL journey completed within 3 attempts trial lost every time
+[J10] saved: 38 api calls, 18 trial calls, 14 trial 404s, 14 console errors, 1 failed checks
+[J11     1.7s] PASS deep link /predose (no trial) renders 200 1450 ms h1=Design, recruitment and screening
+[J11     2.7s] PASS deep link /portal (no trial) renders 200 995 ms h1=Apply to the study
+[J11     4.5s] PASS deep link /dosing (no trial) renders 200 1783 ms h1=Dosing
+[J11     5.3s] PASS deep link /postdose (no trial) renders 200 841 ms h1=Post-dosing
+[J11     9.0s] created T-124953-fef9
+[J11    10.7s] attempt 1: TRIAL LOST at right after create; first 404 GET approvals
+[J11    14.6s] created T-124959-2afe
+[J11    16.2s] attempt 2: TRIAL LOST at right after create; first 404 GET events
+[J11    17.8s] created T-125002-2350
+[J11    19.4s] attempt 3: TRIAL LOST at right after create; first 404 GET kpis
+[J11    20.7s] FAIL journey completed within 3 attempts trial lost every time
+[J11] saved: 40 api calls, 18 trial calls, 15 trial 404s, 15 console errors, 1 failed checks
+[J12-dark     2.2s] created T-125009-b578
+[J12-dark     5.6s] attempt 1: TRIAL LOST at 390px /; first 404 GET kpis
+[J12-dark     7.3s] created T-125014-0e69
+[J12-dark     8.8s] attempt 2: TRIAL LOST at right after create; first 404 GET events
+[J12-dark    10.6s] created T-125017-8cc6
+[J12-dark    13.8s] attempt 3: TRIAL LOST at 390px /; first 404 GET events
+[J12-dark    14.8s] FAIL journey completed within 3 attempts trial lost every time
+[J12-dark] saved: 50 api calls, 30 trial calls, 23 trial 404s, 23 console errors, 1 failed checks
+[J12-light     2.2s] created T-125024-d90c
+[J12-light     3.7s] attempt 1: TRIAL LOST at right after create; first 404 GET state
+[J12-light     5.3s] created T-125027-acd9
+[J12-light     6.9s] attempt 2: TRIAL LOST at right after create; first 404 GET state
+[J12-light     9.1s] created T-125030-fb72
+[J12-light    12.3s] attempt 3: TRIAL LOST at 390px /; first 404 GET approvals
+[J12-light    13.1s] FAIL journey completed within 3 attempts trial lost every time
+[J12-light] saved: 44 api calls, 24 trial calls, 19 trial 404s, 19 console errors, 1 failed checks
+[J13     2.0s] created T-125039-6e04
+[J13     3.6s] attempt 1: TRIAL LOST at right after create; first 404 GET messages
+[J13     5.3s] created T-125042-78ad
+[J13     6.9s] attempt 2: TRIAL LOST at right after create; first 404 GET events
+[J13     8.9s] created T-125046-8fde
+[J13    12.5s] play stopped by itself after 2.1s: Setup before day 1 of 90
+[J13    12.5s] play: {'s': 2.1, 'calls': 1, 'steps': 1, 'step_status': {404: 1}, 'step_ms_max': 161, 'trial_404': 1, 'stopped_at': 2.1, 'headline': 'Setup before day 1 of 90'}
+[J13    13.0s] step30: [{'status': 404, 'ms': 217, 'day': '{"detail":"no trial T-125046-8fde in this server session; create one"}'}, {'status': 404, 'ms': 114, 'day': '{"detail":"no trial T-125046-8fde in this server session; create one"}'}, {'status': 404, 'ms': 134, 'day': '{"detail":"no trial T-125046-8fde in this server session; create one"}'}]
+[J13    13.0s] PASS step 30 days under maxDuration 60 s [{'status': 404, 'ms': 217, 'day': '{"detail":"no trial T-125046-8fde in this server session; create one"}'}, {'status': 404, 'ms': 114, 'day': '{"detail":"no trial T-125046-8fde in this server session; create one"}'}, {'status': 404, 'ms': 134, 'day': '{"detail":"no trial T-125046-8fde in this server session; create one"}'}]
+[J13] saved: 40 api calls, 24 trial calls, 21 trial 404s, 21 console errors, 0 failed checks
+[J14     0.5s] PASS health reports gemini on {'status': 200, 'json': {'ok': True, 'gemini': True, 'trials': ['T-123301-1fdc', 'T-124757-1a74', 'T-124807-e9fd', 'T-12
+[J14     2.3s] created T-125054-d561
+[J14     3.9s] attempt 1: TRIAL LOST at right after create; first 404 GET kpis
+[J14     5.4s] created T-125057-ab18
+[J14     6.9s] FAIL dock shows Gemini on GEMINI ON
+[J14     7.1s] events mentioning gemini/llm: 0 e.g. []
+[J14     7.9s] attempt 2: TRIAL LOST at predose gemini; first 404 GET messages
+[J14     9.5s] created T-125101-42bc
+[J14    11.0s] FAIL dock shows Gemini on GEMINI ON
+[J14    11.2s] events mentioning gemini/llm: 0 e.g. []
+[J14    12.1s] predose mentions gemini: 0
+[J14    12.2s] slowest calls: [('POST', '/api/trials', 200, 642), ('POST', '/api/trials', 200, 449), ('POST', '/api/trials', 200, 443), ('GET', '/api/trials/T-125101-42bc/record?sections=protocol%2Cprotoco', 200, 159), ('GET', '/api/protocols/example_psilocybin_trd.md', 200, 147)]
+[J14] saved: 55 api calls, 39 trial calls, 28 trial 404s, 28 console errors, 2 failed checks

@@ -1,0 +1,455 @@
+{
+ "trial": "T-124247-05c2",
+ "create_ms": 709,
+ "seq": [
+  {
+   "i": 0,
+   "t": 1794141768.14,
+   "status": 200,
+   "ms": 251,
+   "vercel_id": "lhr1::iad1::zq4zk-1794141768067-365f487cded3"
+  },
+  {
+   "i": 1,
+   "t": 1794141768.87,
+   "status": 200,
+   "ms": 231,
+   "vercel_id": "lhr1::iad1::85vtd-1794141768791-036286469e32"
+  },
+  {
+   "i": 2,
+   "t": 1794141769.74,
+   "status": 200,
+   "ms": 363,
+   "vercel_id": "lhr1::iad1::qmzfl-1794141769665-b0863079762d"
+  },
+  {
+   "i": 3,
+   "t": 1794141770.47,
+   "status": 200,
+   "ms": 227,
+   "vercel_id": "lhr1::iad1::2k2j8-1794141770387-81eaa05ba3d6"
+  },
+  {
+   "i": 4,
+   "t": 1794141771.19,
+   "status": 200,
+   "ms": 216,
+   "vercel_id": "lhr1::iad1::55rmm-1794141771100-b947f4c1a609"
+  },
+  {
+   "i": 5,
+   "t": 1794141772.01,
+   "status": 200,
+   "ms": 323,
+   "vercel_id": "lhr1::iad1::x9pfd-1794141771938-f81da254dbf4"
+  },
+  {
+   "i": 6,
+   "t": 1794141773.75,
+   "status": 200,
+   "ms": 1234,
+   "vercel_id": "lhr1::iad1::t284j-1794141773678-8f61522421ca"
+  },
+  {
+   "i": 7,
+   "t": 1794141774.52,
+   "status": 200,
+   "ms": 267,
+   "vercel_id": "lhr1::iad1::gdlbj-1794141774452-f87949c01bba"
+  },
+  {
+   "i": 8,
+   "t": 1794141775.34,
+   "status": 200,
+   "ms": 318,
+   "vercel_id": "lhr1::iad1::z5mgs-1794141775258-a9da994978b5"
+  },
+  {
+   "i": 9,
+   "t": 1794141776.02,
+   "status": 200,
+   "ms": 180,
+   "vercel_id": "lhr1::iad1::gdlbj-1794141775949-e7ffbd7e6bc2"
+  },
+  {
+   "i": 10,
+   "t": 1794141776.69,
+   "status": 200,
+   "ms": 172,
+   "vercel_id": "lhr1::iad1::qd69h-1794141776619-f1f50e128a4b"
+  },
+  {
+   "i": 11,
+   "t": 1794141777.36,
+   "status": 200,
+   "ms": 161,
+   "vercel_id": "lhr1::iad1::j28hj-1794141777287-4177143e92fe"
+  },
+  {
+   "i": 12,
+   "t": 1794141778.05,
+   "status": 200,
+   "ms": 192,
+   "vercel_id": "lhr1::iad1::f24hc-1794141777978-d4324d8b3f73"
+  },
+  {
+   "i": 13,
+   "t": 1794141778.72,
+   "status": 200,
+   "ms": 165,
+   "vercel_id": "lhr1::iad1::t98pn-1794141778649-056401e95202"
+  },
+  {
+   "i": 14,
+   "t": 1794141779.52,
+   "status": 200,
+   "ms": 295,
+   "vercel_id": "lhr1::iad1::4v4r7-1794141779447-c6ea9ab95a2a"
+  },
+  {
+   "i": 15,
+   "t": 1794141780.31,
+   "status": 200,
+   "ms": 286,
+   "vercel_id": "lhr1::iad1::brlzg-1794141780229-c609216fb8b7"
+  },
+  {
+   "i": 16,
+   "t": 1794141780.98,
+   "status": 200,
+   "ms": 167,
+   "vercel_id": "lhr1::iad1::t98pn-1794141780903-81ee3c2ef5b3"
+  },
+  {
+   "i": 17,
+   "t": 1794141781.79,
+   "status": 200,
+   "ms": 307,
+   "vercel_id": "lhr1::iad1::t284j-1794141781718-f610c66b4162"
+  },
+  {
+   "i": 18,
+   "t": 1794141783.59,
+   "status": 200,
+   "ms": 1298,
+   "vercel_id": "lhr1::iad1::j28hj-1794141783481-46edac48c1e0"
+  },
+  {
+   "i": 19,
+   "t": 1794141785.28,
+   "status": 200,
+   "ms": 1188,
+   "vercel_id": "lhr1::iad1::f24hc-1794141785212-6da3968bcf4a"
+  },
+  {
+   "i": 20,
+   "t": 1794141785.95,
+   "status": 200,
+   "ms": 163,
+   "vercel_id": "lhr1::iad1::qts2v-1794141785885-0726ca85b63b"
+  },
+  {
+   "i": 21,
+   "t": 1794141787.74,
+   "status": 200,
+   "ms": 1287,
+   "vercel_id": "lhr1::iad1::ssqwd-1794141787661-307ec8c4dbf2"
+  },
+  {
+   "i": 22,
+   "t": 1794141788.43,
+   "status": 200,
+   "ms": 188,
+   "vercel_id": "lhr1::iad1::mb5vh-1794141788355-7c9f53faf265"
+  },
+  {
+   "i": 23,
+   "t": 1794141789.1,
+   "status": 200,
+   "ms": 167,
+   "vercel_id": "lhr1::iad1::f24hc-1794141789028-fddec633777d"
+  },
+  {
+   "i": 24,
+   "t": 1794141789.78,
+   "status": 200,
+   "ms": 177,
+   "vercel_id": "lhr1::iad1::7ltkt-1794141789710-6a28c520f063"
+  },
+  {
+   "i": 25,
+   "t": 1794141790.47,
+   "status": 200,
+   "ms": 190,
+   "vercel_id": "lhr1::iad1::85vtd-1794141790403-504ce1529006"
+  },
+  {
+   "i": 26,
+   "t": 1794141791.16,
+   "status": 200,
+   "ms": 184,
+   "vercel_id": "lhr1::iad1::s27c9-1794141791086-cbf1cff2fdce"
+  },
+  {
+   "i": 27,
+   "t": 1794141791.86,
+   "status": 200,
+   "ms": 198,
+   "vercel_id": "lhr1::iad1::92xlz-1794141791789-14a46f2cd753"
+  },
+  {
+   "i": 28,
+   "t": 1794141792.6,
+   "status": 200,
+   "ms": 242,
+   "vercel_id": "lhr1::iad1::x9pfd-1794141792507-f1f3667594ca"
+  },
+  {
+   "i": 29,
+   "t": 1794141793.36,
+   "status": 200,
+   "ms": 260,
+   "vercel_id": "lhr1::iad1::f9v6t-1794141793297-5e905386ec59"
+  }
+ ],
+ "bursts": [
+  [
+   {
+    "path": "state",
+    "status": 404,
+    "ms": 231
+   },
+   {
+    "path": "kpis",
+    "status": 404,
+    "ms": 240
+   },
+   {
+    "path": "events?limit=40",
+    "status": 200,
+    "ms": 227
+   },
+   {
+    "path": "approvals",
+    "status": 404,
+    "ms": 231
+   }
+  ],
+  [
+   {
+    "path": "state",
+    "status": 404,
+    "ms": 315
+   },
+   {
+    "path": "kpis",
+    "status": 404,
+    "ms": 187
+   },
+   {
+    "path": "events?limit=40",
+    "status": 404,
+    "ms": 188
+   },
+   {
+    "path": "approvals",
+    "status": 404,
+    "ms": 206
+   }
+  ],
+  [
+   {
+    "path": "state",
+    "status": 404,
+    "ms": 226
+   },
+   {
+    "path": "kpis",
+    "status": 404,
+    "ms": 1193
+   },
+   {
+    "path": "events?limit=40",
+    "status": 404,
+    "ms": 173
+   },
+   {
+    "path": "approvals",
+    "status": 404,
+    "ms": 1191
+   }
+  ],
+  [
+   {
+    "path": "state",
+    "status": 404,
+    "ms": 251
+   },
+   {
+    "path": "kpis",
+    "status": 404,
+    "ms": 232
+   },
+   {
+    "path": "events?limit=40",
+    "status": 404,
+    "ms": 224
+   },
+   {
+    "path": "approvals",
+    "status": 404,
+    "ms": 207
+   }
+  ],
+  [
+   {
+    "path": "state",
+    "status": 404,
+    "ms": 184
+   },
+   {
+    "path": "kpis",
+    "status": 404,
+    "ms": 285
+   },
+   {
+    "path": "events?limit=40",
+    "status": 404,
+    "ms": 227
+   },
+   {
+    "path": "approvals",
+    "status": 404,
+    "ms": 243
+   }
+  ],
+  [
+   {
+    "path": "state",
+    "status": 404,
+    "ms": 241
+   },
+   {
+    "path": "kpis",
+    "status": 404,
+    "ms": 260
+   },
+   {
+    "path": "events?limit=40",
+    "status": 404,
+    "ms": 222
+   },
+   {
+    "path": "approvals",
+    "status": 404,
+    "ms": 267
+   }
+  ],
+  [
+   {
+    "path": "state",
+    "status": 404,
+    "ms": 1221
+   },
+   {
+    "path": "kpis",
+    "status": 404,
+    "ms": 1256
+   },
+   {
+    "path": "events?limit=40",
+    "status": 404,
+    "ms": 230
+   },
+   {
+    "path": "approvals",
+    "status": 404,
+    "ms": 671
+   }
+  ],
+  [
+   {
+    "path": "state",
+    "status": 404,
+    "ms": 214
+   },
+   {
+    "path": "kpis",
+    "status": 404,
+    "ms": 206
+   },
+   {
+    "path": "events?limit=40",
+    "status": 404,
+    "ms": 628
+   },
+   {
+    "path": "approvals",
+    "status": 404,
+    "ms": 207
+   }
+  ]
+ ],
+ "health": [
+  {
+   "ms": 189,
+   "has_trial": false,
+   "n_trials": 1
+  },
+  {
+   "ms": 176,
+   "has_trial": false,
+   "n_trials": 1
+  },
+  {
+   "ms": 247,
+   "has_trial": false,
+   "n_trials": 1
+  },
+  {
+   "ms": 173,
+   "has_trial": false,
+   "n_trials": 1
+  },
+  {
+   "ms": 185,
+   "has_trial": false,
+   "n_trials": 1
+  },
+  {
+   "ms": 285,
+   "has_trial": false,
+   "n_trials": 1
+  },
+  {
+   "ms": 164,
+   "has_trial": false,
+   "n_trials": 1
+  },
+  {
+   "ms": 202,
+   "has_trial": false,
+   "n_trials": 1
+  },
+  {
+   "ms": 356,
+   "has_trial": false,
+   "n_trials": 1
+  },
+  {
+   "ms": 225,
+   "has_trial": false,
+   "n_trials": 1
+  }
+ ],
+ "summary": {
+  "seq_404": 0,
+  "seq_n": 30,
+  "burst_404": 31,
+  "burst_n": 32,
+  "bursts_with_404": 8,
+  "bursts": 8,
+  "health_distinct_sets": 1
+ }
+}

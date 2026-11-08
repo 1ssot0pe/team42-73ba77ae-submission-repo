@@ -1,0 +1,738 @@
+{
+ "journey": "J3",
+ "url": "https://parallax-two-tau.vercel.app",
+ "elapsed_s": 11.24,
+ "viewport": {
+  "width": 1440,
+  "height": 1000
+ },
+ "color_scheme": "light",
+ "serial": false,
+ "api_calls": 38,
+ "trial_calls": 18,
+ "trial_404": [
+  {
+   "t": 2.19,
+   "trial": "T-124751-0dfc",
+   "call": "GET approvals",
+   "page": "/",
+   "vercel_id": "lhr1::iad1::pgwdj-1794142071598-16297bfb48c9",
+   "body": "{\"detail\":\"no trial T-124751-0dfc in this server session; create one\"}"
+  },
+  {
+   "t": 2.19,
+   "trial": "T-124751-0dfc",
+   "call": "GET events",
+   "page": "/",
+   "vercel_id": "lhr1::iad1::lq9m7-1794142071601-78a9380858a5",
+   "body": "{\"detail\":\"no trial T-124751-0dfc in this server session; create one\"}"
+  },
+  {
+   "t": 2.2,
+   "trial": "T-124751-0dfc",
+   "call": "GET messages",
+   "page": "/",
+   "vercel_id": "lhr1::iad1::p2qwx-1794142071605-3564447e7db1",
+   "body": "{\"detail\":\"no trial T-124751-0dfc in this server session; create one\"}"
+  },
+  {
+   "t": 2.2,
+   "trial": "T-124751-0dfc",
+   "call": "GET state",
+   "page": "/",
+   "vercel_id": "lhr1::iad1::8jkjv-1794142071605-fce31d600344",
+   "body": "{\"detail\":\"no trial T-124751-0dfc in this server session; create one\"}"
+  },
+  {
+   "t": 2.2,
+   "trial": "T-124751-0dfc",
+   "call": "GET events",
+   "page": "/",
+   "vercel_id": "lhr1::iad1::p4l9n-1794142071605-6a10ca7b8f98",
+   "body": "{\"detail\":\"no trial T-124751-0dfc in this server session; create one\"}"
+  },
+  {
+   "t": 5.45,
+   "trial": "T-124754-9f5d",
+   "call": "GET approvals",
+   "page": "/",
+   "vercel_id": "lhr1::iad1::4g7d4-1794142074845-1a95ac78fdc5",
+   "body": "{\"detail\":\"no trial T-124754-9f5d in this server session; create one\"}"
+  },
+  {
+   "t": 5.46,
+   "trial": "T-124754-9f5d",
+   "call": "GET kpis",
+   "page": "/",
+   "vercel_id": "lhr1::iad1::r6nb9-1794142074867-4eb67bf195bf",
+   "body": "{\"detail\":\"no trial T-124754-9f5d in this server session; create one\"}"
+  },
+  {
+   "t": 5.48,
+   "trial": "T-124754-9f5d",
+   "call": "GET state",
+   "page": "/",
+   "vercel_id": "lhr1::iad1::mtlbs-1794142074867-549b087cc556",
+   "body": "{\"detail\":\"no trial T-124754-9f5d in this server session; create one\"}"
+  },
+  {
+   "t": 8.61,
+   "trial": "T-124757-1a74",
+   "call": "GET approvals",
+   "page": "/",
+   "vercel_id": "lhr1::iad1::pgwdj-1794142078016-445f16526d76",
+   "body": "{\"detail\":\"no trial T-124757-1a74 in this server session; create one\"}"
+  },
+  {
+   "t": 8.61,
+   "trial": "T-124757-1a74",
+   "call": "GET events",
+   "page": "/",
+   "vercel_id": "lhr1::iad1::mtlbs-1794142078024-e138f1493852",
+   "body": "{\"detail\":\"no trial T-124757-1a74 in this server session; create one\"}"
+  },
+  {
+   "t": 8.62,
+   "trial": "T-124757-1a74",
+   "call": "GET kpis",
+   "page": "/",
+   "vercel_id": "lhr1::iad1::r6nb9-1794142078017-4d716d7f22da",
+   "body": "{\"detail\":\"no trial T-124757-1a74 in this server session; create one\"}"
+  },
+  {
+   "t": 8.62,
+   "trial": "T-124757-1a74",
+   "call": "GET state",
+   "page": "/",
+   "vercel_id": "lhr1::iad1::zlxpm-1794142078024-da206750ca39",
+   "body": "{\"detail\":\"no trial T-124757-1a74 in this server session; create one\"}"
+  },
+  {
+   "t": 8.62,
+   "trial": "T-124757-1a74",
+   "call": "GET events",
+   "page": "/",
+   "vercel_id": "lhr1::iad1::m7wt5-1794142078017-2ca1a26d7749",
+   "body": "{\"detail\":\"no trial T-124757-1a74 in this server session; create one\"}"
+  }
+ ],
+ "trial_404_rate": 0.7222,
+ "console_errors": [
+  {
+   "t": 2.19,
+   "text": "Failed to load resource: the server responded with a status of 404 ()",
+   "url": "https://parallax-two-tau.vercel.app/"
+  },
+  {
+   "t": 2.19,
+   "text": "Failed to load resource: the server responded with a status of 404 ()",
+   "url": "https://parallax-two-tau.vercel.app/"
+  },
+  {
+   "t": 2.2,
+   "text": "Failed to load resource: the server responded with a status of 404 ()",
+   "url": "https://parallax-two-tau.vercel.app/"
+  },
+  {
+   "t": 2.2,
+   "text": "Failed to load resource: the server responded with a status of 404 ()",
+   "url": "https://parallax-two-tau.vercel.app/"
+  },
+  {
+   "t": 2.2,
+   "text": "Failed to load resource: the server responded with a status of 404 ()",
+   "url": "https://parallax-two-tau.vercel.app/"
+  },
+  {
+   "t": 5.45,
+   "text": "Failed to load resource: the server responded with a status of 404 ()",
+   "url": "https://parallax-two-tau.vercel.app/"
+  },
+  {
+   "t": 5.46,
+   "text": "Failed to load resource: the server responded with a status of 404 ()",
+   "url": "https://parallax-two-tau.vercel.app/"
+  },
+  {
+   "t": 5.47,
+   "text": "Failed to load resource: the server responded with a status of 404 ()",
+   "url": "https://parallax-two-tau.vercel.app/"
+  },
+  {
+   "t": 8.61,
+   "text": "Failed to load resource: the server responded with a status of 404 ()",
+   "url": "https://parallax-two-tau.vercel.app/"
+  },
+  {
+   "t": 8.61,
+   "text": "Failed to load resource: the server responded with a status of 404 ()",
+   "url": "https://parallax-two-tau.vercel.app/"
+  },
+  {
+   "t": 8.62,
+   "text": "Failed to load resource: the server responded with a status of 404 ()",
+   "url": "https://parallax-two-tau.vercel.app/"
+  },
+  {
+   "t": 8.62,
+   "text": "Failed to load resource: the server responded with a status of 404 ()",
+   "url": "https://parallax-two-tau.vercel.app/"
+  },
+  {
+   "t": 8.62,
+   "text": "Failed to load resource: the server responded with a status of 404 ()",
+   "url": "https://parallax-two-tau.vercel.app/"
+  }
+ ],
+ "page_errors": [],
+ "failed": [
+  {
+   "t": 2.19,
+   "method": "GET",
+   "path": "/api/trials/T-124751-0dfc/approvals?status=all",
+   "status": 404,
+   "ms": 125,
+   "vercel_id": "lhr1::iad1::pgwdj-1794142071598-16297bfb48c9",
+   "body": "{\"detail\":\"no trial T-124751-0dfc in this server session; create one\"}"
+  },
+  {
+   "t": 2.19,
+   "method": "GET",
+   "path": "/api/trials/T-124751-0dfc/events?limit=400",
+   "status": 404,
+   "ms": 125,
+   "vercel_id": "lhr1::iad1::lq9m7-1794142071601-78a9380858a5",
+   "body": "{\"detail\":\"no trial T-124751-0dfc in this server session; create one\"}"
+  },
+  {
+   "t": 2.2,
+   "method": "GET",
+   "path": "/api/trials/T-124751-0dfc/messages",
+   "status": 404,
+   "ms": 129,
+   "vercel_id": "lhr1::iad1::p2qwx-1794142071605-3564447e7db1",
+   "body": "{\"detail\":\"no trial T-124751-0dfc in this server session; create one\"}"
+  },
+  {
+   "t": 2.2,
+   "method": "GET",
+   "path": "/api/trials/T-124751-0dfc/state",
+   "status": 404,
+   "ms": 131,
+   "vercel_id": "lhr1::iad1::8jkjv-1794142071605-fce31d600344",
+   "body": "{\"detail\":\"no trial T-124751-0dfc in this server session; create one\"}"
+  },
+  {
+   "t": 2.2,
+   "method": "GET",
+   "path": "/api/trials/T-124751-0dfc/events?module=master&limit=40",
+   "status": 404,
+   "ms": 134,
+   "vercel_id": "lhr1::iad1::p4l9n-1794142071605-6a10ca7b8f98",
+   "body": "{\"detail\":\"no trial T-124751-0dfc in this server session; create one\"}"
+  },
+  {
+   "t": 5.45,
+   "method": "GET",
+   "path": "/api/trials/T-124754-9f5d/approvals?status=all",
+   "status": 404,
+   "ms": 165,
+   "vercel_id": "lhr1::iad1::4g7d4-1794142074845-1a95ac78fdc5",
+   "body": "{\"detail\":\"no trial T-124754-9f5d in this server session; create one\"}"
+  },
+  {
+   "t": 5.46,
+   "method": "GET",
+   "path": "/api/trials/T-124754-9f5d/kpis",
+   "status": 404,
+   "ms": 184,
+   "vercel_id": "lhr1::iad1::r6nb9-1794142074867-4eb67bf195bf",
+   "body": "{\"detail\":\"no trial T-124754-9f5d in this server session; create one\"}"
+  },
+  {
+   "t": 5.47,
+   "method": "GET",
+   "path": "/api/trials/T-124754-9f5d/state",
+   "status": 404,
+   "ms": 193,
+   "vercel_id": "lhr1::iad1::mtlbs-1794142074867-549b087cc556",
+   "body": "{\"detail\":\"no trial T-124754-9f5d in this server session; create one\"}"
+  },
+  {
+   "t": 8.61,
+   "method": "GET",
+   "path": "/api/trials/T-124757-1a74/approvals?status=all",
+   "status": 404,
+   "ms": 137,
+   "vercel_id": "lhr1::iad1::pgwdj-1794142078016-445f16526d76",
+   "body": "{\"detail\":\"no trial T-124757-1a74 in this server session; create one\"}"
+  },
+  {
+   "t": 8.61,
+   "method": "GET",
+   "path": "/api/trials/T-124757-1a74/events?module=master&limit=40",
+   "status": 404,
+   "ms": 141,
+   "vercel_id": "lhr1::iad1::mtlbs-1794142078024-e138f1493852",
+   "body": "{\"detail\":\"no trial T-124757-1a74 in this server session; create one\"}"
+  },
+  {
+   "t": 8.62,
+   "method": "GET",
+   "path": "/api/trials/T-124757-1a74/kpis",
+   "status": 404,
+   "ms": 145,
+   "vercel_id": "lhr1::iad1::r6nb9-1794142078017-4d716d7f22da",
+   "body": "{\"detail\":\"no trial T-124757-1a74 in this server session; create one\"}"
+  },
+  {
+   "t": 8.62,
+   "method": "GET",
+   "path": "/api/trials/T-124757-1a74/state",
+   "status": 404,
+   "ms": 146,
+   "vercel_id": "lhr1::iad1::zlxpm-1794142078024-da206750ca39",
+   "body": "{\"detail\":\"no trial T-124757-1a74 in this server session; create one\"}"
+  },
+  {
+   "t": 8.62,
+   "method": "GET",
+   "path": "/api/trials/T-124757-1a74/events?limit=400",
+   "status": 404,
+   "ms": 147,
+   "vercel_id": "lhr1::iad1::m7wt5-1794142078017-2ca1a26d7749",
+   "body": "{\"detail\":\"no trial T-124757-1a74 in this server session; create one\"}"
+  }
+ ],
+ "checks": [
+  {
+   "check": "journey completed within 3 attempts",
+   "ok": false,
+   "detail": "trial lost every time"
+  }
+ ],
+ "timings": {
+  "losses": [
+   {
+    "attempt": 1,
+    "where": "right after create",
+    "s_after_attempt_start": 2.3,
+    "first_404": {
+     "call": "GET approvals",
+     "page": "/",
+     "t": 2.19
+    },
+    "n404": 5
+   },
+   {
+    "attempt": 2,
+    "where": "right after create",
+    "s_after_attempt_start": 2.4,
+    "first_404": {
+     "call": "GET approvals",
+     "page": "/",
+     "t": 5.45
+    },
+    "n404": 3
+   },
+   {
+    "attempt": 3,
+    "where": "right after create",
+    "s_after_attempt_start": 2.3,
+    "first_404": {
+     "call": "GET approvals",
+     "page": "/",
+     "t": 8.61
+    },
+    "n404": 5
+   }
+  ],
+  "create_ms": [
+   593,
+   664,
+   629
+  ],
+  "attempts_used": 3
+ },
+ "screenshots": [
+  "docs/testing/screenshots/prod-J3-1.png trial lost at right after create",
+  "docs/testing/screenshots/prod-J3-2.png trial lost at right after create",
+  "docs/testing/screenshots/prod-J3-3.png trial lost at right after create",
+  "docs/testing/screenshots/prod-J3-4.png FAIL journey completed within 3 attempts"
+ ],
+ "notes": [
+  "2.06s created T-124751-0dfc",
+  "3.66s attempt 1: TRIAL LOST at right after create; first 404 GET approvals",
+  "5.28s created T-124754-9f5d",
+  "6.87s attempt 2: TRIAL LOST at right after create; first 404 GET approvals",
+  "8.47s created T-124757-1a74",
+  "10.06s attempt 3: TRIAL LOST at right after create; first 404 GET approvals",
+  "11.16s FAIL journey completed within 3 attempts trial lost every time"
+ ],
+ "api_latency": {
+  "GET /api/protocols": {
+   "n": 7,
+   "p50": 136,
+   "max": 362
+  },
+  "GET /api/protocols/example_mdma_ptsd.md": {
+   "n": 3,
+   "p50": 171,
+   "max": 191
+  },
+  "GET /api/protocols/example_psilocybin_trd.md": {
+   "n": 7,
+   "p50": 138,
+   "max": 175
+  },
+  "GET /api/trials/{id}/approvals": {
+   "n": 3,
+   "p50": 137,
+   "max": 165
+  },
+  "GET /api/trials/{id}/events": {
+   "n": 6,
+   "p50": 147,
+   "max": 182
+  },
+  "GET /api/trials/{id}/kpis": {
+   "n": 3,
+   "p50": 145,
+   "max": 184
+  },
+  "GET /api/trials/{id}/messages": {
+   "n": 3,
+   "p50": 138,
+   "max": 201
+  },
+  "GET /api/trials/{id}/state": {
+   "n": 3,
+   "p50": 146,
+   "max": 193
+  },
+  "POST /api/trials": {
+   "n": 3,
+   "p50": 506,
+   "max": 509
+  }
+ },
+ "api": [
+  {
+   "t": 0.68,
+   "method": "GET",
+   "path": "/api/protocols",
+   "status": 200,
+   "ms": 125,
+   "vercel_id": "lhr1::iad1::vcpgk-1794142070080-eae25ca27e17"
+  },
+  {
+   "t": 0.82,
+   "method": "GET",
+   "path": "/api/protocols/example_psilocybin_trd.md",
+   "status": 200,
+   "ms": 142,
+   "vercel_id": "lhr1::iad1::p2qwx-1794142070227-bdd099d6da5f"
+  },
+  {
+   "t": 1.52,
+   "method": "GET",
+   "path": "/api/protocols/example_mdma_ptsd.md",
+   "status": 200,
+   "ms": 126,
+   "vercel_id": "lhr1::iad1::pgwdj-1794142070925-e71730cdbabd"
+  },
+  {
+   "t": 2.05,
+   "method": "POST",
+   "path": "/api/trials",
+   "status": 200,
+   "ms": 506,
+   "vercel_id": "lhr1::iad1::lq9m7-1794142071100-c0636c215c3d"
+  },
+  {
+   "t": 2.19,
+   "method": "GET",
+   "path": "/api/trials/T-124751-0dfc/kpis",
+   "status": 200,
+   "ms": 121,
+   "vercel_id": "lhr1::iad1::mgzm9-1794142071598-dd333c91e331"
+  },
+  {
+   "t": 2.19,
+   "method": "GET",
+   "path": "/api/trials/T-124751-0dfc/approvals?status=all",
+   "status": 404,
+   "ms": 125,
+   "vercel_id": "lhr1::iad1::pgwdj-1794142071598-16297bfb48c9",
+   "body": "{\"detail\":\"no trial T-124751-0dfc in this server session; create one\"}"
+  },
+  {
+   "t": 2.19,
+   "method": "GET",
+   "path": "/api/trials/T-124751-0dfc/events?limit=400",
+   "status": 404,
+   "ms": 125,
+   "vercel_id": "lhr1::iad1::lq9m7-1794142071601-78a9380858a5",
+   "body": "{\"detail\":\"no trial T-124751-0dfc in this server session; create one\"}"
+  },
+  {
+   "t": 2.2,
+   "method": "GET",
+   "path": "/api/trials/T-124751-0dfc/messages",
+   "status": 404,
+   "ms": 129,
+   "vercel_id": "lhr1::iad1::p2qwx-1794142071605-3564447e7db1",
+   "body": "{\"detail\":\"no trial T-124751-0dfc in this server session; create one\"}"
+  },
+  {
+   "t": 2.2,
+   "method": "GET",
+   "path": "/api/trials/T-124751-0dfc/state",
+   "status": 404,
+   "ms": 131,
+   "vercel_id": "lhr1::iad1::8jkjv-1794142071605-fce31d600344",
+   "body": "{\"detail\":\"no trial T-124751-0dfc in this server session; create one\"}"
+  },
+  {
+   "t": 2.2,
+   "method": "GET",
+   "path": "/api/trials/T-124751-0dfc/events?module=master&limit=40",
+   "status": 404,
+   "ms": 134,
+   "vercel_id": "lhr1::iad1::p4l9n-1794142071605-6a10ca7b8f98",
+   "body": "{\"detail\":\"no trial T-124751-0dfc in this server session; create one\"}"
+  },
+  {
+   "t": 2.31,
+   "method": "GET",
+   "path": "/api/protocols",
+   "status": 200,
+   "ms": 110,
+   "vercel_id": "lhr1::iad1::p4l9n-1794142071718-102578d6f327"
+  },
+  {
+   "t": 2.46,
+   "method": "GET",
+   "path": "/api/protocols/example_psilocybin_trd.md",
+   "status": 200,
+   "ms": 148,
+   "vercel_id": "lhr1::iad1::pgwdj-1794142071866-5552859bdcc5"
+  },
+  {
+   "t": 3.86,
+   "method": "GET",
+   "path": "/api/protocols",
+   "status": 200,
+   "ms": 128,
+   "vercel_id": "lhr1::iad1::4g7d4-1794142073271-0c764a444128"
+  },
+  {
+   "t": 3.99,
+   "method": "GET",
+   "path": "/api/protocols/example_psilocybin_trd.md",
+   "status": 200,
+   "ms": 130,
+   "vercel_id": "lhr1::iad1::mgzm9-1794142073395-6e3718abcb12"
+  },
+  {
+   "t": 4.74,
+   "method": "GET",
+   "path": "/api/protocols/example_mdma_ptsd.md",
+   "status": 200,
+   "ms": 191,
+   "vercel_id": "lhr1::iad1::pgwdj-1794142074129-bca8bda85a92"
+  },
+  {
+   "t": 5.28,
+   "method": "POST",
+   "path": "/api/trials",
+   "status": 200,
+   "ms": 509,
+   "vercel_id": "lhr1::iad1::mgzm9-1794142074316-524f20777296"
+  },
+  {
+   "t": 5.44,
+   "method": "GET",
+   "path": "/api/trials/T-124754-9f5d/events?limit=400",
+   "status": 200,
+   "ms": 158,
+   "vercel_id": "lhr1::iad1::pgwdj-1794142074845-5ea6b46824c1"
+  },
+  {
+   "t": 5.45,
+   "method": "GET",
+   "path": "/api/trials/T-124754-9f5d/approvals?status=all",
+   "status": 404,
+   "ms": 165,
+   "vercel_id": "lhr1::iad1::4g7d4-1794142074845-1a95ac78fdc5",
+   "body": "{\"detail\":\"no trial T-124754-9f5d in this server session; create one\"}"
+  },
+  {
+   "t": 5.46,
+   "method": "GET",
+   "path": "/api/trials/T-124754-9f5d/events?module=master&limit=40",
+   "status": 200,
+   "ms": 182,
+   "vercel_id": "lhr1::iad1::zlxpm-1794142074867-484dc34cb6b2"
+  },
+  {
+   "t": 5.46,
+   "method": "GET",
+   "path": "/api/trials/T-124754-9f5d/kpis",
+   "status": 404,
+   "ms": 184,
+   "vercel_id": "lhr1::iad1::r6nb9-1794142074867-4eb67bf195bf",
+   "body": "{\"detail\":\"no trial T-124754-9f5d in this server session; create one\"}"
+  },
+  {
+   "t": 5.47,
+   "method": "GET",
+   "path": "/api/trials/T-124754-9f5d/state",
+   "status": 404,
+   "ms": 193,
+   "vercel_id": "lhr1::iad1::mtlbs-1794142074867-549b087cc556",
+   "body": "{\"detail\":\"no trial T-124754-9f5d in this server session; create one\"}"
+  },
+  {
+   "t": 5.48,
+   "method": "GET",
+   "path": "/api/trials/T-124754-9f5d/messages",
+   "status": 200,
+   "ms": 201,
+   "vercel_id": "lhr1::iad1::lsdfw-1794142074867-f4893f79afaf"
+  },
+  {
+   "t": 5.63,
+   "method": "GET",
+   "path": "/api/protocols",
+   "status": 200,
+   "ms": 152,
+   "vercel_id": "lhr1::iad1::mgzm9-1794142075031-46858cee4997"
+  },
+  {
+   "t": 5.8,
+   "method": "GET",
+   "path": "/api/protocols/example_psilocybin_trd.md",
+   "status": 200,
+   "ms": 175,
+   "vercel_id": "lhr1::iad1::lsdfw-1794142075207-5b8e9fe06989"
+  },
+  {
+   "t": 7.09,
+   "method": "GET",
+   "path": "/api/protocols",
+   "status": 200,
+   "ms": 136,
+   "vercel_id": "lhr1::iad1::lsdfw-1794142076493-3c805a2e4282"
+  },
+  {
+   "t": 7.23,
+   "method": "GET",
+   "path": "/api/protocols/example_psilocybin_trd.md",
+   "status": 200,
+   "ms": 138,
+   "vercel_id": "lhr1::iad1::lsdfw-1794142076639-446823853410"
+  },
+  {
+   "t": 7.95,
+   "method": "GET",
+   "path": "/api/protocols/example_mdma_ptsd.md",
+   "status": 200,
+   "ms": 171,
+   "vercel_id": "lhr1::iad1::lsdfw-1794142077361-6a178ef7847b"
+  },
+  {
+   "t": 8.47,
+   "method": "POST",
+   "path": "/api/trials",
+   "status": 200,
+   "ms": 487,
+   "vercel_id": "lhr1::iad1::lsdfw-1794142077527-b30bfee8f935"
+  },
+  {
+   "t": 8.61,
+   "method": "GET",
+   "path": "/api/trials/T-124757-1a74/approvals?status=all",
+   "status": 404,
+   "ms": 137,
+   "vercel_id": "lhr1::iad1::pgwdj-1794142078016-445f16526d76",
+   "body": "{\"detail\":\"no trial T-124757-1a74 in this server session; create one\"}"
+  },
+  {
+   "t": 8.61,
+   "method": "GET",
+   "path": "/api/trials/T-124757-1a74/messages",
+   "status": 200,
+   "ms": 138,
+   "vercel_id": "lhr1::iad1::mgzm9-1794142078017-eae3c5dce7b4"
+  },
+  {
+   "t": 8.61,
+   "method": "GET",
+   "path": "/api/trials/T-124757-1a74/events?module=master&limit=40",
+   "status": 404,
+   "ms": 141,
+   "vercel_id": "lhr1::iad1::mtlbs-1794142078024-e138f1493852",
+   "body": "{\"detail\":\"no trial T-124757-1a74 in this server session; create one\"}"
+  },
+  {
+   "t": 8.62,
+   "method": "GET",
+   "path": "/api/trials/T-124757-1a74/kpis",
+   "status": 404,
+   "ms": 145,
+   "vercel_id": "lhr1::iad1::r6nb9-1794142078017-4d716d7f22da",
+   "body": "{\"detail\":\"no trial T-124757-1a74 in this server session; create one\"}"
+  },
+  {
+   "t": 8.62,
+   "method": "GET",
+   "path": "/api/trials/T-124757-1a74/state",
+   "status": 404,
+   "ms": 146,
+   "vercel_id": "lhr1::iad1::zlxpm-1794142078024-da206750ca39",
+   "body": "{\"detail\":\"no trial T-124757-1a74 in this server session; create one\"}"
+  },
+  {
+   "t": 8.62,
+   "method": "GET",
+   "path": "/api/trials/T-124757-1a74/events?limit=400",
+   "status": 404,
+   "ms": 147,
+   "vercel_id": "lhr1::iad1::m7wt5-1794142078017-2ca1a26d7749",
+   "body": "{\"detail\":\"no trial T-124757-1a74 in this server session; create one\"}"
+  },
+  {
+   "t": 8.98,
+   "method": "GET",
+   "path": "/api/protocols",
+   "status": 200,
+   "ms": 362,
+   "vercel_id": "lhr1::iad1::8jkjv-1794142078384-80ec7e0f76c8"
+  },
+  {
+   "t": 9.11,
+   "method": "GET",
+   "path": "/api/protocols/example_psilocybin_trd.md",
+   "status": 200,
+   "ms": 128,
+   "vercel_id": "lhr1::iad1::lsdfw-1794142078522-bec0bfa19ec9"
+  },
+  {
+   "t": 10.54,
+   "method": "GET",
+   "path": "/api/protocols",
+   "status": 200,
+   "ms": 170,
+   "vercel_id": "lhr1::iad1::pgwdj-1794142079949-ff5cf3693dff"
+  },
+  {
+   "t": 10.66,
+   "method": "GET",
+   "path": "/api/protocols/example_psilocybin_trd.md",
+   "status": 200,
+   "ms": 119,
+   "vercel_id": "lhr1::iad1::m7wt5-1794142080072-0d579c5e7d54"
+  }
+ ]
+}

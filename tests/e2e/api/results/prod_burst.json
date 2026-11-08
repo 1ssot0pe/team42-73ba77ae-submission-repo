@@ -1,0 +1,125 @@
+{
+ "base": "https://parallax-two-tau.vercel.app",
+ "at": "2026-11-08 12:47:55",
+ "burst": {
+  "rows": [
+   {
+    "ms": 329,
+    "status": 200,
+    "instance_trials": 6,
+    "vercel_id": "lhr1::iad1::qqzkx-1794142075743-68bc367dc88a"
+   },
+   {
+    "ms": 287,
+    "status": 200,
+    "instance_trials": 6,
+    "vercel_id": "lhr1::iad1::sbgpc-1794142075722-9fdbf0b231d2"
+   },
+   {
+    "ms": 233,
+    "status": 200,
+    "instance_trials": 6,
+    "vercel_id": "lhr1::iad1::vlfw7-1794142075667-e534d5b9f722"
+   },
+   {
+    "ms": 233,
+    "status": 200,
+    "instance_trials": 1,
+    "vercel_id": "lhr1::iad1::bzxm4-1794142075665-f42d6c1a2c3a"
+   },
+   {
+    "ms": 314,
+    "status": 200,
+    "instance_trials": 7,
+    "vercel_id": "lhr1::iad1::b6pmm-1794142075749-66dbe92ecb17"
+   },
+   {
+    "ms": 229,
+    "status": 200,
+    "instance_trials": 6,
+    "vercel_id": "lhr1::iad1::f4ktm-1794142075665-76c87f01046b"
+   },
+   {
+    "ms": 283,
+    "status": 200,
+    "instance_trials": 6,
+    "vercel_id": "lhr1::iad1::mtlbs-1794142075723-f47f8dfb9ef2"
+   },
+   {
+    "ms": 336,
+    "status": 200,
+    "instance_trials": 1,
+    "vercel_id": "lhr1::iad1::b6pmm-1794142075750-e9aeaa547448"
+   },
+   {
+    "ms": 283,
+    "status": 200,
+    "instance_trials": 1,
+    "vercel_id": "lhr1::iad1::c84kv-1794142075722-eeb87fc99d68"
+   },
+   {
+    "ms": 497,
+    "status": 200,
+    "instance_trials": 1,
+    "vercel_id": "lhr1::iad1::k2vqm-1794142075917-8b283d24b032"
+   },
+   {
+    "ms": 657,
+    "status": 200,
+    "instance_trials": 1,
+    "vercel_id": "lhr1::iad1::lznx5-1794142076094-0b4679dfa944"
+   },
+   {
+    "ms": 470,
+    "status": 200,
+    "instance_trials": 1,
+    "vercel_id": "lhr1::iad1::pgwdj-1794142075910-806d131a88c9"
+   },
+   {
+    "ms": 242,
+    "status": 200,
+    "instance_trials": 6,
+    "vercel_id": "lhr1::iad1::c84kv-1794142075669-1f7e38acc51f"
+   },
+   {
+    "ms": 305,
+    "status": 200,
+    "instance_trials": 1,
+    "vercel_id": "lhr1::iad1::fb9wb-1794142075743-ff5325e86383"
+   },
+   {
+    "ms": 413,
+    "status": 200,
+    "instance_trials": 1,
+    "vercel_id": "lhr1::iad1::k2vqm-1794142075854-6c6a8d0a50fc"
+   },
+   {
+    "ms": 303,
+    "status": 200,
+    "instance_trials": 6,
+    "vercel_id": "lhr1::iad1::478fh-1794142075742-7caa432f54f8"
+   }
+  ],
+  "fresh_instance_ms": [],
+  "warm_instance_ms": [
+   229,
+   233,
+   233,
+   242,
+   283,
+   283,
+   287,
+   303,
+   305,
+   314,
+   329,
+   336,
+   413,
+   470,
+   497,
+   657
+  ]
+ },
+ "latency": [],
+ "status_counts": {}
+}

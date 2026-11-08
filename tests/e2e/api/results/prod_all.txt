@@ -1,0 +1,234 @@
+cold/first request: {"ms": 341, "status": 200, "headers": {"Age": "0", "Cache-Control": "public, max-age=0, must-revalidate", "Server": "Vercel", "X-Vercel-Cache": "MISS", "X-Vercel-Id": "lhr1::iad1::pwqw7-1794142015296-bf69d8d7dbfe"}, "instance_trials": 3, "gemini": true, "at": "12:46:55"}
+created T-124655-44f1 in 615.8 ms (lhr1::iad1::lq9m7-1794142015532-415ab5cd2c37)
+40 follow-ups: {200: 6, 404: 34}  404 rate 85%
+health probe 'trials on this instance' counts seen: {5: 3, 4: 31, 6: 6}
+step30: successes [{'ms': 3476.1, 'day': 29, 'phase': 'dosing', 'advanced': True}, {'ms': 1290.9, 'day': 59, 'phase': 'dosing', 'advanced': True}, {'ms': 1508.5, 'day': 89, 'phase': 'follow-up', 'advanced': True}, {'ms': 238.9, 'day': 90, 'phase': 'closed', 'advanced': True}] misses 0 other []
+{
+ "index": {
+  "status": 200,
+  "bytes": 790,
+  "headers": {
+   "Age": "833",
+   "Cache-Control": "public, max-age=0, must-revalidate",
+   "Server": "Vercel",
+   "X-Vercel-Cache": "HIT",
+   "X-Vercel-Id": "lhr1::k2vqm-1794142052179-482db81658b8"
+  },
+  "assets": [
+   "/assets/index-CdtYRAEv.js",
+   "/assets/index-kTksjE8o.css"
+  ]
+ },
+ "assets": {
+  "/assets/index-CdtYRAEv.js": {
+   "status": 200,
+   "wire_bytes": 193280,
+   "encoding": "br",
+   "cache-control": "public, max-age=0, must-revalidate",
+   "content-type": "application/javascript; charset=utf-8",
+   "x-vercel-cache": "HIT",
+   "decoded_bytes": 660896
+  },
+  "/assets/index-kTksjE8o.css": {
+   "status": 200,
+   "wire_bytes": 11985,
+   "encoding": "br",
+   "cache-control": "public, max-age=0, must-revalidate",
+   "content-type": "text/css; charset=utf-8",
+   "x-vercel-cache": "HIT",
+   "decoded_bytes": 58300
+  }
+ },
+ "/predose": {
+  "status": 200,
+  "ctype": "text/html; charset=utf-8",
+  "bytes": 790,
+  "is_spa_html": true,
+  "head": "<!doctype html>\n<html lang=\"en-GB\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" ",
+  "headers": {
+   "Age": "437",
+   "Cache-Control": "public, max-age=0, must-revalidate",
+   "Server": "Vercel",
+   "X-Vercel-Cache": "HIT",
+   "X-Vercel-Id": "lhr1::k2vqm-1794142052596-c3cae5dc38dc"
+  }
+ },
+ "/dosing": {
+  "status": 200,
+  "ctype": "text/html; charset=utf-8",
+  "bytes": 790,
+  "is_spa_html": true,
+  "head": "<!doctype html>\n<html lang=\"en-GB\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" ",
+  "headers": {
+   "Age": "437",
+   "Cache-Control": "public, max-age=0, must-revalidate",
+   "Server": "Vercel",
+   "X-Vercel-Cache": "HIT",
+   "X-Vercel-Id": "lhr1::ln9p5-1794142052629-05be3421fb82"
+  }
+ },
+ "/postdose": {
+  "status": 200,
+  "ctype": "text/html; charset=utf-8",
+  "bytes": 790,
+  "is_spa_html": true,
+  "head": "<!doctype html>\n<html lang=\"en-GB\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" ",
+  "headers": {
+   "Age": "437",
+   "Cache-Control": "public, max-age=0, must-revalidate",
+   "Server": "Vercel",
+   "X-Vercel-Cache": "HIT",
+   "X-Vercel-Id": "lhr1::ln9p5-1794142052656-fc5e4cae2bad"
+  }
+ },
+ "/portal": {
+  "status": 200,
+  "ctype": "text/html; charset=utf-8",
+  "bytes": 790,
+  "is_spa_html": true,
+  "head": "<!doctype html>\n<html lang=\"en-GB\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" ",
+  "headers": {
+   "Age": "437",
+   "Cache-Control": "public, max-age=0, must-revalidate",
+   "Server": "Vercel",
+   "X-Vercel-Cache": "HIT",
+   "X-Vercel-Id": "lhr1::f4ktm-1794142052681-f8873e821df3"
+  }
+ },
+ "/mission": {
+  "status": 200,
+  "ctype": "text/html; charset=utf-8",
+  "bytes": 790,
+  "is_spa_html": true,
+  "head": "<!doctype html>\n<html lang=\"en-GB\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" ",
+  "headers": {
+   "Age": "437",
+   "Cache-Control": "public, max-age=0, must-revalidate",
+   "Server": "Vercel",
+   "X-Vercel-Cache": "HIT",
+   "X-Vercel-Id": "lhr1::k2vqm-1794142052699-f70eb38c064d"
+  }
+ },
+ "/some/deep/link?x=1": {
+  "status": 200,
+  "ctype": "text/html; charset=utf-8",
+  "bytes": 790,
+  "is_spa_html": true,
+  "head": "<!doctype html>\n<html lang=\"en-GB\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" ",
+  "headers": {
+   "Age": "437",
+   "Cache-Control": "public, max-age=0, must-revalidate",
+   "Server": "Vercel",
+   "X-Vercel-Cache": "HIT",
+   "X-Vercel-Id": "lhr1::ln9p5-1794142052752-4d1609aebd13"
+  }
+ },
+ "/assets/nope.js": {
+  "status": 404,
+  "ctype": "text/plain; charset=utf-8",
+  "bytes": 79,
+  "is_spa_html": false,
+  "head": "The page could not be found\n\nNOT_FOUND\n\nlhr1::ln9p5-1794142052776-d7b60603de12\n",
+  "headers": {
+   "Cache-Control": "public, max-age=0, must-revalidate",
+   "Server": "Vercel",
+   "X-Vercel-Error": "NOT_FOUND",
+   "X-Vercel-Id": "lhr1::ln9p5-1794142052776-d7b60603de12"
+  }
+ },
+ "/api/nope": {
+  "status": 404,
+  "ctype": "application/json",
+  "bytes": 22,
+  "is_spa_html": false,
+  "head": "{\"detail\":\"Not Found\"}",
+  "headers": {
+   "Age": "0",
+   "Cache-Control": "public, max-age=0, must-revalidate",
+   "Server": "Vercel",
+   "X-Vercel-Cache": "MISS",
+   "X-Vercel-Id": "lhr1::iad1::vcpgk-1794142052797-e68d1c599453"
+  }
+ },
+ "/api": {
+  "status": 404,
+  "ctype": "application/json",
+  "bytes": 22,
+  "is_spa_html": false,
+  "head": "{\"detail\":\"Not Found\"}",
+  "headers": {
+   "Age": "0",
+   "Cache-Control": "public, max-age=0, must-revalidate",
+   "Server": "Vercel",
+   "X-Vercel-Cache": "MISS",
+   "X-Vercel-Id": "lhr1::iad1::vcpgk-1794142052929-facb53743e9b"
+  }
+ },
+ "/api/": {
+  "status": 404,
+  "ctype": "application/json",
+  "bytes": 22,
+  "is_spa_html": false,
+  "head": "{\"detail\":\"Not Found\"}",
+  "headers": {
+   "Age": "0",
+   "Cache-Control": "public, max-age=0, must-revalidate",
+   "Server": "Vercel",
+   "X-Vercel-Cache": "MISS",
+   "X-Vercel-Id": "lhr1::iad1::vcpgk-1794142053055-2b945dd546a8"
+  }
+ },
+ "/api/health/": {
+  "status": 307,
+  "ctype": null,
+  "bytes": 0,
+  "is_spa_html": false,
+  "head": "",
+  "headers": {
+   "Age": "0",
+   "Cache-Control": "public, max-age=0, must-revalidate",
+   "Server": "Vercel",
+   "X-Vercel-Cache": "MISS",
+   "X-Vercel-Id": "lhr1::iad1::77p46-1794142053199-d58d1125eeca"
+  }
+ },
+ "/API/health": {
+  "status": 200,
+  "ctype": "text/html; charset=utf-8",
+  "bytes": 790,
+  "is_spa_html": true,
+  "head": "<!doctype html>\n<html lang=\"en-GB\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" ",
+  "headers": {
+   "Age": "437",
+   "Cache-Control": "public, max-age=0, must-revalidate",
+   "Server": "Vercel",
+   "X-Vercel-Cache": "HIT",
+   "X-Vercel-Id": "lhr1::lznx5-1794142053341-1452bb95402e"
+  }
+ },
+ "/favicon.ico": {
+  "status": 200,
+  "ctype": "text/html; charset=utf-8",
+  "bytes": 790,
+  "is_spa_html": true,
+  "head": "<!doctype html>\n<html lang=\"en-GB\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <me
+GET /api/bottlenecks                               n=6   p50=   183.6 ms  max=   222.8 ms
+GET /api/health                                    n=6   p50=   143.7 ms  max=   218.9 ms
+GET /api/health (probe)                            n=40  p50=   162.0 ms  max=   841.3 ms
+GET /api/protocols                                 n=6   p50=   310.0 ms  max=   365.2 ms
+GET /api/protocols/{name}                          n=6   p50=   188.6 ms  max=   377.4 ms
+GET /api/trials                                    n=7   p50=   143.1 ms  max=   345.6 ms
+GET /api/trials/{tid}/approvals                    n=12  p50=   128.6 ms  max=   415.8 ms
+GET /api/trials/{tid}/events                       n=12  p50=   166.5 ms  max=  1047.3 ms
+GET /api/trials/{tid}/kpis                         n=12  p50=   147.3 ms  max=   261.8 ms
+GET /api/trials/{tid}/messages                     n=2   p50=   194.9 ms  max=   207.7 ms
+GET /api/trials/{tid}/modules/dosing/view          n=2   p50=   156.8 ms  max=   194.9 ms
+GET /api/trials/{tid}/modules/postdose/view        n=2   p50=   177.4 ms  max=   187.7 ms
+GET /api/trials/{tid}/modules/predose/view         n=2   p50=   272.3 ms  max=   384.7 ms
+GET /api/trials/{tid}/record                       n=2   p50=   569.0 ms  max=   652.8 ms
+GET /api/trials/{tid}/state                        n=12  p50=   133.0 ms  max=   222.0 ms
+POST /api/trials                                   n=3   p50=   487.9 ms  max=   974.5 ms
+POST step days=30 (prod)                           n=4   p50=  1399.7 ms  max=  3476.1 ms
+POST trials                                        n=1   p50=   615.8 ms  max=   615.8 ms
+errors                                             n=6   p50=   167.2 ms  max=   228.3 ms
+status counts: {'POST 200': 8, 'GET 200': 95, 'GET 404': 39, 'POST 422': 1}

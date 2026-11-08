@@ -1,0 +1,300 @@
+{
+  "base_url": "http://127.0.0.1:5174",
+  "env": "local-single",
+  "at": "2026-11-08 12:49:00",
+  "results": [
+    {
+      "id": "J2",
+      "title": "Auto-approve on, play to close",
+      "env": "local-single",
+      "base_url": "http://127.0.0.1:5174",
+      "passed": false,
+      "error": null,
+      "duration_s": 21.6,
+      "timings": {
+        "create_trial": 0.11,
+        "play_to_close": 18.14
+      },
+      "failures": [
+        {
+          "t": 21.62,
+          "msg": "[mission control (auto) at close] stray 'UNBLIND' in UI text: ['BLINDING ROWS EXPORTED IN UNBLIND-BLIND-1', 'Release the UNBLIND-BLIND-1 harmonised export', 'UNBLIND-BLIND-1 export written after approval by demo reviewer (auto-approve ON): 358 rows, 99.4% complete, 117 rows withheld (no consent).', 'approved: Release the UNBLIND-BLIND-1 harmonised export']",
+          "shot": "",
+          "url": "http://127.0.0.1:5174/"
+        }
+      ],
+      "notes": [
+        "trial T-124708-e988",
+        "header at close: 'The trial is closed. The FDA blinding report was signed by demo reviewer (auto-approve ON) on D+90.'"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 298,
+      "toasts": [
+        "TRIAL T-124708-E988 CREATED",
+        "TRIAL CLOSED \u00b7 REPORT SIGNED BY DEMO REVIEWER (AUTO-APPROVE ON)"
+      ],
+      "shots": []
+    },
+    {
+      "id": "J3",
+      "title": "MDMA example to close: CAPS-5 labels everywhere, drift at Site C",
+      "env": "local-single",
+      "base_url": "http://127.0.0.1:5174",
+      "passed": false,
+      "error": null,
+      "duration_s": 30.9,
+      "timings": {
+        "create_trial": 0.07,
+        "decide:confirm shortlist": 0.06,
+        "play_to_drift": 7.05,
+        "decide:raters to remote": 0.1,
+        "play_to_close": 11.24
+      },
+      "failures": [
+        {
+          "t": 23.49,
+          "msg": "[/] MADRS label in an MDMA/PTSD trial: ['Collected 1 follow-up visits (MADRS, end-of-treatment guess and expectancy), 1 late because they fell before the primary', 'Collected 2 follow-up visits (MADRS, end-of-treatment guess and expectancy), 1 late because they fell before the primary', 'Collected 3 follow-up visits (MADRS, end-of-treatment guess and expectancy), 1 late because they fell before the primary', 'Collected 3 follow-up visits (MADRS, end-of-treatment guess and expectancy).']",
+          "shot": "docs/testing/screenshots/local-single-J3-1.png",
+          "url": "http://127.0.0.1:5174/"
+        },
+        {
+          "t": 28.0,
+          "msg": "[/dosing] MADRS label in an MDMA/PTSD trial: ['0 of 73 participants have a week-6 MADRS.', 'Primary endpoint locked: 0 of 73 participants have a week-6 MADRS. No more changes to the primary analysis data.', \"Recorded 1 rater assessment(s): MADRS plus the rater's guess.\", \"Recorded 2 rater assessment(s): MADRS plus the rater's guess.\"]",
+          "shot": "docs/testing/screenshots/local-single-J3-2.png",
+          "url": "http://127.0.0.1:5174/dosing"
+        },
+        {
+          "t": 28.26,
+          "msg": "[/dosing] no CAPS-5 label anywhere on the page",
+          "shot": "docs/testing/screenshots/local-single-J3-3.png",
+          "url": "http://127.0.0.1:5174/dosing"
+        },
+        {
+          "t": 30.63,
+          "msg": "[/postdose] MADRS label in an MDMA/PTSD trial: ['# FDA blinding report: T-124730-2ab7 **SYNTHETIC DATA.** Standard: UNBLIND-BLIND-1. Drafted on day 90. Primary endpoint ', 'COMP005: -3.6 MADRS points vs placebo (95% CI -5.7 to -1.5). COMP006: -3.8 points vs 1 mg psilocybin (95% CI -5.8 to -1.', 'Collected 1 follow-up visits (MADRS, end-of-treatment guess and expectancy), 1 late because they fell before the primary', 'Collected 2 follow-up visits (MADRS, end-of-treatment guess and expectancy), 1 late because they fell before the primary']",
+          "shot": "docs/testing/screenshots/local-single-J3-4.png",
+          "url": "http://127.0.0.1:5174/postdose"
+        },
+        {
+          "t": 30.92,
+          "msg": "[/postdose] no CAPS-5 label anywhere on the page",
+          "shot": "docs/testing/screenshots/local-single-J3-5.png",
+          "url": "http://127.0.0.1:5174/postdose"
+        }
+      ],
+      "notes": [
+        "trial T-124730-2ab7",
+        "drift slip at day 33: Move Site C raters to remote (central) assessment"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 376,
+      "toasts": [],
+      "shots": [
+        "docs/testing/screenshots/local-single-J3-1.png ([/] MADRS label in an MDMA/PTSD trial: [)",
+        "docs/testing/screenshots/local-single-J3-2.png ([/dosing] MADRS label in an MDMA/PTSD tr)",
+        "docs/testing/screenshots/local-single-J3-3.png ([/dosing] no CAPS-5 label anywhere on th)",
+        "docs/testing/screenshots/local-single-J3-4.png ([/postdose] MADRS label in an MDMA/PTSD )",
+        "docs/testing/screenshots/local-single-J3-5.png ([/postdose] no CAPS-5 label anywhere on )"
+      ]
+    },
+    {
+      "id": "J4",
+      "title": "Pasted custom protocol with other site names",
+      "env": "local-single",
+      "base_url": "http://127.0.0.1:5174",
+      "passed": false,
+      "error": null,
+      "duration_s": 29.8,
+      "timings": {
+        "create_trial": 0.11,
+        "decide:confirm shortlist": 0.06,
+        "play_to_drift_or_close": 8.03,
+        "decide:raters to remote": 0.07
+      },
+      "failures": [
+        {
+          "t": 27.96,
+          "msg": "example site names leak into a custom-protocol trial: ['Bristol@/: participant unblinding at Site C (Bristol) (guess accuracy 91%, 95% interval 62% to 98%, n=11) noted', 'Bristol@/postdose: # FDA blinding report: T-124800-e047 **SYNTHETIC DATA.** Standard: UNBLIND-BLIND-1. Drafted on day 9', 'Bristol@/predose: participant unblinding at Site C (Bristol) (guess accuracy 91%, 95% interval 62% to 98%, n=11) noted', 'London@/: participant unblinding at Site A (London) (guess accuracy 79%, 95% interval 62% to 89%, n=33) noted ', 'London@/postdose: # FDA blinding report: T-124800-e047 **SYNTHETIC DATA.** Standard: UNBLIND-BLIND-1. Drafted on day 9']",
+          "shot": "docs/testing/screenshots/local-single-J4-1.png",
+          "url": "http://127.0.0.1:5174/postdose"
+        },
+        {
+          "t": 28.26,
+          "msg": "none of the pasted site names (Leeds, Glasgow, Cardiff) appear anywhere",
+          "shot": "docs/testing/screenshots/local-single-J4-2.png",
+          "url": "http://127.0.0.1:5174/postdose"
+        }
+      ],
+      "notes": [
+        "trial T-124800-e047",
+        "drift slip day 39: Move Site B raters to remote (central) assessment",
+        "pasted site names seen: []"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 392,
+      "toasts": [],
+      "shots": [
+        "docs/testing/screenshots/local-single-J4-1.png (example site names leak into a custom-pr)",
+        "docs/testing/screenshots/local-single-J4-2.png (none of the pasted site names (Leeds, Gl)"
+      ]
+    },
+    {
+      "id": "J5",
+      "title": "Garbage protocol (!!! ???)",
+      "env": "local-single",
+      "base_url": "http://127.0.0.1:5174",
+      "passed": false,
+      "error": null,
+      "duration_s": 7.9,
+      "timings": {
+        "create": 4.03
+      },
+      "failures": [
+        {
+          "t": 7.9,
+          "msg": "garbage input '!!! ???' was accepted as a protocol with no warning to the user",
+          "shot": "docs/testing/screenshots/local-single-J5-3.png",
+          "url": "http://127.0.0.1:5174/"
+        },
+        {
+          "t": 7.9,
+          "msg": "[after garbage protocol] stray 'UNBLIND' in UI text: ['Waiting for a human: Protocol fix: Move outcome raters to central, remote, blinded assessment; Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters; Protocol fix: Measure expectancy before randomisation and at end of treatment; Protocol fix: Use a low dose of the same drug as comparator; Protocol fix: Stratify randomisation by prior psychedelic use; Clinician: confirm shortlist of 0 eligible applicants and review 215 flagged', 'BLINDING ROWS EXPORTED IN UNBLIND-BLIND-1', 'Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters', 'asked a human to approve: Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters']",
+          "shot": "",
+          "url": "http://127.0.0.1:5174/"
+        }
+      ],
+      "notes": [
+        "toasts: ['TRIAL T-124830-6D89 CREATED']",
+        "a trial was created from garbage: T-124830-6d89; header: 'WAITING\\nWaiting for a human: 6 decisions to sign.'",
+        "heading: 'Setup before day 1 of 90'",
+        "pre-dosing header: 'Protocol: !!! ???. 500 applicants screened. The shortlist waits for a clinician.'"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 55,
+      "toasts": [],
+      "shots": [
+        "docs/testing/screenshots/local-single-J5-1.png (garbage protocol trial, pre-dosing)",
+        "docs/testing/screenshots/local-single-J5-2.png (garbage protocol trial, mission control)",
+        "docs/testing/screenshots/local-single-J5-3.png (garbage input '!!! ???' was accepted as )"
+      ]
+    },
+    {
+      "id": "J6",
+      "title": "Volunteer portal: valid, bipolar free text, age 17, non-UK phone, lithium, recent use, non-numeric age",
+      "env": "local-single",
+      "base_url": "http://127.0.0.1:5174",
+      "passed": true,
+      "error": null,
+      "duration_s": 3.9,
+      "timings": {
+        "create_trial": 0.07,
+        "apply:valid": 0.07,
+        "apply:bipolar in free text": 0.06,
+        "apply:age 17": 0.06,
+        "apply:non-UK phone": 0.06,
+        "apply:lithium": 0.06,
+        "apply:psychedelic use 3 months ago": 0.06
+      },
+      "failures": [],
+      "notes": [
+        "valid: PRE-SCREENING AGENT Result ELIGIBLE PORTAL-0001 \u00b7 D\u22121 Every criterion the agent checks is met. Final eligibility is always confirmed by a clinician.",
+        "bipolar in free text: PRE-SCREENING AGENT Result NEEDS CLINICIAN PORTAL-0002 \u00b7 D\u22121 REASONS Free text discloses a possible safety risk QUOTED DISCLOSURE \u201cI was diagnosed with bipolar disorder last year\u201d your free text Final eligibility is always confirmed by a clinician.",
+        "age 17: PRE-SCREENING AGENT Result EXCLUDED PORTAL-0003 \u00b7 D\u22121 REASONS Age 17 is outside 18 to 65 Final eligibility is always confirmed by a clinician.",
+        "non-UK phone: PRE-SCREENING AGENT Result EXCLUDED PORTAL-0004 \u00b7 D\u22121 REASONS Not a UK mobile (+44 7) number; check-ins run through the UK chatbot Final eligibility is always confirmed by a clinician.",
+        "lithium: PRE-SCREENING AGENT Result EXCLUDED PORTAL-0005 \u00b7 D\u22121 REASONS Currently taking lithium Final eligibility is always confirmed by a clinician.",
+        "psychedelic use 3 months ago: PRE-SCREENING AGENT Result EXCLUDED PORTAL-0006 \u00b7 D\u22121 REASONS Psychedelic use 3 months ago (within 12 months) Final eligibility is always confirmed by a clinician."
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 28,
+      "toasts": [
+        "TRIAL T-124838-7878 CREATED",
+        "SCREENED \u00b7 PORTAL-0001 \u00b7 ELIGIBLE",
+        "SCREENED \u00b7 PORTAL-0002 \u00b7 NEEDS CLINICIAN",
+        "SCREENED \u00b7 PORTAL-0003 \u00b7 EXCLUDED",
+        "SCREENED \u00b7 PORTAL-0004 \u00b7 EXCLUDED",
+        "SCREENED \u00b7 PORTAL-0005 \u00b7 EXCLUDED",
+        "SCREENED \u00b7 PORTAL-0006 \u00b7 EXCLUDED"
+      ],
+      "shots": []
+    },
+    {
+      "id": "J7",
+      "title": "Protocol edit before enrolment and after enrolment (approve one, reject one)",
+      "env": "local-single",
+      "base_url": "http://127.0.0.1:5174",
+      "passed": true,
+      "error": null,
+      "duration_s": 11.3,
+      "timings": {
+        "create_trial": 0.07,
+        "save:Participants complet": 0.06,
+        "decide:confirm shortlist": 0.06,
+        "save:Amendment A: add a w": 0.07,
+        "save:Amendment B: add a w": 0.05,
+        "decide:mendment": 0.06
+      },
+      "failures": [],
+      "notes": [
+        "before enrolment: toasts ['SAVED PROTOCOL V2 \u00b7 U 0.79 (HIGH) \u00b7 1 / 8 FDA ITEMS']; versions ['v1 initial draft'] -> ['v1 initial draft', 'v2 edited by QA Tester']",
+        "after enrolment edit A: ['SENT FOR APPROVAL \u00b7 1 CHANGED LINES']",
+        "after enrolment edit B: ['SENT FOR APPROVAL \u00b7 2 CHANGED LINES']",
+        "amendment slips pending: 2: ['Protocol amendment: edit by QA Tester (1 changed lines)', 'Protocol amendment: edit by QA Tester (2 changed lines)']",
+        "final versions: ['v1 initial draft', 'v2 edited by QA Tester', 'v3 amended by QA Tester, approve\u2026']; week 9 in text: True; week 10 in text: False"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 71,
+      "toasts": [
+        "SAVED PROTOCOL V2 \u00b7 U 0.79 (HIGH) \u00b7 1 / 8 FDA ITEMS",
+        "APPROVED \u00b7 CLINICIAN: CONFIRM SHORTLIST OF 49 ELIGIBLE APPLICANTS AND REVIEW 56 FLAGGED",
+        "SENT FOR APPROVAL \u00b7 1 CHANGED LINES",
+        "SENT FOR APPROVAL \u00b7 2 CHANGED LINES",
+        "APPROVED \u00b7 PROTOCOL AMENDMENT: EDIT BY QA TESTER (1 CHANGED LINES)",
+        "REJECTED \u00b7 PROTOCOL AMENDMENT: EDIT BY QA TESTER (2 CHANGED LINES)"
+      ],
+      "shots": []
+    },
+    {
+      "id": "J8",
+      "title": "Reject the clinician shortlist, then approve the re-request",
+      "env": "local-single",
+      "base_url": "http://127.0.0.1:5174",
+      "passed": true,
+      "error": null,
+      "duration_s": 7.1,
+      "timings": {
+        "create_trial": 0.07,
+        "decide:confirm shortlist": 0.06,
+        "decide:shortlist": 0.07
+      },
+      "failures": [],
+      "notes": [
+        "header after reject: 'WAITING\\nWaiting for a human: 6 decisions to sign.'; slips: ['Protocol fix: Move outcome raters to central, remote, blinded assessment', 'Protocol fix: Add the UNBLIND-BLIND-1 guess questionnaire for participants and raters', 'Protocol fix: Measure expectancy before randomisation and at end of treatment', 'Protocol fix: Use a low dose of the same drug as comparator', 'Protocol fix: Stratify randomisation by prior psychedelic use', 'Clinician: confirm shortlist of 49 eligible applicants and review 56 flagged']"
+      ],
+      "console_errors": [],
+      "console_error_count": 0,
+      "network_failures": [],
+      "network_failure_count": 0,
+      "api_calls": 53,
+      "toasts": [],
+      "shots": []
+    }
+  ]
+}

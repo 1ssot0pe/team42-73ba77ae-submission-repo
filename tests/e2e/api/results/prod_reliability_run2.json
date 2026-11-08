@@ -1,0 +1,417 @@
+{
+ "base": "https://parallax-two-tau.vercel.app",
+ "at": "2026-11-08 12:51:54",
+ "reliability": {
+  "trial": "T-125154-5a16",
+  "statuses": {
+   "200": 33,
+   "404": 7
+  },
+  "rate_404": 0.175,
+  "rows": [
+   {
+    "i": 0,
+    "path": "/state",
+    "status": 200,
+    "ms": 1157.0,
+    "vercel_id": "lhr1::iad1::mtlbs-1794142315852-ee091fc12886",
+    "probe_has_trial": true,
+    "probe_instance_trials": 20
+   },
+   {
+    "i": 1,
+    "path": "/approvals",
+    "status": 200,
+    "ms": 153.3,
+    "vercel_id": "lhr1::iad1::mtlbs-1794142316209-de0fe480aa85",
+    "probe_has_trial": true,
+    "probe_instance_trials": 20
+   },
+   {
+    "i": 2,
+    "path": "/kpis",
+    "status": 200,
+    "ms": 161.5,
+    "vercel_id": "lhr1::iad1::fc86c-1794142316463-8be48f2ef165",
+    "probe_has_trial": true,
+    "probe_instance_trials": 20
+   },
+   {
+    "i": 3,
+    "path": "/events?limit=20",
+    "status": 200,
+    "ms": 139.4,
+    "vercel_id": "lhr1::iad1::bzxm4-1794142316818-ac2502369dc7",
+    "probe_has_trial": true,
+    "probe_instance_trials": 20
+   },
+   {
+    "i": 4,
+    "path": "/state",
+    "status": 200,
+    "ms": 125.8,
+    "vercel_id": "lhr1::iad1::kjmr9-1794142317064-d5fd9d10fa97",
+    "probe_has_trial": true,
+    "probe_instance_trials": 20
+   },
+   {
+    "i": 5,
+    "path": "/approvals",
+    "status": 200,
+    "ms": 117.1,
+    "vercel_id": "lhr1::iad1::4g7d4-1794142317340-55f8a7b27c81",
+    "probe_has_trial": true,
+    "probe_instance_trials": 20
+   },
+   {
+    "i": 6,
+    "path": "/kpis",
+    "status": 200,
+    "ms": 117.6,
+    "vercel_id": "lhr1::iad1::4g7d4-1794142317577-34505e29e1e7",
+    "probe_has_trial": true,
+    "probe_instance_trials": 20
+   },
+   {
+    "i": 7,
+    "path": "/events?limit=20",
+    "status": 200,
+    "ms": 140.6,
+    "vercel_id": "lhr1::iad1::kvbh4-1794142317843-0cc244c96f1a",
+    "probe_has_trial": true,
+    "probe_instance_trials": 20
+   },
+   {
+    "i": 8,
+    "path": "/state",
+    "status": 200,
+    "ms": 200.1,
+    "vercel_id": "lhr1::iad1::fc86c-1794142318177-e46ab39f5d1c",
+    "probe_has_trial": true,
+    "probe_instance_trials": 20
+   },
+   {
+    "i": 9,
+    "path": "/approvals",
+    "status": 200,
+    "ms": 118.6,
+    "vercel_id": "lhr1::iad1::fc86c-1794142318461-883e609946bd",
+    "probe_has_trial": true,
+    "probe_instance_trials": 20
+   },
+   {
+    "i": 10,
+    "path": "/kpis",
+    "status": 200,
+    "ms": 159.9,
+    "vercel_id": "lhr1::iad1::fc86c-1794142318749-1c2712d2722b",
+    "probe_has_trial": true,
+    "probe_instance_trials": 20
+   },
+   {
+    "i": 11,
+    "path": "/events?limit=20",
+    "status": 200,
+    "ms": 317.8,
+    "vercel_id": "lhr1::iad1::fc86c-1794142319241-17ff39bd8040",
+    "probe_has_trial": true,
+    "probe_instance_trials": 20
+   },
+   {
+    "i": 12,
+    "path": "/state",
+    "status": 200,
+    "ms": 200.1,
+    "vercel_id": "lhr1::iad1::5fzvr-1794142319554-eb48813cb0c9",
+    "probe_has_trial": true,
+    "probe_instance_trials": 20
+   },
+   {
+    "i": 13,
+    "path": "/approvals",
+    "status": 200,
+    "ms": 110.2,
+    "vercel_id": "lhr1::iad1::fc86c-1794142319783-a20f6a8f2616",
+    "probe_has_trial": true,
+    "probe_instance_trials": 20
+   },
+   {
+    "i": 14,
+    "path": "/kpis",
+    "status": 200,
+    "ms": 135.3,
+    "vercel_id": "lhr1::iad1::fc86c-1794142320030-ac9cf2c0cc12",
+    "probe_has_trial": true,
+    "probe_instance_trials": 20
+   },
+   {
+    "i": 15,
+    "path": "/events?limit=20",
+    "status": 200,
+    "ms": 123.8,
+    "vercel_id": "lhr1::iad1::2l725-1794142320279-8967c69a99fe",
+    "probe_has_trial": true,
+    "probe_instance_trials": 20
+   },
+   {
+    "i": 16,
+    "path": "/state",
+    "status": 200,
+    "ms": 151.8,
+    "vercel_id": "lhr1::iad1::pgwdj-1794142320617-1f66101a5446",
+    "probe_has_trial": true,
+    "probe_instance_trials": 20
+   },
+   {
+    "i": 17,
+    "path": "/approvals",
+    "status": 200,
+    "ms": 140.1,
+    "vercel_id": "lhr1::iad1::6rxgm-1794142320883-386e090224e0",
+    "probe_has_trial": true,
+    "probe_instance_trials": 20
+   },
+   {
+    "i": 18,
+    "path": "/kpis",
+    "status": 200,
+    "ms": 137.8,
+    "vercel_id": "lhr1::iad1::kvbh4-1794142321166-3bcdfde37e3e",
+    "probe_has_trial": true,
+    "probe_instance_trials": 20
+   },
+   {
+    "i": 19,
+    "path": "/events?limit=20",
+    "status": 200,
+    "ms": 114.8,
+    "vercel_id": "lhr1::iad1::kvbh4-1794142321401-ce89245bbed8",
+    "probe_has_trial": true,
+    "probe_instance_trials": 20
+   },
+   {
+    "i": 20,
+    "path": "/state",
+    "status": 200,
+    "ms": 122.7,
+    "vercel_id": "lhr1::iad1::6rxgm-1794142321639-993d83dde3d4",
+    "probe_has_trial": true,
+    "probe_instance_trials": 20
+   },
+   {
+    "i": 21,
+    "path": "/approvals",
+    "status": 200,
+    "ms": 114.8,
+    "vercel_id": "lhr1::iad1::6rxgm-1794142321869-fdfeeb115113",
+    "probe_has_trial": true,
+    "probe_instance_trials": 20
+   },
+   {
+    "i": 22,
+    "path": "/kpis",
+    "status": 200,
+    "ms": 121.3,
+    "vercel_id": "lhr1::iad1::bwcct-1794142322095-58eb9737c30a",
+    "probe_has_trial": true,
+    "probe_instance_trials": 20
+   },
+   {
+    "i": 23,
+    "path": "/events?limit=20",
+    "status": 200,
+    "ms": 120.6,
+    "vercel_id": "lhr1::iad1::bzxm4-1794142322401-ddf435cd51be",
+    "probe_has_trial": true,
+    "probe_instance_trials": 20
+   },
+   {
+    "i": 24,
+    "path": "/state",
+    "status": 200,
+    "ms": 127.1,
+    "vercel_id": "lhr1::iad1::fc86c-1794142322679-d8fcdd4d91fb",
+    "probe_has_trial": true,
+    "probe_instance_trials": 20
+   },
+   {
+    "i": 25,
+    "path": "/approvals",
+    "status": 200,
+    "ms": 127.3,
+    "vercel_id": "lhr1::iad1::bzxm4-1794142322944-566118dd27a4",
+    "probe_has_trial": true,
+    "probe_instance_trials": 20
+   },
+   {
+    "i": 26,
+    "path": "/kpis",
+    "status": 200,
+    "ms": 175.3,
+    "vercel_id": "lhr1::iad1::fc86c-1794142323238-b95797252aba",
+    "probe_has_trial": true,
+    "probe_instance_trials": 20
+   },
+   {
+    "i": 27,
+    "path": "/events?limit=20",
+    "status": 200,
+    "ms": 160.7,
+    "vercel_id": "lhr1::iad1::pgwdj-1794142323581-324345ac8214",
+    "probe_has_trial": true,
+    "probe_instance_trials": 20
+   },
+   {
+    "i": 28,
+    "path": "/state",
+    "status": 200,
+    "ms": 135.8,
+    "vercel_id": "lhr1::iad1::bwcct-1794142323852-b560ca2646ab",
+    "probe_has_trial": true,
+    "probe_instance_trials": 20
+   },
+   {
+    "i": 29,
+    "path": "/approvals",
+    "status": 200,
+    "ms": 131.5,
+    "vercel_id": "lhr1::iad1::gbht8-1794142324280-c6f0b4ebf0c0",
+    "probe_has_trial": true,
+    "probe_instance_trials": 20
+   },
+   {
+    "i": 30,
+    "path": "/kpis",
+    "status": 200,
+    "ms": 180.7,
+    "vercel_id": "lhr1::iad1::kvbh4-1794142324531-6721daf293d6",
+    "probe_has_trial": false,
+    "probe_instance_trials": 1
+   },
+   {
+    "i": 31,
+    "path": "/events?limit=20",
+    "status": 404,
+    "ms": 114.9,
+    "vercel_id": "lhr1::iad1::bwcct-1794142324816-93ddce0d62f3",
+    "probe_has_trial": false,
+    "probe_instance_trials": 1
+   },
+   {
+    "i": 32,
+    "path": "/state",
+    "status": 404,
+    "ms": 113.7,
+    "vercel_id": "lhr1::iad1::kvbh4-1794142325102-9158e7f5d695",
+    "probe_has_trial": false,
+    "probe_instance_trials": 1
+   },
+   {
+    "i": 33,
+    "path": "/approvals",
+    "status": 404,
+    "ms": 286.5,
+    "vercel_id": "lhr1::iad1::kvbh4-1794142325524-ed5cfffa5ba7",
+    "probe_has_trial": false,
+    "probe_instance_trials": 1
+   },
+   {
+    "i": 34,
+    "path": "/kpis",
+    "status": 404,
+    "ms": 216.3,
+    "vercel_id": "lhr1::iad1::gxdrh-1794142325926-b6df89f065da",
+    "probe_has_trial": false,
+    "probe_instance_trials": 2
+   },
+   {
+    "i": 35,
+    "path": "/events?limit=20",
+    "status": 404,
+    "ms": 123.5,
+    "vercel_id": "lhr1::iad1::gxdrh-1794142326215-bae32e0be47d",
+    "probe_has_trial": false,
+    "probe_instance_trials": 2
+   },
+   {
+    "i": 36,
+    "path": "/state",
+    "status": 404,
+    "ms": 110.0,
+    "vercel_id": "lhr1::iad1::kvbh4-1794142326441-c661c15a35e7",
+    "probe_has_trial": false,
+    "probe_instance_trials": 2
+   },
+   {
+    "i": 37,
+    "path": "/approvals",
+    "status": 404,
+    "ms": 115.5,
+    "vercel_id": "lhr1::iad1::gxdrh-1794142326674-78a53e2712f4",
+    "probe_has_trial": false,
+    "probe_instance_trials": 2
+   },
+   {
+    "i": 38,
+    "path": "/kpis",
+    "status": 200,
+    "ms": 116.2,
+    "vercel_id": "lhr1::iad1::kvbh4-1794142326904-7cb05443ca33",
+    "probe_has_trial": false,
+    "probe_instance_trials": 2
+   },
+   {
+    "i": 39,
+    "path": "/events?limit=20",
+    "status": 200,
+    "ms": 120.9,
+    "vercel_id": "lhr1::iad1::mtlbs-1794142327150-ce50a523d584",
+    "probe_has_trial": true,
+    "probe_instance_trials": 20
+   }
+  ]
+ },
+ "latency": [
+  {
+   "endpoint": "GET /api/health (probe)",
+   "n": 40,
+   "p50_ms": 133.7,
+   "max_ms": 300.3
+  },
+  {
+   "endpoint": "GET /api/trials/{tid}/approvals",
+   "n": 10,
+   "p50_ms": 122.9,
+   "max_ms": 286.5
+  },
+  {
+   "endpoint": "GET /api/trials/{tid}/events",
+   "n": 10,
+   "p50_ms": 123.6,
+   "max_ms": 317.8
+  },
+  {
+   "endpoint": "GET /api/trials/{tid}/kpis",
+   "n": 10,
+   "p50_ms": 148.9,
+   "max_ms": 216.3
+  },
+  {
+   "endpoint": "GET /api/trials/{tid}/state",
+   "n": 10,
+   "p50_ms": 131.5,
+   "max_ms": 1157.0
+  },
+  {
+   "endpoint": "POST trials",
+   "n": 1,
+   "p50_ms": 669.8,
+   "max_ms": 669.8
+  }
+ ],
+ "status_counts": {
+  "POST 200": 1,
+  "GET 200": 73,
+  "GET 404": 7
+ }
+}
