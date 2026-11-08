@@ -83,6 +83,8 @@
 
 /* Charts inside a wide drawer stack in one column. */
 .pdr .mcharts { grid-template-columns: minmax(0, 1fr); gap: var(--space-8); }
+/* An in-drawer jump to a chart lands below the sticky drawer header, not under it. */
+.pdr figure.chart { scroll-margin-top: 112px; }
 
 /* Agent log tags: a small dot plus a word, not a pill. */
 .log__tag { display: inline-flex; align-items: center; gap: 6px; font: 400 12px/1.4 var(--font-body); color: var(--color-smoke); }

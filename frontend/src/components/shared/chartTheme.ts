@@ -17,7 +17,8 @@ export const chartTokens = {
   muted: "var(--color-smoke)",
   reference: "var(--color-graphite)",
   grid: "var(--chart-grid)",
-  axis: "var(--color-smoke)",
+  /** axis ticks and quiet chart text: --chart-text (5.14:1 on the light chart surface; smoke in dark mode) */
+  axis: "var(--chart-text, var(--color-smoke))",
   halo: "var(--color-eggshell)",
   bandOpacity: 0.12,
   alarmFillOpacity: 0.06,

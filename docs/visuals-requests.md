@@ -25,6 +25,9 @@ Append-only. Each builder writes under its own heading (docs/visuals-spec.md 4.6
 
 - STUDIO, `ChartFrame` `headingLevel?: 3 | 4`: done. Default 3; pass 4 under a section h3.
 - STUDIO, tooltip helper for hand-written SVG: done. `usePointTip()`, `pointTipHandlers(tip, text, x, y)` and `<PointTip tip={tip.tip} />` from `components/shared` (ChartParts.tsx). Hover (mouse), focus or tap opens it; mouse leave, blur, Escape, a tap outside any `[data-pointtip]` mark or any scroll closes it. x, y are px inside a `position: relative` wrapper (`.chart__body` already is, or use `.chart-svgwrap`); the box sits centred above the point and uses `.chart-tooltip`. The handlers also set `role="img"` and `aria-label` to the sentence on the mark. `PointTip.tsx` can be dropped in favour of it, or kept; either looks the same.
+- POSTDOSE, `ChartFrame` `interactive?: boolean`: done (CONTRACT2). When true the body is `role="group"` with the same `aria-label`; default stays `role="img"`.
+- DOSING, `TrialState.simulated_truth?: SimulatedTruth | null` in `types.ts`: done (CONTRACT2), with `SimulatedTruth { synthetic; label: "simulated"; drift_site; drift_onset_day }`, matching `master/orchestrator.py` `simulated_truth()`.
+- Fix round 1, for other owners: V-3 adds `--chart-text` (light #6b665f, 5.14:1 on the chart surface; dark keeps smoke). Builders' own CSS that sets quiet text inside a chart to `var(--color-smoke)` (studio.css, risk.css, screening.css, dosing.css, postdose.css) should switch to `var(--chart-text)`; `chartTokens.axis` already uses it. V-12: the shared `EventMarkers` already sets labels above the plot with a 4 px halo, so no rule crosses a label; the crossing in the review is DOSING's local `EventLabels` in `SiteSmallMultiples.tsx`.
 
 ## Requests to teammates
 
