@@ -8,7 +8,7 @@ Participants receive MDMA 120 mg or an active placebo (niacin 100 mg) during thr
 Randomisation is stratified by site and prior psychedelic use.
 
 ## Outcomes
-The primary outcome is change in CAPS-5 total severity at week 18.
+The primary outcome is change in CAPS-5 total severity at week 8.
 CAPS-5 is administered by central blinded raters by videoconference who do not attend therapy sessions.
 At the end of treatment participants and raters are asked to guess allocation.
 

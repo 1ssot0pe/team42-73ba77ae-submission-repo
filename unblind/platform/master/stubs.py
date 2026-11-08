@@ -11,7 +11,7 @@ from ..core import BaseModule, Ctx, TrialRecord
 
 class StubDosing(BaseModule):
     name = "dosing"
-    title = "Dosing (STUB until Callum's module is merged)"
+    title = "Dosing (STUB until Izzy's module is merged)"
 
     def on_day(self, rec: TrialRecord, day: int, ctx: Ctx) -> None:
         if not rec["enrolled"]:
@@ -40,23 +40,23 @@ class StubDosing(BaseModule):
 
     def view(self, rec: TrialRecord) -> dict:
         v = super().view(rec)
-        v["cards"] = [{"title": "STUB", "body": "Placeholder dosing module. Callum's real module replaces this.", "tone": "warn"}]
+        v["cards"] = [{"title": "STUB", "body": "Placeholder dosing module. Izzy's real module replaces this.", "tone": "warn"}]
         return v
 
 
 class StubPostdose(BaseModule):
     name = "postdose"
-    title = "Post-dosing (STUB until Izzy's module is merged)"
+    title = "Post-dosing (STUB until Callum's module is merged)"
 
     def on_day(self, rec: TrialRecord, day: int, ctx: Ctx) -> None:
         if day == 90 and not rec["report"]:
             rec["report"] = {"status": "draft", "stub": True,
-                             "markdown": "# FDA blinding report (STUB)\nIzzy's module produces the real report."}
+                             "markdown": "# FDA blinding report (STUB)\nCallum's module produces the real report."}
             rec.event("postdose(stub)", "drafted placeholder report", "info", "postdose")
 
     def view(self, rec: TrialRecord) -> dict:
         v = super().view(rec)
-        v["cards"] = [{"title": "STUB", "body": "Placeholder post-dosing module. Izzy's real module replaces this.", "tone": "warn"}]
+        v["cards"] = [{"title": "STUB", "body": "Placeholder post-dosing module. Callum's real module replaces this.", "tone": "warn"}]
         return v
 
 

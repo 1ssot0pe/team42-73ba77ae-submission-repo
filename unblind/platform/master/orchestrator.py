@@ -55,6 +55,7 @@ class Master:
         if protocol:
             self.rec["protocol"] = protocol
         self.vault = Vault(trial_id, seed=seed)
+        self._place_drift_from_protocol = world_cfg is None     # an explicit WorldConfig keeps its own drift site
         self.world = World(self.vault, world_cfg or WorldConfig(seed=seed))
         bus = MessageBus(self.rec)
         self.ctx = Ctx(rec=self.rec, bus=bus, approvals=ApprovalQueue(self.rec, bus), vault=self.vault,
@@ -134,6 +135,9 @@ class Master:
         """Make sure every enrolled participant exists in the simulator."""
         new = [p for p in self.rec["enrolled"] if p["id"] not in self.world.people]
         if new:
+            if not self.world.people and self._place_drift_from_protocol:
+                self.world.place_drift((self.rec.get("protocol") or {}).get("sites") or [],
+                                       [p.get("site", "") for p in self.rec["enrolled"]])
             self.world.enrol(new)
         if self.rec["enrolled"] and self.rec["phase"] in ("design", "recruitment"):
             self.rec["phase"] = "dosing"
@@ -144,7 +148,53 @@ class Master:
             self._auto_approve()
             self._deliver()
         self._sync_world()
+        self._note_late_signoff()
         self.rec.save()
+
+    # -------------------------------------------------------------- FDA blinding report status
+    def report_status(self) -> dict:
+        """{status: none|collecting|waiting_for_signoff|changes_requested|signed, signed_by, signed_day, label}.
+        Reads postdose's report section and its report_signoff approval (read only)."""
+        r = self.rec.get("report") or {}
+        st = str(r.get("status") or "")
+        signoffs = [a for a in self.rec["approvals"] if (a.get("action") or {}).get("type") == "report_signoff"]
+        current = next((a for a in signoffs if r.get("approval_id") and a["id"] == r["approval_id"]),
+                       signoffs[-1] if signoffs else None)
+        out = {"status": "none", "signed_by": None, "signed_day": None, "label": "No report yet"}
+        approved = bool(current and current.get("status") == "approved" and (current.get("reviewer") or "").strip())
+        if st in ("signed", "final_signed") or (st == "final" and r.get("signed_by")) or approved:
+            name = r.get("signed_by") or (current or {}).get("reviewer") or "a named reviewer"
+            day = r.get("signed_day") if r.get("signed_day") is not None else (current or {}).get("decided_day")
+            out.update(status="signed", signed_by=name, signed_day=day, label=f"FDA blinding report signed by {name}")
+        elif st == "changes_requested" or (current and current.get("status") == "rejected" and st != "draft"):
+            out.update(status="changes_requested", label="Sign-off refused; redraft needed")
+        elif st in ("draft", "final") or (current and current.get("status") == "pending"):
+            out.update(status="waiting_for_signoff", label="FDA blinding report waiting for sign-off")
+        elif st in ("collecting", "preview"):
+            out.update(status="collecting", label="Collecting evidence")
+        return out
+
+    def _closing_text(self) -> str:
+        rs = self.report_status()
+        if rs["status"] == "signed":
+            return f"trial closed; FDA blinding report signed by {rs['signed_by']}"
+        if rs["status"] == "changes_requested":
+            return "trial closed; FDA blinding report sign-off refused; redraft needed"
+        if rs["status"] in ("none", "collecting"):
+            return "trial closed; FDA blinding report not drafted yet"
+        return "trial closed; FDA blinding report waiting for sign-off"
+
+    def _note_late_signoff(self) -> None:
+        """A report signed after close-out gets one timeline event (idempotent)."""
+        if self.rec["phase"] != "closed":
+            return
+        rs = self.report_status()
+        if rs["status"] != "signed":
+            return
+        text = f"FDA blinding report signed by {rs['signed_by']}"
+        if any(e.get("module") == "master" and text in str(e.get("text")) for e in self.rec["events"]):
+            return
+        self.rec.event("master", text, "decision", "master")
 
     # -------------------------------------------------------------- lifecycle
     def setup(self) -> None:
@@ -184,7 +234,7 @@ class Master:
                     self._weekly_summary(d)
                 if d >= CLOSE_DAY:
                     self.rec["phase"] = "closed"
-                    self.rec.event("master", "trial closed; FDA blinding report waiting for sign-off", "decision", "master")
+                    self.rec.event("master", self._closing_text(), "decision", "master")
             self.rec.save()
             return {"advanced": True, "day": self.rec["day"], "phase": self.rec["phase"]}
 
@@ -248,4 +298,5 @@ class Master:
             "pending_approvals": len(self.ctx.approvals.pending()),
             "auto_approve": r["config"].get("auto_approve", False),
             "gemini": llm.available(),
+            "report_status": self.report_status(),
         }

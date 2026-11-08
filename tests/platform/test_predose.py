@@ -57,7 +57,7 @@ def test_parser_reads_both_examples():
     p, _ = parse("example_mdma_ptsd.md")
     assert (p["drug"], p["comparator"], p["rater_model"], p["prior_use_policy"]) == \
         ("mdma", "active_placebo", "central_remote", "stratify")
-    assert p["primary_endpoint"] == {"scale": "CAPS-5", "week": 18}
+    assert p["primary_endpoint"] == {"scale": "CAPS-5", "week": 8}
     assert p["n_target"] == 80 and p["sites"] == ["Site A (London)", "Site C (Bristol)"]
     f = p["design_flags"]
     assert f["two_monitors"] and f["physician_15min"] and f["followup_12m"] and f["abuse_potential"]
@@ -289,8 +289,9 @@ OWNER = {"dosing_session": "dosing", "monitor_debrief": "dosing", "participant_c
          "rater_assessment": "dosing", "followup": "postdose"}
 
 
-def enrolled_master():
-    m = master()
+def enrolled_master(m=None):
+    """Approve the shortlist. Fixes still pending expire at enrolment, so decide any fix before calling this."""
+    m = m or master()
     m.decide(shortlist(m)["id"], "Dr Clinician", "approved")
     assert m.rec["enrolled"] and m.rec["schedule"]
     return m
@@ -405,9 +406,12 @@ def predose_amendments(m):
     return [a for a in m.rec["approvals"] if a["module"] == "predose" and (a["action"] or {}).get("type") == "amendment"]
 
 
-def central_off(m):
-    """enrolled_master() with the central-rater fix rejected, so drift can still lead to an amendment."""
+def central_off():
+    """enrolled_master() with the central-rater fix rejected before enrolment, so drift can still lead to an
+    amendment."""
+    m = master()
     m.decide(fix_approval(m, "central_raters")["id"], "Danny", "rejected")
+    m = enrolled_master(m)
     assert check(m, "central_raters")["present"] is False
     return m
 
@@ -416,7 +420,7 @@ DRIFT_TITLE = "Make remote central raters permanent at every site (after drift a
 
 
 def test_drift_waits_for_dosing_approval_then_asks_once():
-    m = central_off(enrolled_master())
+    m = central_off()
     for _ in range(2):
         m.ctx.bus.post("dosing", "master", "rater_drift", {"site": "Site B (Manchester)", "alert_id": "DOS-AL-0001"},
                        "raters guessing right")
@@ -439,7 +443,7 @@ def test_drift_waits_for_dosing_approval_then_asks_once():
 
 
 def test_drift_matches_by_title_and_dosing_rejection_asks_nothing():
-    m = central_off(enrolled_master())
+    m = central_off()
     m.ctx.bus.post("dosing", "master", "rater_drift", {"site": "Site B (Manchester)"}, "raters guessing right")
     m._deliver()
     other = m.ctx.approvals.request("drift_agent", "dosing", "Move Site A raters to remote (central) assessment",
@@ -457,7 +461,7 @@ def test_drift_matches_by_title_and_dosing_rejection_asks_nothing():
 
 
 def test_participant_unblinding_is_noted_not_amended():
-    m = central_off(enrolled_master())
+    m = central_off()
     m.ctx.bus.post("dosing", "master", "participant_unblinding",
                    {"group": "all", "accuracy": 0.82, "ci": [0.7, 0.9], "n": 40}, "expected, no action proposed")
     m._deliver()
@@ -491,8 +495,9 @@ def test_auto_approve_applies_each_fix_once():
 
 
 def test_drift_after_central_raters_does_not_ask_again():
-    m = enrolled_master()
+    m = master()
     m.decide(fix_approval(m, "central_raters")["id"], "Danny", "approved")
+    m = enrolled_master(m)
     n = len(m.rec["approvals"])
     m.ctx.bus.post("dosing", "master", "rater_drift", {"site": "Site B (Manchester)"}, "again")
     m._deliver()
@@ -504,7 +509,7 @@ def test_drift_after_central_raters_does_not_ask_again():
 
 
 def test_drift_does_not_duplicate_a_pending_amendment():
-    m = central_off(enrolled_master())
+    m = central_off()
     for site in ("Site B (Manchester)", "Site C (Bristol)"):
         m.ctx.bus.post("dosing", "master", "rater_drift", {"site": site}, "drift")
         m._deliver()
@@ -619,18 +624,19 @@ def test_recheck_after_enrolment_not_applied_if_protocol_changed_since():
     out = m.module_action("predose", "recheck", {"text": edited, "editor": "Judge"})
     a = m.ctx.approvals.get(out["pending_approval"])
     assert a["action"]["base_digest"] and a["action"]["base_version"] == len(m.rec["protocol_versions"])
-    m.decide(fix_approval(m, "central_raters")["id"], "Danny", "approved")    # protocol changes meanwhile
-    after_fix, n = m.rec["protocol"]["text"], len(m.rec["protocol_versions"])
+    other = m.module_action("predose", "recheck", {"text": m.rec["protocol"]["text"] + "\nA second clarification.\n",
+                                                   "editor": "Izzy"})
+    m.decide(other["pending_approval"], "Danny", "approved")    # protocol changes meanwhile (fixes expired at enrolment)
+    after_other, n = m.rec["protocol"]["text"], len(m.rec["protocol_versions"])
     m.decide(a["id"], "Danny", "approved")
-    assert m.rec["protocol"]["text"] == after_fix != edited and len(m.rec["protocol_versions"]) == n
-    assert check(m, "central_raters")["present"] is True
+    assert m.rec["protocol"]["text"] == after_other != edited and len(m.rec["protocol_versions"]) == n
     warn = [e for e in m.rec["events"] if e["level"] == "warn" and "changed since this edit was proposed" in e["text"]]
     assert len(warn) == 1 and f"(v{n - 1} -> v{n})" in warn[0]["text"] and "not applied" in warn[0]["text"]
 
 
 # ---------------------------------------------------------------- Phase 5.1 review fixes
 def test_drift_and_notes_survive_rechecks():
-    m = central_off(enrolled_master())
+    m = central_off()
     m.ctx.bus.post("dosing", "master", "participant_unblinding", {"group": "all", "accuracy": 0.8, "n": 40}, "x")
     m.ctx.bus.post("dosing", "master", "rater_drift", {"site": "Site B (Manchester)", "alert_id": "DOS-AL-0001"}, "drift")
     m._deliver()
@@ -654,27 +660,56 @@ def test_drift_and_notes_survive_rechecks():
     assert len(m.rec["design_review"]["participant_unblinding_notes"]) == 1
 
 
-def test_fix_approved_after_enrolment_is_logged_as_an_amendment():
-    m = enrolled_master()
-    a = fix_approval(m, "alternative_control")
-    assert a["action"]["base_digest"] and a["day"] == -1
-    m.step(3)
+def test_fix_pending_at_enrolment_expires_and_is_never_applied_even_with_auto_approve():
+    m = master()
+    risk = dict(m.rec["design_review"]["risk"])
+    pend = [a for a in m.ctx.approvals.pending("predose") if a["action"]["type"] == "apply_fix"]
+    assert len(pend) == 5
     n = len(m.rec["protocol_versions"])
+    m = enrolled_master(m)
+    assert not [a for a in m.ctx.approvals.pending("predose") if a["action"]["type"] == "apply_fix"]
+    for a in pend:
+        live = m.ctx.approvals.get(a["id"])
+        assert live["status"] == "expired" and live["decided_day"] == -1
+        assert live["reviewer"] == "nobody (dosing started before sign-off)"      # never a human signer
+    dr = m.rec["design_review"]
+    assert dr["risk_at_enrolment"] == risk and dr["risk_at_enrolment"] is not dr["risk"]
+    assert {e["fix"] for e in dr["expired_fixes"]} == {a["action"]["fix"] for a in pend}
+    assert sum("expired: dosing started" in e["text"] for e in m.rec["events"]) == 5
+    m.rec["config"]["auto_approve"] = True                     # the demo toggle must not revive them
+    m.run_to(5)
+    with pytest.raises(KeyError):                              # nobody can approve an expired fix later
+        m.decide(pend[0]["id"], "Danny", "approved")
+    # second guard: even a forged approval_decided message cannot apply it
+    m.ctx.bus.post("approvals", "predose", "approval_decided", dict(pend[0], status="approved", reviewer="Danny"))
+    m._settle()
+    m.ctx.bus.post("dosing", "predose", "literature_update", {"trial": "X"}, "new trial")   # a re-check asks nothing new
+    m._settle()
+    assert len(m.rec["protocol_versions"]) == n and m.rec["protocol"]["comparator"] == "inert_placebo"
+    assert not [x for x in m.rec["messages"] if x["kind"] == "protocol_amended" and (x["payload"] or {}).get("fix")]
+    assert len([a for a in m.rec["approvals"] if a["action"]["type"] == "apply_fix"]) == 5
+    assert all(m.ctx.approvals.get(a["id"])["status"] == "expired" for a in pend)
+    assert any(e["level"] == "warn" and "was expired" in e["text"] for e in m.rec["events"])
+    assert m.rec["design_review"]["risk_at_enrolment"] == risk       # survives the re-check that rebuilt the review
+    assert m.state()["report_status"]["signed_by"] is None              # an expiry is never read as a sign-off
+
+def test_fix_decided_before_enrolment_still_applies_and_is_not_expired():
+    m = master()
+    a = fix_approval(m, "alternative_control")
     m.decide(a["id"], "Danny", "approved")
-    assert len(m.rec["protocol_versions"]) == n + 1 and m.rec["protocol"]["comparator"] == "low_dose_same_drug"
-    assert "amendment" in m.rec["protocol_versions"][-1]["why"]
-    assert any("as a protocol amendment" in e["text"] for e in m.rec["events"])
-    assert [x for x in m.rec["messages"] if x["kind"] == "protocol_amended"
-            and (x["payload"] or {}).get("fix") == "alternative_control"]
+    m = enrolled_master(m)
+    assert m.ctx.approvals.get(a["id"])["status"] == "approved"
+    assert m.rec["protocol"]["comparator"] == "low_dose_same_drug"
+    assert "alternative_control" not in {e["fix"] for e in m.rec["design_review"]["expired_fixes"]}
 
 
 def test_fix_not_applied_if_protocol_edited_since_but_sibling_fixes_are_fine():
-    m = enrolled_master()
+    m = master()
     sib, a = fix_approval(m, "blinding_questionnaire"), fix_approval(m, "alternative_control")
     m.decide(sib["id"], "Danny", "approved")        # another fix in between does not make it stale
     out = m.module_action("predose", "recheck", {"text": m.rec["protocol"]["text"] + "\nSmall clarification.\n",
                                                  "editor": "Judge"})
-    m.decide(out["pending_approval"], "Danny", "approved")   # a human edit does
+    assert out["ok"] and "pending_approval" not in out       # before enrolment an edit applies at once
     text, n = m.rec["protocol"]["text"], len(m.rec["protocol_versions"])
     m.decide(a["id"], "Danny", "approved")
     assert m.rec["protocol"]["text"] == text and len(m.rec["protocol_versions"]) == n
@@ -737,3 +772,119 @@ def test_long_form_ptsd_indication_enrols_people():
     dx = [a["self_reported_diagnosis"] for a in m.rec["applicants"]]
     assert dx.count("post-traumatic stress disorder") > len(dx) / 2
     assert len(m.rec["enrolled"]) > 10
+
+
+# ---------------------------------------------------------------- Phase 8.1 confirm: window, outcome instrument, drift site
+from unblind.platform.predose.agents import CHECKLIST  # noqa: E402
+
+
+def mdma_master(auto_approve=True):
+    text = (PROTOCOLS / "example_mdma_ptsd.md").read_text()
+    m = Master("TEST-" + uuid.uuid4().hex[:6], protocol={"text": text}, auto_approve=auto_approve)
+    m.setup()
+    return m
+
+
+def test_primary_week_outside_the_simulation_window_is_flagged():
+    text = (PROTOCOLS / "example_mdma_ptsd.md").read_text().replace("at week 8.", "at week 18.")
+    m = Master("TEST-" + uuid.uuid4().hex[:6], protocol={"text": text})
+    m.setup()
+    assert m.rec["protocol"]["primary_endpoint"]["week"] == 18
+    rows = m.rec["design_review"]["checklist"]
+    assert all(set(r) == {"id", "item", "present", "evidence", "note"} for r in rows) and len(rows) == len(CHECKLIST)
+    assert "outside the 90-day simulation window" in check(m, "durability")["note"]
+    ev = [e for e in m.rec["events"] if "outside the 90-day simulation window" in e["text"]]
+    assert len(ev) == 1 and ev[0]["level"] == "decision" and ev[0]["module"] == "predose"
+    assert m.rec["design_review"]["window_note"] == ("Primary endpoint at week 18 is outside the 90-day simulation "
+                                                     "window: the primary result cannot lock before close-out "
+                                                     "(weeks 1 to 9 fit).")
+    # the shipped examples (weeks 6 and 8) fit, so nothing is flagged
+    for m2 in (master(), mdma_master(auto_approve=False)):
+        assert not any("simulation window" in c["note"] for c in m2.rec["design_review"]["checklist"])
+        assert not any("simulation window" in e["text"] for e in m2.rec["events"])
+        assert m2.rec["design_review"]["window_note"] is None
+
+
+def test_simulation_window_threshold_is_week_9():
+    from unblind.platform.predose.agents import SIM_MAX_PRIMARY_WEEK, window_note
+    assert SIM_MAX_PRIMARY_WEEK == 9
+    assert window_note({"primary_endpoint": {"week": 10}}) and not window_note({"primary_endpoint": {"week": 9}})
+    text = (PROTOCOLS / "example_mdma_ptsd.md").read_text()
+    m10 = Master("TEST-" + uuid.uuid4().hex[:6], protocol={"text": text.replace("at week 8.", "at week 10.")})
+    m10.setup()
+    assert "week 10" in (m10.rec["design_review"]["window_note"] or "")
+    m9 = Master("TEST-" + uuid.uuid4().hex[:6], protocol={"text": text.replace("at week 8.", "at week 9.")},
+                auto_approve=True)
+    m9.setup()
+    assert m9.rec["protocol"]["primary_endpoint"]["week"] == 9 and m9.rec["design_review"]["window_note"] is None
+    assert max(p["dosing_day"] for p in m9.rec["enrolled"]) == 20
+    m9.run_to(90)
+    assert m9.rec["primary_lock_day"] == 84 and m9.rec["phase"] == "closed"
+
+
+def test_mdma_example_reaches_primary_lock_and_closes():
+    m = mdma_master()
+    assert m.rec["protocol"]["primary_endpoint"] == {"scale": "CAPS-5", "week": 8}
+    m.run_to(90)
+    assert m.rec.get("primary_lock_day") is not None and m.rec["primary_lock_day"] < 90
+    assert m.rec["day"] == 90 and m.rec["phase"] == "closed"
+
+
+def test_outcome_instrument_follows_the_primary_scale():
+    psi = enrolled_master()
+    mp = psi.rec["measurement_plan"]
+    assert [i["id"] for i in mp["instruments"]] == [i["id"] for i in INSTRUMENTS]          # MADRS by default
+    assert {s["instrument"] for s in psi.rec["schedule"] if s["kind"] == "rater_assessment"} == {"MADRS+UB1-RG"}
+
+    m = mdma_master()
+    mp = m.rec["measurement_plan"]
+    ids = [i["id"] for i in mp["instruments"]]
+    assert "CAPS-5" in ids and "MADRS" not in ids
+    assert ids.index("CAPS-5") == [i["id"] for i in INSTRUMENTS].index("MADRS")
+    caps = next(i for i in mp["instruments"] if i["id"] == "CAPS-5")
+    assert caps["who"] == "rater" and caps["purpose"] == "Primary outcome" and "PTSD" in caps["questions"][0]
+    assert dict(zip(caps["timepoints"], caps["timepoints_days"])) == {"baseline": -1, "week 1": 7, "week 3": 21,
+                                                                       "week 8": 56}
+    assert all(type(d) is int for i in mp["instruments"] for d in i["timepoints_days"]) and mp["primary_week"] == 8
+    ra = [s for s in m.rec["schedule"] if s["kind"] == "rater_assessment"]
+    assert {s["instrument"] for s in ra} == {"CAPS-5+UB1-RG"} and {s["visit_week"] for s in ra} == {1, 3, 8}
+    assert any("outcome CAPS-5" in e["text"] for e in m.rec["events"])
+    assert plan_instruments(6, "unknown scale") == plan_instruments(6) == plan_instruments(6, "MADRS")
+
+
+def test_world_drift_site_follows_the_protocol_sites():
+    psi = enrolled_master()
+    assert psi.world.cfg.drift_site == "Site B (Manchester)" and psi.world.cfg.drift_day == 28   # default unchanged
+    m = mdma_master()
+    assert m.rec["protocol"]["sites"] == ["Site A (London)", "Site C (Bristol)"]
+    assert m.world.cfg.drift_site == "Site C (Bristol)"
+    assert any(p["site"] == m.world.cfg.drift_site for p in m.rec["enrolled"])
+    # missing data lands on a different enrolled site; the default run keeps Site C
+    assert psi.world.cfg.missing_site == "Site C (Bristol)"
+    assert m.world.cfg.missing_site == "Site A (London)" != m.world.cfg.drift_site
+    assert any(p["site"] == m.world.cfg.missing_site for p in m.rec["enrolled"])
+
+
+def test_world_place_drift_maps_names_and_handles_one_site():
+    from unblind.platform.world import World
+    w = World(Vault("TEST-" + uuid.uuid4().hex[:6]))
+    assert w.place_drift([]) == "Site B (Manchester)"
+    assert w.place_drift(["Site C (Bristol)"]) == "Site C (Bristol)"
+    assert w.place_drift(["Site A", "site b"]) == "Site B (Manchester)"          # mapped onto the World's names
+    assert w.place_drift(["London", "Leeds Royal (Leeds)"], ["London", "Leeds Royal (Leeds)"]) == "Leeds Royal (Leeds)"
+    assert w.cfg.missing_site == "London"                                         # enrolled, and not the drift site
+
+
+def test_no_new_design_fix_requests_after_enrolment():
+    m = Master("TEST-" + uuid.uuid4().hex[:6], auto_approve=True)
+    m.setup()
+    assert m.rec["enrolled"] and m.rec["protocol"]["has_expectancy_measure"] is True
+    n_fix = len([a for a in m.rec["approvals"] if a["action"]["type"] == "apply_fix"])
+    text = m.rec["protocol"]["text"].replace(FIXES["expectancy_measure"][2], "")   # an amendment drops expectancy
+    out = m.module_action("predose", "recheck", {"text": text, "editor": "Judge"})
+    assert out["pending_approval"] and m.ctx.approvals.get(out["pending_approval"])["status"] == "approved"
+    assert m.rec["protocol"]["has_expectancy_measure"] is False
+    assert "expectancy_measure" in m.rec["design_review"]["proposed_fixes"]
+    assert len([a for a in m.rec["approvals"] if a["action"]["type"] == "apply_fix"]) == n_fix
+    assert any("not asked as a design change" in e["text"] and "expectancy_measure" in e["text"]
+               for e in m.rec["events"])

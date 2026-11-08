@@ -40,8 +40,8 @@ You are helping Danny build one part of a hackathon project. Your job is to foll
 | Module | Owner | Agents |
 |---|---|---|
 | **Pre-dosing** | **Danny** | Protocol parser, protocol co-designer, recruitment ad writer, pre-screening, enrolment and randomisation, measurement planner |
-| Dosing (acute) | Callum | Check-ins, debriefs, blinding monitor through a sealed vault, drift detection and actions, missing-data chaser, literature agent |
-| Post-dosing | Izzy | Follow-ups, researcher question bias gate, harmonised export, FDA blinding report |
+| Dosing (acute) | Izzy | Check-ins, debriefs, blinding monitor through a sealed vault, drift detection and actions, missing-data chaser, literature agent |
+| Post-dosing | Callum | Follow-ups, researcher question bias gate, harmonised export, FDA blinding report |
 | **Master agent + web app** | **Danny** | Clock, message routing, approvals, mission control, volunteer portal |
 
 **Danny's mission:** make the trial start right (pre-dosing), and make the whole platform run as one product (master agent, API, React app, integration).
@@ -49,9 +49,9 @@ You are helping Danny build one part of a hackathon project. Your job is to foll
 **What the judges will see (Danny's parts in bold):**
 1. **A judge pastes or edits a draft protocol. The agents score its blinding risk, check it against the FDA guidance, propose fixes, and re-check after each approved fix.**
 2. **Hundreds of synthetic applicants are screened to a shortlist that a clinician approves. A judge can apply live in the volunteer portal.**
-3. Press play: simulated weeks pass; check-ins, debriefs, live blinding chart (Callum).
-4. Raters at one site drift; the agent proposes remote raters; the judge approves (Callum, with **Danny's approval inbox**).
-5. Close-out FDA blinding report (Izzy).
+3. Press play: simulated weeks pass; check-ins, debriefs, live blinding chart (Izzy).
+4. Raters at one site drift; the agent proposes remote raters; the judge approves (Izzy, with **Danny's approval inbox**).
+5. Close-out FDA blinding report (Callum).
 
 ---
 
@@ -84,7 +84,7 @@ You are helping Danny build one part of a hackathon project. Your job is to foll
                            Master agent (orchestrator.py)
               ┌──────────────┬─────┴────────┬──────────────┐
           predose/         dosing/        postdose/      stubs.py (used until a module imports)
-          (Danny)          (Callum)       (Izzy)
+          (Danny)          (Izzy)         (Callum)
               └──────── shared core.py ────────┘
      TrialRecord | MessageBus | ApprovalQueue | Vault (sealed allocation) | World (SYNTHETIC simulator)
 ```
@@ -103,8 +103,8 @@ unblind/platform/
   predose/__init__.py
   predose/agents.py         # Danny (Phases 1 to 4)
   predose/module.py         # Danny (Phases 1 to 4)
-  dosing/                   # CALLUM ONLY. Never edit.
-  postdose/                 # IZZY ONLY. Never edit.
+  dosing/                   # IZZY ONLY. Never edit.
+  postdose/                 # CALLUM ONLY. Never edit.
 backend/__init__.py
 backend/main.py             # Danny (Phase 5)
 frontend/                   # Danny (Phases 6 to 8): Vite + React + TypeScript
@@ -170,7 +170,7 @@ Only create or edit: <files>. Never edit: unblind/platform/dosing/, unblind/plat
 Use the shapes and signatures in plan.md exactly. After each phase: run its verification commands, report, STOP.
 ```
 
-**Merge rule:** Danny merges lanes into his branch `danny/platform`, then into `main` at checkpoints. Pull `main` before each phase. Callum works on `callum/dosing`, Izzy on `izzy/postdose`.
+**Merge rule:** Danny merges lanes into his branch `danny/platform`, then into `main` at checkpoints. Pull `main` before each phase. Izzy works on `izzy/dosing`, Callum on `callum/postdose`.
 
 ---
 
@@ -965,7 +965,7 @@ from ..core import BaseModule, Ctx, TrialRecord
 
 class StubDosing(BaseModule):
     name = "dosing"
-    title = "Dosing (STUB until Callum's module is merged)"
+    title = "Dosing (STUB until Izzy's module is merged)"
 
     def on_day(self, rec: TrialRecord, day: int, ctx: Ctx) -> None:
         if not rec["enrolled"]:
@@ -994,23 +994,23 @@ class StubDosing(BaseModule):
 
     def view(self, rec: TrialRecord) -> dict:
         v = super().view(rec)
-        v["cards"] = [{"title": "STUB", "body": "Placeholder dosing module. Callum's real module replaces this.", "tone": "warn"}]
+        v["cards"] = [{"title": "STUB", "body": "Placeholder dosing module. Izzy's real module replaces this.", "tone": "warn"}]
         return v
 
 
 class StubPostdose(BaseModule):
     name = "postdose"
-    title = "Post-dosing (STUB until Izzy's module is merged)"
+    title = "Post-dosing (STUB until Callum's module is merged)"
 
     def on_day(self, rec: TrialRecord, day: int, ctx: Ctx) -> None:
         if day == 90 and not rec["report"]:
             rec["report"] = {"status": "draft", "stub": True,
-                             "markdown": "# FDA blinding report (STUB)\nIzzy's module produces the real report."}
+                             "markdown": "# FDA blinding report (STUB)\nCallum's module produces the real report."}
             rec.event("postdose(stub)", "drafted placeholder report", "info", "postdose")
 
     def view(self, rec: TrialRecord) -> dict:
         v = super().view(rec)
-        v["cards"] = [{"title": "STUB", "body": "Placeholder post-dosing module. Izzy's real module replaces this.", "tone": "warn"}]
+        v["cards"] = [{"title": "STUB", "body": "Placeholder post-dosing module. Callum's real module replaces this.", "tone": "warn"}]
         return v
 
 
@@ -2059,15 +2059,15 @@ Order:
 - Timeline(module)
 
 **Integration steps:**
-1. Pull `callum/dosing` and `izzy/postdose` into `danny/platform`. Never edit their folders; if their code breaks, send them the traceback from the timeline.
+1. Pull `izzy/dosing` and `callum/postdose` into `danny/platform`. Never edit their folders; if their code breaks, send them the traceback from the timeline.
 2. Run the full path twice with auto-approve OFF:
    - create
    - approve 2 or 3 fixes
    - approve the shortlist
    - Play
-   - approve Callum's drift action when it appears
+   - approve Izzy's drift action when it appears
    - Play to close
-   - Izzy's report waits for sign-off
+   - Callum's report waits for sign-off
 3. Then once with auto-approve ON.
 
 **Acceptance:** module_status shows all `real`; no Python tracebacks in the timeline; `npm run build` is clean; `pytest -q` passes everywhere.
